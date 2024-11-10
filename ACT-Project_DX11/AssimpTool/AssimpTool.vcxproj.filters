@@ -12,7 +12,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="ToolMain.cpp">
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
@@ -35,7 +35,7 @@
     <ClInclude Include="pch.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="Main.h">
+    <ClInclude Include="ToolMain.h">
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="CameraScript.h">

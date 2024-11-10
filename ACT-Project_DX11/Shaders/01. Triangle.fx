@@ -1,4 +1,3 @@
-
 struct VertexInput
 {
 	float4 position : POSITION;
@@ -34,6 +33,25 @@ float4 PS3(VertexOutput input) : SV_TARGET
 
 technique11 T0
 {
+    pass P0
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetPixelShader(CompileShader(ps_5_0, PS()));
+    }
+
+    pass P1
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetPixelShader(CompileShader(ps_5_0, PS2()));
+    }
+    pass P2
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetPixelShader(CompileShader(ps_5_0, PS3()));
+    }
+}
+technique11 T1
+{
 	pass P0
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
@@ -45,13 +63,9 @@ technique11 T0
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetPixelShader(CompileShader(ps_5_0, PS2()));
 	}
-};
-
-technique11 T1
-{
-	pass P0
-	{
-		SetVertexShader(CompileShader(vs_5_0, VS()));
-		SetPixelShader(CompileShader(ps_5_0, PS3()));
-	}
+    pass P2
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetPixelShader(CompileShader(ps_5_0, PS3()));
+    }
 };

@@ -30,11 +30,6 @@ void PlayerScript::Update()
 	if (INPUT->GetButton(KEY_TYPE::LBUTTON))
 		isAttack = true;
 
-	if (isAttack)
-	{
-		_modelAnimator->SetAnimationState(AnimationState::Attack4);
-	}
-
 	// 이동 방향의 크기를 기준으로 애니메이션 상태 결정
 	AnimationState targetAnimationState;
 	if (moveDir.LengthSquared() > 0.0f)  // 이동 벡터가 0이 아니라면 이동 중으로 간주
@@ -88,6 +83,12 @@ void PlayerScript::Update()
 		_currentAnimationState = targetAnimationState;  // 현재 상태 업데이트
 	}
 	
+
+	//if (isAttack)
+	//{
+	//	_modelAnimator->SetAnimationState(AnimationState::Attack);
+	//}
+
 	if (INPUT->GetButton(KEY_TYPE::KEY_1))
 	{
 		Camera::S_IsWireFrame = false;

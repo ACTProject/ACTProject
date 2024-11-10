@@ -21,6 +21,7 @@ public:
 
 	void SetModel(shared_ptr<Model> model);
 	void SetPass(uint8 pass) { _pass = pass; }
+	void SetTechnique(uint8 technique) { _technique = technique; }
 	void SetAnimationState(AnimationState newState);
 	shared_ptr<Shader> GetShader() { return _shader; }
 
@@ -47,6 +48,7 @@ private:
 
 private:
 	shared_ptr<Shader>	_shader;
+	uint8				_technique = 0;
 	uint8				_pass = 0;
 	shared_ptr<Model>	_model;
 };

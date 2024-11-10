@@ -154,12 +154,13 @@ void Converter::ReadMeshData(aiNode* node, int32 bone)
 	if (node->mNumMeshes < 1)
 		return; // 메시가 없는 노드는 처리하지 않음
 
-	shared_ptr<asMesh> mesh = make_shared<asMesh>(); // 새 메시 객체 생성
-	mesh->name = node->mName.C_Str(); // 메시 이름 설정
-	mesh->boneIndex = bone; // 메시와 연결된 본 인덱스 설정
-
 	// 노드에 포함된 모든 메시에 대해 반복
 	for (uint32 i = 0; i < node->mNumMeshes; i++) {
+
+		shared_ptr<asMesh> mesh = make_shared<asMesh>(); // 새 메시 객체 생성
+		mesh->name = node->mName.C_Str(); // 메시 이름 설정
+		mesh->boneIndex = bone; // 메시와 연결된 본 인덱스 설정
+
 		uint32 index = node->mMeshes[i];
 		const aiMesh* srcMesh = _scene->mMeshes[index]; // 소스 메시 참조
 
@@ -190,10 +191,10 @@ void Converter::ReadMeshData(aiNode* node, int32 bone)
 			for (uint32 k = 0; k < face.mNumIndices; k++)
 				mesh->indices.push_back(face.mIndices[k] + startVertex); // 인덱스를 메시에 추가
 		}
+		_meshes.push_back(mesh); // 메시를 내부 메시 리스트에 추가
 	}
-
-	_meshes.push_back(mesh); // 메시를 내부 메시 리스트에 추가
 }
+
 // 모델의 본과 정점 가중치 정보를 읽어와 처리하는 함수
 void Converter::ReadSkinData()
 {

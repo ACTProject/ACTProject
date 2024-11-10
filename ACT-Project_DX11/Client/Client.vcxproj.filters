@@ -54,7 +54,7 @@
     <ClCompile Include="BillBoardDemo.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="SnowDemo.cpp">
+    <ClCompile Include="Client.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="StaticMeshDemo.cpp">
@@ -86,7 +86,7 @@
     <ClInclude Include="BillBoardDemo.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="SnowDemo.h">
+    <ClInclude Include="Client.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="StaticMeshDemo.h">

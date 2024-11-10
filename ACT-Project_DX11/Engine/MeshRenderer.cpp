@@ -44,9 +44,11 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 	buffer->PushData();
 
 	if (Camera::S_IsWireFrame)
-		shader->DrawIndexedInstanced(2, _pass, _mesh->GetIndexBuffer()->GetCount(), buffer->GetCount());
+		_technique = 2;
 	else
-		shader->DrawIndexedInstanced(0, _pass, _mesh->GetIndexBuffer()->GetCount(), buffer->GetCount());
+		_technique = 0;
+
+	shader->DrawIndexedInstanced(_technique, _pass, _mesh->GetIndexBuffer()->GetCount(), buffer->GetCount());
 }
 
 void MeshRenderer::RenderSingle()
@@ -78,14 +80,14 @@ void MeshRenderer::RenderSingle()
 	_mesh->GetVertexBuffer()->PushData();
 	_mesh->GetIndexBuffer()->PushData();
 
-	if (_isAlphaBlend) 
-	{
-		shader->DrawIndexed(4, _pass, _mesh->GetIndexBuffer()->GetCount(), 0, 0);	return;
-	}
+	if (_isAlphaBlend)
+		_technique = 4;
 	if (Camera::S_IsWireFrame)
-		shader->DrawIndexed(3, _pass, _mesh->GetIndexBuffer()->GetCount(), 0, 0);
-	else if (!Camera::S_IsWireFrame)
-		shader->DrawIndexed(1, _pass, _mesh->GetIndexBuffer()->GetCount(), 0, 0);
+		_technique = 3;
+	else
+		_technique = 1;
+
+	shader->DrawIndexed(_technique, _pass, _mesh->GetIndexBuffer()->GetCount(), 0, 0);
 }
 
 InstanceID MeshRenderer::GetInstanceID()

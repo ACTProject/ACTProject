@@ -68,9 +68,11 @@ void ModelRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 		buffer->PushData();
 
 		if (Camera::S_IsWireFrame)
-			_shader->DrawIndexedInstanced(2, _pass, mesh->indexBuffer->GetCount(), buffer->GetCount());
+			_technique = 2;
 		else
-			_shader->DrawIndexedInstanced(0, _pass, mesh->indexBuffer->GetCount(), buffer->GetCount());
+			_technique = 0;
+
+		_shader->DrawIndexedInstanced(_technique, _pass, mesh->indexBuffer->GetCount(), buffer->GetCount());
 	}
 }
 
@@ -116,9 +118,11 @@ void ModelRenderer::RenderSingle()
 		mesh->indexBuffer->PushData();
 
 		if (Camera::S_IsWireFrame)
-			_shader->DrawIndexed(3, _pass, mesh->indexBuffer->GetCount(), 0, 0);
+			_technique = 3;
 		else
-			_shader->DrawIndexed(1, _pass, mesh->indexBuffer->GetCount(), 0, 0);
+			_technique = 1;
+
+		_shader->DrawIndexed(_technique, _pass, mesh->indexBuffer->GetCount(), 0, 0);
 	}
 }
 

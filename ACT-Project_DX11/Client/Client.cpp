@@ -2,7 +2,7 @@
 #include "RawBuffer.h"
 #include "TextureBuffer.h"
 #include "Material.h"
-#include "SnowDemo.h"
+#include "Client.h"
 #include "GeometryHelper.h"
 #include "Camera.h"
 #include "GameObject.h"
@@ -30,10 +30,10 @@
 #include "Billboard.h"
 #include "SnowBillboard.h"
 
-void SnowDemo::Init()
+void Client::Init()
 {
-	_shader = make_shared<Shader>(L"29. SnowDemo.fx");
-	_renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
+	shared_ptr<Shader> snowShader = make_shared<Shader>(L"29. SnowDemo.fx");
+	shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
 
 	// Camera
 	{
@@ -72,7 +72,7 @@ void SnowDemo::Init()
 			// Material
 			{
 				shared_ptr<Material> material = make_shared<Material>();
-				material->SetShader(_shader);
+				material->SetShader(snowShader);
 				auto texture = RESOURCES->Load<Texture>(L"bubble", L"..\\Resources\\Textures\\bubble.png");
 				material->SetDiffuseMap(texture);
 				MaterialDesc& desc = material->GetMaterialDesc();
@@ -101,33 +101,55 @@ void SnowDemo::Init()
 		player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 		player->GetOrAddTransform()->SetScale(Vec3(0.01f));
 
-		shared_ptr<Model> m1 = make_shared<Model>();
+		shared_ptr<Model> playerModel = make_shared<Model>();
 		// Model
 		{
-			m1->ReadModel(L"Player/Player");
-			m1->ReadMaterial(L"Player/Player");
+			playerModel->ReadModel(L"Player/Player");
+			playerModel->ReadMaterial(L"Player/Player");
 
-			m1->ReadAnimation(L"Player/Idle", AnimationState::Idle);
-			m1->ReadAnimation(L"Player/Walk", AnimationState::Walk);
-			m1->ReadAnimation(L"Player/Run", AnimationState::Run);
-			m1->ReadAnimation(L"Player/Crab_Atk_Combo1", AnimationState::Attack1);
-			m1->ReadAnimation(L"Player/Crab_Atk_Combo2", AnimationState::Attack2);
-			m1->ReadAnimation(L"Player/Crab_Atk_Combo3", AnimationState::Attack3);
-			m1->ReadAnimation(L"Player/Crab_Atk_Combo4", AnimationState::Attack4);
-
-			//m1->ReadAnimation(L"Player/Crab_Death");
-			//m1->ReadAnimation(L"Player/Crab_GetUp");
+			playerModel->ReadAnimation(L"Player/Idle", AnimationState::Idle);
+			playerModel->ReadAnimation(L"Player/Walk", AnimationState::Walk);
+			playerModel->ReadAnimation(L"Player/Run", AnimationState::Run);
+			playerModel->ReadAnimation(L"Player/Crab_Atk_Combo1", AnimationState::Attack);
+			//playerModel->ReadAnimation(L"Player/Crab_Atk_Combo2", AnimationState::Attack2);
+			//playerModel->ReadAnimation(L"Player/Crab_Atk_Combo3", AnimationState::Attack3);
+			//playerModel->ReadAnimation(L"Player/Crab_Atk_Combo4", AnimationState::Attack4);
+			
+			//playerModel->ReadAnimation(L"Player/Crab_Death");
+			//playerModel->ReadAnimation(L"Player/Crab_GetUp");
 		}
-		shared_ptr<ModelAnimator> ma1 = make_shared<ModelAnimator>(_renderShader);
+		shared_ptr<ModelAnimator> ma1 = make_shared<ModelAnimator>(renderShader);
 		player->AddComponent(ma1);
 		{
-			player->GetModelAnimator()->SetModel(m1);
+			player->GetModelAnimator()->SetModel(playerModel);
 			player->GetModelAnimator()->SetPass(2);
+		}
+
+		// Weapon (Fork)
+		{
+			auto weapon = make_shared<GameObject>();
+			weapon->GetOrAddTransform()->SetPosition(Vec3(0.f));
+			weapon->GetOrAddTransform()->SetScale(Vec3(1.00f));
+
+			// CustomData -> Memory
+			shared_ptr<class Model> weaponModel = make_shared<Model>();
+			weaponModel->ReadModel(L"Fork/Fork");
+			weaponModel->ReadMaterial(L"Fork/Fork");
+
+			weapon->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				weapon->GetModelRenderer()->SetModel(weaponModel);
+				weapon->GetModelRenderer()->SetPass(1);
+			}
+
+			shared_ptr<ModelBone> handBone = playerModel->GetBoneByName(L"Hand_Grip_L");
+
+			CUR_SCENE->Add(weapon);
 		}
 
 		// PlayerScript
 		shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();
-		playerScript->SetPlayer(m1);
+		playerScript->SetPlayer(playerModel);
 		playerScript->SetModelAnimator(ma1);
 
 		// Debug Test
@@ -150,7 +172,7 @@ void SnowDemo::Init()
 		{
 			// Look 방향 표시용 빨간색 재질
 			auto material = make_shared<Material>();
-			material->SetShader(_renderShader);
+			material->SetShader(renderShader);
 			MaterialDesc& desc = material->GetMaterialDesc();
 			desc.ambient = Vec4(1.f);
 			desc.diffuse = Vec4(1.0f, 0.0f, 0.0f, 1.0f); // 빨간색
@@ -171,7 +193,7 @@ void SnowDemo::Init()
 		{
 			// Up 방향 표시용 초록색 재질
 			auto material = make_shared<Material>();
-			material->SetShader(_renderShader);
+			material->SetShader(renderShader);
 			MaterialDesc& desc = material->GetMaterialDesc();
 			desc.ambient = Vec4(1.f);
 			desc.diffuse = Vec4(0.0f, 1.0f, 0.0f, 1.0f);  // 초록색
@@ -193,7 +215,7 @@ void SnowDemo::Init()
 		{
 			// Right 방향 표시용 파란색 재질
 			auto material = make_shared<Material>();
-			material->SetShader(_renderShader);
+			material->SetShader(renderShader);
 			MaterialDesc& desc = material->GetMaterialDesc();
 			desc.ambient = Vec4(1.f);
 			desc.diffuse = Vec4(0.0f, 0.0f, 1.0f, 1.0f);  // 파란색
@@ -217,7 +239,7 @@ void SnowDemo::Init()
 		// Material
 		{
 			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(_renderShader);
+			material->SetShader(renderShader);
 			auto texture = RESOURCES->Load<Texture>(L"grass", L"..\\Resources\\Textures\\Terrain\\grass.jpg");
 			material->SetDiffuseMap(texture);
 			MaterialDesc& desc = material->GetMaterialDesc();
@@ -235,19 +257,11 @@ void SnowDemo::Init()
 	}
 }
 
-void SnowDemo::Update()
+void Client::Update()
 {
 }
 
-void SnowDemo::Render()
+void Client::Render()
 {
-
-}
-
-void SnowDemo::CreatePlayer()
-{
-
-
-
 
 }

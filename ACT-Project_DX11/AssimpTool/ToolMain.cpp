@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Main.h"
+#include "ToolMain.h"
 #include "Engine/Game.h"
 #include "AssimpTool.h"
 

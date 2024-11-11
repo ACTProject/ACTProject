@@ -6,12 +6,11 @@
 #include "GeometryHelper.h"
 #include "Camera.h"
 #include "GameObject.h"
-#include "CameraScript.h"
-#include "PlayerScript.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Material.h"
 #include "Model.h"
+#include "ModelMesh.h"
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
 #include "Mesh.h"
@@ -29,6 +28,10 @@
 #include "Button.h"
 #include "Billboard.h"
 #include "SnowBillboard.h"
+// Script
+#include "CameraScript.h"
+#include "PlayerScript.h"
+#include "WeaponScript.h"
 
 void Client::Init()
 {
@@ -125,28 +128,6 @@ void Client::Init()
 			player->GetModelAnimator()->SetPass(2);
 		}
 
-		// Weapon (Fork)
-		{
-			auto weapon = make_shared<GameObject>();
-			weapon->GetOrAddTransform()->SetPosition(Vec3(0.f));
-			weapon->GetOrAddTransform()->SetScale(Vec3(1.00f));
-
-			// CustomData -> Memory
-			shared_ptr<class Model> weaponModel = make_shared<Model>();
-			weaponModel->ReadModel(L"Fork/Fork");
-			weaponModel->ReadMaterial(L"Fork/Fork");
-
-			weapon->AddComponent(make_shared<ModelRenderer>(renderShader));
-			{
-				weapon->GetModelRenderer()->SetModel(weaponModel);
-				weapon->GetModelRenderer()->SetPass(1);
-			}
-
-			shared_ptr<ModelBone> handBone = playerModel->GetBoneByName(L"Hand_Grip_L");
-
-			CUR_SCENE->Add(weapon);
-		}
-
 		// PlayerScript
 		shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();
 		playerScript->SetPlayer(playerModel);
@@ -161,6 +142,32 @@ void Client::Init()
 
 		CUR_SCENE->Add(player);
 		CUR_SCENE->SetPlayer(player);
+
+		// Weapon (Fork)
+		{
+			auto weapon = make_shared<GameObject>();
+			weapon->GetOrAddTransform()->SetPosition(Vec3(0, 0, 0));
+			weapon->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
+			weapon->GetOrAddTransform()->SetScale(Vec3(1.00f));
+			// CustomData -> Memory
+			shared_ptr<class Model> weaponModel = make_shared<Model>();
+			weaponModel->ReadModel(L"Fork/Fork");
+			weaponModel->ReadMaterial(L"Fork/Fork");
+
+			weapon->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				weapon->GetModelRenderer()->SetModel(weaponModel);
+				weapon->GetModelRenderer()->SetPass(1);
+			}
+			
+			// WeaponScript
+			shared_ptr<WeaponScript> weaponScript = make_shared<WeaponScript>();
+			weaponScript->SetPlayer(playerModel);
+			weaponScript->SetWeapon(weaponModel);
+			weapon->AddComponent(weaponScript);
+			
+			CUR_SCENE->Add(weapon);
+		}
 	}
 
 	// Debug Object

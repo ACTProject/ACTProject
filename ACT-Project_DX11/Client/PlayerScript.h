@@ -19,7 +19,7 @@ private:
 	float _speed = 5.f;
 	shared_ptr<Model> _player;
 	shared_ptr<ModelAnimator> _modelAnimator;
-	shared_ptr<Transform> transform;
+	shared_ptr<Transform> _transform;
 
 public:
 	// Debug Object

@@ -396,4 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-ACT-Project_DX11/Binaries
+!ACT-Project_DX11/Binaries/*.dll
+ACT-Project_DX11/Binaries/*
+ACT-Project_DX11/Intermediate

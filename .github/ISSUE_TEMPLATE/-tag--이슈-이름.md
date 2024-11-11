@@ -1,7 +1,8 @@
+@@ -0,0 +1,15 @@
 ---
-name: "[TAG] 이슈 이름"
-about: Suggest an idea for this project
-title: ''
+name: Feature-Issue-Template.md
+about: 해당 템플릿을 이슈 생성시 사용해주세요 :)
+title: "[TAG] 이슈 이름"
 labels: ''
 assignees: ''
 

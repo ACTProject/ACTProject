@@ -6,11 +6,12 @@
 #include "GeometryHelper.h"
 #include "Camera.h"
 #include "GameObject.h"
+#include "CameraScript.h"
+#include "PlayerScript.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Material.h"
 #include "Model.h"
-#include "ModelMesh.h"
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
 #include "Mesh.h"
@@ -27,15 +28,9 @@
 #include "Camera.h"
 #include "Button.h"
 #include "Billboard.h"
-#include "SnowBillboard.h"
-// Script
-#include "CameraScript.h"
-#include "PlayerScript.h"
-#include "WeaponScript.h"
 
 void Client::Init()
 {
-	shared_ptr<Shader> snowShader = make_shared<Shader>(L"29. SnowDemo.fx");
 	shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
 
 	// Camera
@@ -53,6 +48,151 @@ void Client::Init()
 		CUR_SCENE->Add(camera);
 	}
 
+	// UI_Camera
+	{
+		auto camera = make_shared<GameObject>();
+		camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+		camera->AddComponent(make_shared<Camera>());
+		camera->GetCamera()->SetProjectionType(ProjectionType::Orthographic);
+		camera->GetCamera()->SetNear(1.f);
+		camera->GetCamera()->SetFar(100.f);
+
+
+		camera->GetCamera()->SetCullingMaskAll();
+		camera->GetCamera()->SetCullingMaskLayerOnOff(Layer_UI, false);
+		CUR_SCENE->Add(camera);
+	}
+
+	//UI_HPBar
+	{
+		// Material
+		{
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(renderShader);
+			auto texture = RESOURCES->Load<Texture>(L"HealBar", L"..\\Resources\\Textures\\UI\\BackBorder_Health.png");
+			material->SetDiffuseMap(texture);
+			MaterialDesc& desc = material->GetMaterialDesc();
+			desc.ambient = Vec4(1.f);
+			desc.diffuse = Vec4(1.f);
+			desc.specular = Vec4(1.f);
+			RESOURCES->Add(L"HealBar", material);
+		}
+		// Material
+		{
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(renderShader);
+			auto texture = RESOURCES->Load<Texture>(L"ArmorBar", L"..\\Resources\\Textures\\UI\\BackBorder_Armor.png");
+			material->SetDiffuseMap(texture);
+			MaterialDesc& desc = material->GetMaterialDesc();
+			desc.ambient = Vec4(1.f);
+			desc.diffuse = Vec4(1.f);
+			desc.specular = Vec4(1.f);
+			RESOURCES->Add(L"ArmorBar", material);
+		}
+		// Material
+		{
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(renderShader);
+			auto texture = RESOURCES->Load<Texture>(L"RedBar", L"..\\Resources\\Textures\\UI\\FrontBprder_HPBar.png");
+			material->SetDiffuseMap(texture);
+			MaterialDesc& desc = material->GetMaterialDesc();
+			desc.ambient = Vec4(1.f);
+			desc.diffuse = Vec4(1.f);
+			desc.specular = Vec4(1.f);
+			RESOURCES->Add(L"RedBar", material);
+		}
+
+
+		// MeshHealBar
+		{
+			auto obj = make_shared<GameObject>();
+			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-230.f, -260.f, 0.0f));
+			obj->GetOrAddTransform()->SetScale(Vec3(180, 30, 100));
+			obj->AddComponent(make_shared<MeshRenderer>());
+
+			obj->SetLayerIndex(Layer_UI);
+			{
+				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"HealBar"));
+
+			}
+			{
+				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+				obj->GetMeshRenderer()->SetMesh(mesh);
+				obj->GetMeshRenderer()->SetPass(0);
+				obj->GetMeshRenderer()->SetAlphaBlend(true);
+			}
+
+			CUR_SCENE->Add(obj);
+		}
+		// MeshArmorBar
+		{
+			auto obj = make_shared<GameObject>();
+			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-210.f, -230.f, -0.1f));
+			obj->GetOrAddTransform()->SetScale(Vec3(200, 30, 100));
+			obj->AddComponent(make_shared<MeshRenderer>());
+
+			obj->SetLayerIndex(Layer_UI);
+			{
+				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"ArmorBar"));
+
+			}
+			{
+				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+				obj->GetMeshRenderer()->SetMesh(mesh);
+				obj->GetMeshRenderer()->SetAlphaBlend(true);
+				obj->GetMeshRenderer()->SetPass(0);
+			}
+
+			CUR_SCENE->Add(obj);
+		}
+		// RedBar HPMesh
+		{
+			auto obj = make_shared<GameObject>();
+			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-228.f, -261.f, -0.2f));
+			//obj->GetOrAddTransform()->SetScale(Vec3(150, 10, 100));
+			obj->GetOrAddTransform()->SetScale(Vec3(126, 8, 100));
+
+			obj->AddComponent(make_shared<MeshRenderer>());
+
+			obj->SetLayerIndex(Layer_UI);
+			{
+				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"RedBar"));
+
+			}
+			{
+				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+				obj->GetMeshRenderer()->SetMesh(mesh);
+				obj->GetMeshRenderer()->SetAlphaBlend(true);
+				obj->GetMeshRenderer()->SetPass(0);
+			}
+
+			CUR_SCENE->Add(obj);
+		}
+
+		// RedBar ARmor Mesh
+		{
+			auto obj = make_shared<GameObject>();
+			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-207.f, -234.f, -0.2f));
+			obj->GetOrAddTransform()->SetScale(Vec3(164, 7, 100));
+
+			obj->AddComponent(make_shared<MeshRenderer>());
+
+			obj->SetLayerIndex(Layer_UI);
+			{
+				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"RedBar"));
+
+			}
+			{
+				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+				obj->GetMeshRenderer()->SetMesh(mesh);
+				//obj->GetMeshRenderer()->SetAlphaBlend(true);
+				obj->GetMeshRenderer()->SetPass(0);
+			}
+
+			CUR_SCENE->Add(obj);
+		}
+	}
+
 	// Light
 	{
 		auto light = make_shared<GameObject>();
@@ -64,31 +204,6 @@ void Client::Init()
 		lightDesc.direction = Vec3(1.f, 0.f, 1.f);
 		light->GetLight()->SetLightDesc(lightDesc);
 		CUR_SCENE->Add(light);
-	}
-
-	// Billboard
-	{
-		auto obj = make_shared<GameObject>();
-		obj->GetOrAddTransform()->SetLocalPosition(Vec3(0.f));
-		obj->AddComponent(make_shared<SnowBillboard>(Vec3(100, 100, 100), 10000));
-		{
-			// Material
-			{
-				shared_ptr<Material> material = make_shared<Material>();
-				material->SetShader(snowShader);
-				auto texture = RESOURCES->Load<Texture>(L"bubble", L"..\\Resources\\Textures\\bubble.png");
-				material->SetDiffuseMap(texture);
-				MaterialDesc& desc = material->GetMaterialDesc();
-				desc.ambient = Vec4(1.f);
-				desc.diffuse = Vec4(1.f);
-				desc.specular = Vec4(1.f);
-				RESOURCES->Add(L"bubble", material);
-
-				obj->GetSnowBillboard()->SetMaterial(material);
-			}
-		}
-
-		CUR_SCENE->Add(obj);
 	}
 
 	// Player
@@ -128,6 +243,28 @@ void Client::Init()
 			player->GetModelAnimator()->SetPass(2);
 		}
 
+		// Weapon (Fork)
+		{
+			auto weapon = make_shared<GameObject>();
+			weapon->GetOrAddTransform()->SetPosition(Vec3(0.f));
+			weapon->GetOrAddTransform()->SetScale(Vec3(1.00f));
+
+			// CustomData -> Memory
+			shared_ptr<class Model> weaponModel = make_shared<Model>();
+			weaponModel->ReadModel(L"Fork/Fork");
+			weaponModel->ReadMaterial(L"Fork/Fork");
+
+			weapon->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				weapon->GetModelRenderer()->SetModel(weaponModel);
+				weapon->GetModelRenderer()->SetPass(1);
+			}
+
+			shared_ptr<ModelBone> handBone = playerModel->GetBoneByName(L"Hand_Grip_L");
+
+			CUR_SCENE->Add(weapon);
+		}
+
 		// PlayerScript
 		shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();
 		playerScript->SetPlayer(playerModel);
@@ -142,32 +279,6 @@ void Client::Init()
 
 		CUR_SCENE->Add(player);
 		CUR_SCENE->SetPlayer(player);
-
-		// Weapon (Fork)
-		{
-			auto weapon = make_shared<GameObject>();
-			weapon->GetOrAddTransform()->SetPosition(Vec3(0, 0, 0));
-			weapon->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
-			weapon->GetOrAddTransform()->SetScale(Vec3(1.00f));
-			// CustomData -> Memory
-			shared_ptr<class Model> weaponModel = make_shared<Model>();
-			weaponModel->ReadModel(L"Fork/Fork");
-			weaponModel->ReadMaterial(L"Fork/Fork");
-
-			weapon->AddComponent(make_shared<ModelRenderer>(renderShader));
-			{
-				weapon->GetModelRenderer()->SetModel(weaponModel);
-				weapon->GetModelRenderer()->SetPass(1);
-			}
-			
-			// WeaponScript
-			shared_ptr<WeaponScript> weaponScript = make_shared<WeaponScript>();
-			weaponScript->SetPlayer(playerModel);
-			weaponScript->SetWeapon(weaponModel);
-			weapon->AddComponent(weaponScript);
-			
-			CUR_SCENE->Add(weapon);
-		}
 	}
 
 	// Debug Object
@@ -244,21 +355,78 @@ void Client::Init()
 	// Terrain
 	{
 		// Material
-		{
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(renderShader);
-			auto texture = RESOURCES->Load<Texture>(L"grass", L"..\\Resources\\Textures\\Terrain\\grass.jpg");
-			material->SetDiffuseMap(texture);
-			MaterialDesc& desc = material->GetMaterialDesc();
-			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(1.f);
-			desc.specular = Vec4(1.f);
-			RESOURCES->Add(L"grass", material);
-		}
+
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(renderShader);
+		auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height.png");
+		//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
+		auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
+
+		const int32 width = heightMap->GetSize().x;
+		const int32 height = heightMap->GetSize().y;
+
+		const DirectX::ScratchImage& info = heightMap->GetInfo();
+
+		// Replace the old heightmap with the filtered one.
+		uint8* pixelBuffer = info.GetPixels();
+
+		material->SetDiffuseMap(texture);
+		MaterialDesc& desc = material->GetMaterialDesc();
+		desc.ambient = Vec4(1.f);
+		desc.diffuse = Vec4(1.f);
+		desc.specular = Vec4(1.f);
+		RESOURCES->Add(L"Sand", material);
+
 
 		auto obj = make_shared<GameObject>();
 		obj->AddComponent(make_shared<Terrain>());
-		obj->GetTerrain()->Create(100, 100, RESOURCES->Get<Material>(L"grass"));
+		obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
+
+		{
+			vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
+			for (int32 z = 0; z < height; z++)
+			{
+				for (int32 x = 0; x < width; x++)
+				{
+					int32 idx = width * z + x;
+					uint8 height = pixelBuffer[idx] / 255.f * 25.f;
+					v[idx].position.y = height - 8.f;
+				}
+			}
+
+			// Smooth
+			float avg = 0.0f;
+			float num = 0.0f;
+
+			for (int32 z = 0; z < height; z++)
+			{
+				for (int32 x = 0; x < width; x++)
+				{
+					avg = 0.0f;
+					num = 0.0f;
+					for (int32 m = z - 1; m <= z + 1; ++m) // -1 ~ 1, 0 ~ 2
+					{
+
+						for (int32 n = x - 1; n <= x + 1; ++n)
+						{
+							if (m >= 0 && m < (int32)height &&
+								n >= 0 && n < (int32)width)
+							{
+								avg += v[m * width + n].position.y;
+								num += 1.0f;
+							}
+						}
+
+					}
+					v[z * height + x].position.y = avg / num;
+
+				}
+			}
+
+		}
+
+		obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
+		obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetIndices());
 
 		CUR_SCENE->Add(obj);
 	}

@@ -125,27 +125,27 @@ void Client::Init()
 			player->GetModelAnimator()->SetPass(2);
 		}
 
-		// Weapon (Fork)
-		{
-			auto weapon = make_shared<GameObject>();
-			weapon->GetOrAddTransform()->SetPosition(Vec3(0.f));
-			weapon->GetOrAddTransform()->SetScale(Vec3(1.00f));
+		//// Weapon (Fork)
+		//{
+		//	auto weapon = make_shared<GameObject>();
+		//	weapon->GetOrAddTransform()->SetPosition(Vec3(0.f));
+		//	weapon->GetOrAddTransform()->SetScale(Vec3(1.00f));
 
-			// CustomData -> Memory
-			shared_ptr<class Model> weaponModel = make_shared<Model>();
-			weaponModel->ReadModel(L"Fork/Fork");
-			weaponModel->ReadMaterial(L"Fork/Fork");
+		//	// CustomData -> Memory
+		//	shared_ptr<class Model> weaponModel = make_shared<Model>();
+		//	weaponModel->ReadModel(L"Fork/Fork");
+		//	weaponModel->ReadMaterial(L"Fork/Fork");
 
-			weapon->AddComponent(make_shared<ModelRenderer>(renderShader));
-			{
-				weapon->GetModelRenderer()->SetModel(weaponModel);
-				weapon->GetModelRenderer()->SetPass(1);
-			}
+		//	weapon->AddComponent(make_shared<ModelRenderer>(renderShader));
+		//	{
+		//		weapon->GetModelRenderer()->SetModel(weaponModel);
+		//		weapon->GetModelRenderer()->SetPass(1);
+		//	}
 
-			shared_ptr<ModelBone> handBone = playerModel->GetBoneByName(L"Hand_Grip_L");
+		//	shared_ptr<ModelBone> handBone = playerModel->GetBoneByName(L"Hand_Grip_L");
 
-			CUR_SCENE->Add(weapon);
-		}
+		//	CUR_SCENE->Add(weapon);
+		//}
 
 		// PlayerScript
 		shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();

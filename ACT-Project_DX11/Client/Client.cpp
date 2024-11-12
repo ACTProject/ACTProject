@@ -351,7 +351,7 @@ void Client::Init()
 			CUR_SCENE->Add(rightCube);
 		}
 	}
-	// µÎµå¤Ë
+	// Enemy
 	auto enemy = make_shared<GameObject>();
 
 	{

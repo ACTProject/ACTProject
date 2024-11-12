@@ -82,6 +82,22 @@ void ModelAnimator::UpdateTweenData()
 			// 다음 프레임으로 넘어가는 비율 계산
 			desc.curr.ratio = (desc.curr.sumTime / timePerFrame);
 		}
+
+		// 모델의 각 본을 갱신합니다.
+		const uint32 boneCount = _model->GetBoneCount();
+		for (uint32 i = 0; i < boneCount; i++)
+		{
+			shared_ptr<ModelBone> bone = _model->GetBoneByIndex(i);
+
+			if (bone->parentIndex == -1)
+				continue;
+
+			if (bone->name == (L"Hand_Grip_L"))
+				int a = 1;
+
+			// 애니메이션 상태와 프레임에 따라 본 변환을 계산하고 업데이트합니다.
+			bone->transform = CalculateBoneTransform(bone, desc.curr, desc);  // 새 변환 값 계산		
+		}
 	}
 
 	// 다음 애니메이션이 예약 되어 있다면
@@ -116,6 +132,35 @@ void ModelAnimator::UpdateTweenData()
 		}
 	}
 }
+
+Matrix ModelAnimator::CalculateBoneTransform(shared_ptr<ModelBone> bone, const KeyframeDesc& frame, const TweenDesc& tweenDesc)
+{
+	// 현재 프레임과 다음 프레임의 애니메이션 데이터를 가져옵니다.
+	const auto& currentAnim = _model->GetAnimationByState(static_cast<AnimationState>(tweenDesc.curr.state));
+	if (!currentAnim)
+		return Matrix::Identity; // 애니메이션이 없는 경우 기본 변환 행렬 반환
+
+	const uint32 currFrame = tweenDesc.curr.currFrame;
+	const uint32 nextFrame = tweenDesc.curr.nextFrame;
+
+	// 현재 프레임과 다음 프레임의 키프레임 데이터를 가져옵니다.
+	const ModelKeyframeData& currKeyframe = currentAnim->keyframes[bone->name]->transforms[currFrame];//.transforms[currFrame];
+	const ModelKeyframeData& nextKeyframe = currentAnim->keyframes[bone->name]->transforms[nextFrame];
+
+	// 위치, 회전, 스케일 보간 비율을 사용하여 선형 보간 (LERP) 적용
+	Vec3 interpolatedPosition = Vec3::Lerp(currKeyframe.translation, nextKeyframe.translation, tweenDesc.curr.ratio);
+	Quaternion interpolatedRotation = Quaternion::Slerp(currKeyframe.rotation, nextKeyframe.rotation, tweenDesc.curr.ratio);
+	Vec3 interpolatedScale = Vec3::Lerp(currKeyframe.scale, nextKeyframe.scale, tweenDesc.curr.ratio);
+
+	// 위치, 회전, 스케일 행렬을 생성하고 결합하여 최종 본 변환 행렬 계산
+	Matrix translationMat = Matrix::CreateTranslation(interpolatedPosition);
+	Matrix rotationMat = Matrix::CreateFromQuaternion(interpolatedRotation);
+	Matrix scaleMat = Matrix::CreateScale(interpolatedScale);
+
+	// 최종 본 변환 행렬을 반환
+	return scaleMat * rotationMat * translationMat;
+}
+
 void ModelAnimator::RenderSingle()
 {
 	if (_model == nullptr)

@@ -59,6 +59,22 @@ void AssimpTool::Init()
 			converter->ReadAssetFile(L"Player/Crab_Atk_Combo4.fbx");
 			converter->ExportAnimationData(L"Player/Crab_Atk_Combo4");
 		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Enemy/Rangoon.fbx");
+			converter->ExportMaterialData(L"Enemy/Rangoon");
+			converter->ExportModelData(L"Enemy/Rangoon");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Enemy/Rangoon_idle.fbx");
+			converter->ExportAnimationData(L"Enemy/Rangoon_idle");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Enemy/Rangoon_hit.fbx");
+			converter->ExportAnimationData(L"Enemy/Rangoon_hit");
+		}
 		//test
 		// 
 		//{

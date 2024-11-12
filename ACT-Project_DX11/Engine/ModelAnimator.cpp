@@ -122,7 +122,7 @@ void ModelAnimator::RenderSingle()
 		return;
 	if (_texture == nullptr)
 		CreateTexture();
-
+	
 	UpdateTweenData();
 
 	ImGui::InputFloat("Speed", &_tweenDesc.curr.speed, 0.5f, 4.f);

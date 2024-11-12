@@ -367,6 +367,7 @@ void Client::Init()
 
 			enemyModel->ReadAnimation(L"Enemy/Rangoon_idle", AnimationState::Idle);
 			enemyModel->ReadAnimation(L"Enemy/Rangoon_hit", AnimationState::Hit);
+			enemyModel->ReadAnimation(L"Enemy/Rangoon_atk", AnimationState::Atk);
 		}
 		shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
 		enemy->AddComponent(ma2);

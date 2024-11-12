@@ -75,6 +75,11 @@ void AssimpTool::Init()
 			converter->ReadAssetFile(L"Enemy/Rangoon_hit.fbx");
 			converter->ExportAnimationData(L"Enemy/Rangoon_hit");
 		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Enemy/Rangoon_atk.fbx");
+			converter->ExportAnimationData(L"Enemy/Rangoon_atk");
+		}
 		//test
 		// 
 		//{

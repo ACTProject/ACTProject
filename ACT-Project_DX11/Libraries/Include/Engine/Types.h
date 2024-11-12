@@ -32,5 +32,6 @@ enum class AnimationState
 	Attack,
 	Jump,
 	Hit, //피격
+	Atk, //공격
 	// 다른 상태 추가 가능
 };

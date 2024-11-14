@@ -3,6 +3,7 @@
 struct ModelBone;
 struct ModelMesh;
 struct ModelAnimation;
+//struct ModelKeyframeData;
 
 class Model : public enable_shared_from_this<Model>
 {
@@ -36,11 +37,13 @@ public:
 	shared_ptr<ModelAnimation> GetAnimationByState(AnimationState state);
 	shared_ptr<ModelAnimation> GetAnimationByName(wstring name);
 	int GetAnimationIndexByState(AnimationState state);
-	//int FindAnimationIndex(const std::string& animationName);
 	string AnimationStateToString(AnimationState state);
+
 
 private:
 	void BindCacheInfo();
+public:
+	void AddDummyBoneAndAttach(ModelMesh& mesh, const wstring& targetBoneName, const wstring& dummyBoneName);
 
 private:
 	wstring _modelPath = L"../Resources/Models/";

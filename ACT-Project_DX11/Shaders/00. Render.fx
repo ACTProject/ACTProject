@@ -277,25 +277,6 @@ matrix GetAnimationMatrix(VertexTextureNormalTangentBlend input)
 
         matrix result = lerp(curr, next, ratio[0]);
 
-		// 다음 애니메이션
-        if (animIndex[1] >= 0)
-        {
-            c0 = TransformMap.Load(int4(indices[i] * 4 + 0, currFrame[1], animIndex[1], 0));
-            c1 = TransformMap.Load(int4(indices[i] * 4 + 1, currFrame[1], animIndex[1], 0));
-            c2 = TransformMap.Load(int4(indices[i] * 4 + 2, currFrame[1], animIndex[1], 0));
-            c3 = TransformMap.Load(int4(indices[i] * 4 + 3, currFrame[1], animIndex[1], 0));
-            curr = matrix(c0, c1, c2, c3);
-
-            n0 = TransformMap.Load(int4(indices[i] * 4 + 0, nextFrame[1], animIndex[1], 0));
-            n1 = TransformMap.Load(int4(indices[i] * 4 + 1, nextFrame[1], animIndex[1], 0));
-            n2 = TransformMap.Load(int4(indices[i] * 4 + 2, nextFrame[1], animIndex[1], 0));
-            n3 = TransformMap.Load(int4(indices[i] * 4 + 3, nextFrame[1], animIndex[1], 0));
-            next = matrix(n0, n1, n2, n3);
-
-            matrix nextResult = lerp(curr, next, ratio[1]);
-            result = lerp(result, nextResult, SingleTweenFrames.tweenRatio);
-        }
-
         transform += mul(weights[i], result);
     }
 
@@ -306,11 +287,10 @@ MeshOutput VS_Animation(VertexTextureNormalTangentBlend input)
 {
     MeshOutput output;
 
-	//output.position = mul(input.position, BoneTransforms[BoneIndex]); // Model Global
+	output.position = mul(input.position, BoneTransforms[BoneIndex]); // Model Global
+	//matrix m = GetAnimationMatrix(input);
 
-	matrix m = GetAnimationMatrix(input);
-
-	output.position = mul(input.position, m);
+	//output.position = mul(input.position, m);
 	output.position = mul(output.position, W); // W
 	output.worldPosition = output.position;
 	output.position = mul(output.position, VP);

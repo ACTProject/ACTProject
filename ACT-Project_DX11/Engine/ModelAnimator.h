@@ -29,7 +29,6 @@ public:
 
 	void UpdateTweenData();
 	void RenderInstancing(shared_ptr<class InstancingBuffer>& buffer);
-	Matrix CalculateBoneTransform(shared_ptr<class ModelBone> bone, const KeyframeDesc& frame, const TweenDesc& desc);
 	void RenderSingle();
 	InstanceID GetInstanceID();
 	TweenDesc& GetTweenDesc() { return _tweenDesc; }

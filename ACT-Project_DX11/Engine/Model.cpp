@@ -217,41 +217,44 @@ void Model::ReadModel(wstring filename)
 
 void Model::ReadAnimation(wstring filename, AnimationState state)
 {
-	wstring fullPath = _modelPath + filename + L".clip";
+    wstring fullPath = _modelPath + filename + L".clip"; // 파일의 전체 경로를 생성
 
-	shared_ptr<FileUtils> file = make_shared<FileUtils>();
-	file->Open(fullPath, FileMode::Read);
+    shared_ptr<FileUtils> file = make_shared<FileUtils>();
+    file->Open(fullPath, FileMode::Read); // .clip 파일을 읽기 모드로 엽니다.
 
-	shared_ptr<ModelAnimation> animation = make_shared<ModelAnimation>();
+    shared_ptr<ModelAnimation> animation = make_shared<ModelAnimation>();
 
-	animation->animationName = AnimationStateToString(state);
+    // 애니메이션의 이름과 상태를 설정
+    animation->animationName = AnimationStateToString(state);
+    animation->state = state;
+    animation->name = Utils::ToWString(file->Read<string>()); // 애니메이션 이름
+    animation->duration = file->Read<float>();                // 애니메이션의 총 지속 시간
+    animation->frameRate = file->Read<float>();               // 초당 프레임 수
+    animation->frameCount = file->Read<uint32>();             // 전체 프레임 수
 
-	animation->state = state;
-	animation->name = Utils::ToWString(file->Read<string>());
-	animation->duration = file->Read<float>();
-	animation->frameRate = file->Read<float>();
-	animation->frameCount = file->Read<uint32>();
+    // 키프레임의 총 개수
+    uint32 keyframesCount = file->Read<uint32>();
 
-	uint32 keyframesCount = file->Read<uint32>();
+    for (uint32 i = 0; i < keyframesCount; i++)
+    {
+        // 개별 본에 대한 키프레임 데이터를 읽고 저장
+        shared_ptr<ModelKeyframe> keyframe = make_shared<ModelKeyframe>();
+        keyframe->boneName = Utils::ToWString(file->Read<string>()); // 본의 이름
 
-	for (uint32 i = 0; i < keyframesCount; i++)
-	{
-		shared_ptr<ModelKeyframe> keyframe = make_shared<ModelKeyframe>();
-		keyframe->boneName = Utils::ToWString(file->Read<string>());
-	
-		uint32 size = file->Read<uint32>();
+        uint32 size = file->Read<uint32>(); // 해당 본에 대한 키프레임 데이터의 크기
 
-		if (size > 0)
-		{
-			keyframe->transforms.resize(size);
-			void* ptr = &keyframe->transforms[0];
-			file->Read(&ptr, sizeof(ModelKeyframeData) * size);
-		}
+        if (size > 0)
+        {
+            keyframe->transforms.resize(size); // 키프레임 데이터 배열의 크기 설정
+            void* ptr = &keyframe->transforms[0];
+            file->Read(&ptr, sizeof(ModelKeyframeData) * size); // 데이터 복사
+        }
 
-		animation->keyframes[keyframe->boneName] = keyframe;
-	}
+        // 본 이름을 키로 하여 키프레임 데이터를 맵에 추가
+        animation->keyframes[keyframe->boneName] = keyframe;
+    }
 
-	_animations.push_back(animation);
+    _animations.push_back(animation); // 애니메이션을 애니메이션 목록에 추가
 }
 
 std::shared_ptr<Material> Model::GetMaterialByName(const wstring& name)
@@ -308,18 +311,6 @@ std::shared_ptr<ModelAnimation> Model::GetAnimationByName(wstring name)
 	return nullptr;
 }
 
-//int Model::GetAnimationIndexByState(AnimationState state)
-//{
-//	switch (state)
-//	{
-//	case AnimationState::Idle: return FindAnimationIndex("Idle");
-//	case AnimationState::Walk: return FindAnimationIndex("Walk");
-//	case AnimationState::Run: return FindAnimationIndex("Run");
-//	case AnimationState::Attack: return FindAnimationIndex("Attack");
-//		// 다른 상태 추가 가능
-//	}
-//	return -1; // 없는 경우
-//}
 
 int Model::GetAnimationIndexByState(AnimationState state)
 {
@@ -332,17 +323,6 @@ int Model::GetAnimationIndexByState(AnimationState state)
 	}
 	return -1; // 이름에 해당하는 애니메이션이 없는 경우
 }
-//int Model::FindAnimationIndex(AnimationState state)
-//{
-//	for (size_t i = 0; i < _animations.size(); ++i)
-//	{
-//		if (_animations[i]->state == state)
-//		{
-//			return static_cast<int>(i); // 인덱스를 정수형으로 반환
-//		}
-//	}
-//	return -1; // 이름에 해당하는 애니메이션이 없는 경우
-//}
 
 // AnimationState 값을 문자열로 반환
 string Model::AnimationStateToString(AnimationState state)
@@ -401,5 +381,29 @@ void Model::BindCacheInfo()
 				bone->parent = nullptr;
 			}
 		}
+	}
+}
+
+void Model::AddDummyBoneAndAttach(ModelMesh& mesh, const wstring& targetBoneName, const wstring& dummyBoneName)
+{
+	// 타겟 본 검색
+	shared_ptr<ModelBone> targetBone = nullptr;
+
+	targetBone = GetBoneByName(targetBoneName);
+
+	if (targetBone)
+	{
+		// 더미 본 추가
+		Matrix dummyTransform = Matrix::CreateTranslation(0.1f, 0.0f, 0.0f); // 손 앞쪽으로 배치
+		auto dummyBone = targetBone->AddDummyBone(dummyBoneName, dummyTransform, GetBoneCount());
+
+		// `ModelMesh`에 더미 본 연결
+		mesh.AttachToDummyBone(dummyBone); // 마지막 자식이 새로 추가된 더미 본
+
+		shared_ptr<ModelMesh> meshPtr = make_shared<ModelMesh>(mesh);
+
+		_bones.push_back(dummyBone);
+		_meshes.push_back(meshPtr);
+		_materials.push_back(meshPtr->material);
 	}
 }

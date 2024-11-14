@@ -209,18 +209,22 @@ void Client::Init()
 	// Player
 	auto player = make_shared<GameObject>();
 
-	// Debug Test
-	auto lookCube = make_shared<GameObject>();
-	auto upCube = make_shared<GameObject>();
-	auto rightCube = make_shared<GameObject>();
-
 	{
+		// Weapon
+		shared_ptr<Model> weaponModel = make_shared<Model>();
+		{
+			// CustomData -> Memory
+			weaponModel->ReadModel(L"Fork/Fork");
+			weaponModel->ReadMaterial(L"Fork/Fork");
+		}
+
+		// Player
 		player->GetOrAddTransform()->SetPosition(Vec3(0, 0, 0));
 		player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 		player->GetOrAddTransform()->SetScale(Vec3(0.01f));
 
 		shared_ptr<Model> playerModel = make_shared<Model>();
-		// Model
+		// Player::Model
 		{
 			playerModel->ReadModel(L"Player/Player");
 			playerModel->ReadMaterial(L"Player/Player");
@@ -235,7 +239,14 @@ void Client::Init()
 			
 			//playerModel->ReadAnimation(L"Player/Crab_Death");
 			//playerModel->ReadAnimation(L"Player/Crab_GetUp");
+
+
+			ModelMesh& weaponMesh = *weaponModel->GetMeshes()[0];
+			// 더미 본 생성 및 무기 붙이기
+			playerModel->AddDummyBoneAndAttach(weaponMesh, L"Hand_Grip_L", L"WeaponDummy");
 		}
+
+		// Player::ModelAnimator
 		shared_ptr<ModelAnimator> ma1 = make_shared<ModelAnimator>(renderShader);
 		player->AddComponent(ma1);
 		{
@@ -243,113 +254,15 @@ void Client::Init()
 			player->GetModelAnimator()->SetPass(2);
 		}
 
-		// Weapon (Fork)
-		{
-			auto weapon = make_shared<GameObject>();
-			weapon->GetOrAddTransform()->SetPosition(Vec3(0.f));
-			weapon->GetOrAddTransform()->SetScale(Vec3(1.00f));
-
-			// CustomData -> Memory
-			shared_ptr<class Model> weaponModel = make_shared<Model>();
-			weaponModel->ReadModel(L"Fork/Fork");
-			weaponModel->ReadMaterial(L"Fork/Fork");
-
-			weapon->AddComponent(make_shared<ModelRenderer>(renderShader));
-			{
-				weapon->GetModelRenderer()->SetModel(weaponModel);
-				weapon->GetModelRenderer()->SetPass(1);
-			}
-
-			shared_ptr<ModelBone> handBone = playerModel->GetBoneByName(L"Hand_Grip_L");
-
-			CUR_SCENE->Add(weapon);
-		}
-
-		// PlayerScript
+		// Player::PlayerScript
 		shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();
 		playerScript->SetPlayer(playerModel);
 		playerScript->SetModelAnimator(ma1);
-
-		// Debug Test
-		playerScript->_look = lookCube;
-		playerScript->_up = upCube;
-		playerScript->_right = rightCube;
 
 		player->AddComponent(playerScript);
 
 		CUR_SCENE->Add(player);
 		CUR_SCENE->SetPlayer(player);
-	}
-
-	// Debug Object
-	{
-		auto transform = player->GetTransform();
-
-		auto mesh = RESOURCES->Get<Mesh>(L"Cube");
-		// Look 방향 큐브
-		{
-			// Look 방향 표시용 빨간색 재질
-			auto material = make_shared<Material>();
-			material->SetShader(renderShader);
-			MaterialDesc& desc = material->GetMaterialDesc();
-			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(1.0f, 0.0f, 0.0f, 1.0f); // 빨간색
-			desc.specular = Vec4(1.f);
-
-			lookCube->GetOrAddTransform()->SetPosition(transform->GetPosition() + transform->GetLook() * 2.5f);
-			lookCube->GetOrAddTransform()->SetScale(Vec3(0.1f, 0.1f, 5.0f));  // Z 방향으로 길쭉하게
-			lookCube->AddComponent(make_shared<MeshRenderer>());
-			{
-				lookCube->GetMeshRenderer()->SetMaterial(material);
-				lookCube->GetMeshRenderer()->SetMesh(mesh);
-				lookCube->GetMeshRenderer()->SetPass(0);
-			}
-			CUR_SCENE->Add(lookCube);
-		}
-
-		// Up 방향 큐브
-		{
-			// Up 방향 표시용 초록색 재질
-			auto material = make_shared<Material>();
-			material->SetShader(renderShader);
-			MaterialDesc& desc = material->GetMaterialDesc();
-			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(0.0f, 1.0f, 0.0f, 1.0f);  // 초록색
-			desc.specular = Vec4(1.f);
-			
-			upCube->GetOrAddTransform()->SetPosition(transform->GetPosition() + transform->GetUp() * 2.5f);
-			upCube->GetOrAddTransform()->SetScale(Vec3(0.1f, 5.0f, 0.1f));  // Y 방향으로 길쭉하게
-			upCube->AddComponent(make_shared<MeshRenderer>());
-			{
-				upCube->GetMeshRenderer()->SetMaterial(material);
-				upCube->GetMeshRenderer()->SetMesh(mesh);
-				upCube->GetMeshRenderer()->SetPass(0);
-			}
-
-			CUR_SCENE->Add(upCube);
-		}
-
-		// Right 방향 큐브
-		{
-			// Right 방향 표시용 파란색 재질
-			auto material = make_shared<Material>();
-			material->SetShader(renderShader);
-			MaterialDesc& desc = material->GetMaterialDesc();
-			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(0.0f, 0.0f, 1.0f, 1.0f);  // 파란색
-			desc.specular = Vec4(1.f);
-
-			rightCube->GetOrAddTransform()->SetPosition(transform->GetPosition() + transform->GetRight() * 2.5f);
-			rightCube->GetOrAddTransform()->SetScale(Vec3(5.0f, 0.1f, 0.1f));  // X 방향으로 길쭉하게
-			rightCube->AddComponent(make_shared<MeshRenderer>());
-			{
-				rightCube->GetMeshRenderer()->SetMaterial(material);
-				rightCube->GetMeshRenderer()->SetMesh(mesh);
-				rightCube->GetMeshRenderer()->SetPass(0);
-			}
-		
-			CUR_SCENE->Add(rightCube);
-		}
 	}
 
 	// Terrain

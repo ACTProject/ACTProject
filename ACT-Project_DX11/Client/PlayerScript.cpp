@@ -59,19 +59,6 @@ void PlayerScript::Update()
 			_transform->SetRotation(_transform->GetRotation() + Vec3(0, angle, 0));
 
 		}
-
-		// Debug Object
-		{
-			_look->GetTransform()->SetPosition(_transform->GetPosition() + _transform->GetLook() * 2.5f);
-			_up->GetTransform()->SetPosition(_transform->GetPosition() + _transform->GetUp() * 2.5f);
-			_right->GetTransform()->SetPosition(_transform->GetPosition() + _transform->GetRight() * 2.5f);
-
-			_look->GetTransform()->SetRotation(_transform->GetRotation());
-			_up->GetTransform()->SetRotation(_transform->GetRotation());
-			_right->GetTransform()->SetRotation(_transform->GetRotation());
-		}
-		// 무기를 장착할 손
-		shared_ptr<ModelBone> handBone = _player->GetBoneByName(L"Hand_Grip_L");
 	}
 	else
 	{

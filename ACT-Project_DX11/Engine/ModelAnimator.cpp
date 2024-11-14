@@ -83,21 +83,23 @@ void ModelAnimator::UpdateTweenData()
 			desc.curr.ratio = (desc.curr.sumTime / timePerFrame);
 		}
 
-		// 모델의 각 본을 갱신합니다.
-		const uint32 boneCount = _model->GetBoneCount();
-		for (uint32 i = 0; i < boneCount; i++)
-		{
-			shared_ptr<ModelBone> bone = _model->GetBoneByIndex(i);
+		//// 모델의 각 본을 갱신합니다.
+		//const uint32 boneCount = _model->GetBoneCount();
+		//for (uint32 i = 0; i < boneCount; i++)
+		//{
+		//	shared_ptr<ModelBone> bone = _model->GetBoneByIndex(i);
 
-			if (bone->parentIndex == -1)
-				continue;
+		//	if (bone->parentIndex == -1)
+		//		continue;
+		//}
 
-			if (bone->name == (L"Hand_Grip_L"))
-				int a = 1;
 
-			// 애니메이션 상태와 프레임에 따라 본 변환을 계산하고 업데이트합니다.
-			bone->transform = CalculateBoneTransform(bone, desc.curr, desc);  // 새 변환 값 계산		
-		}
+		//// 왼손의 위치 계산
+		//int32 handGripIndex = _model->GetBoneByName(L"Hand_Grip_L")->index;
+		//// 해당 본의 최종 월드 변환 행렬 가져오기
+		//Matrix handTransform = _animTransforms[desc.curr.animIndex].transforms[desc.curr.currFrame][handGripIndex];
+		//// 행렬에서 위치 벡터 추출
+		//_weapon->GetTransform()->SetWorldMatrix(handTransform);
 	}
 
 	// 다음 애니메이션이 예약 되어 있다면
@@ -131,34 +133,7 @@ void ModelAnimator::UpdateTweenData()
 			desc.next.ratio = desc.next.sumTime / timePerFrame;
 		}
 	}
-}
 
-Matrix ModelAnimator::CalculateBoneTransform(shared_ptr<ModelBone> bone, const KeyframeDesc& frame, const TweenDesc& tweenDesc)
-{
-	// 현재 프레임과 다음 프레임의 애니메이션 데이터를 가져옵니다.
-	const auto& currentAnim = _model->GetAnimationByState(static_cast<AnimationState>(tweenDesc.curr.state));
-	if (!currentAnim)
-		return Matrix::Identity; // 애니메이션이 없는 경우 기본 변환 행렬 반환
-
-	const uint32 currFrame = tweenDesc.curr.currFrame;
-	const uint32 nextFrame = tweenDesc.curr.nextFrame;
-
-	// 현재 프레임과 다음 프레임의 키프레임 데이터를 가져옵니다.
-	const ModelKeyframeData& currKeyframe = currentAnim->keyframes[bone->name]->transforms[currFrame];//.transforms[currFrame];
-	const ModelKeyframeData& nextKeyframe = currentAnim->keyframes[bone->name]->transforms[nextFrame];
-
-	// 위치, 회전, 스케일 보간 비율을 사용하여 선형 보간 (LERP) 적용
-	Vec3 interpolatedPosition = Vec3::Lerp(currKeyframe.translation, nextKeyframe.translation, tweenDesc.curr.ratio);
-	Quaternion interpolatedRotation = Quaternion::Slerp(currKeyframe.rotation, nextKeyframe.rotation, tweenDesc.curr.ratio);
-	Vec3 interpolatedScale = Vec3::Lerp(currKeyframe.scale, nextKeyframe.scale, tweenDesc.curr.ratio);
-
-	// 위치, 회전, 스케일 행렬을 생성하고 결합하여 최종 본 변환 행렬 계산
-	Matrix translationMat = Matrix::CreateTranslation(interpolatedPosition);
-	Matrix rotationMat = Matrix::CreateFromQuaternion(interpolatedRotation);
-	Matrix scaleMat = Matrix::CreateScale(interpolatedScale);
-
-	// 최종 본 변환 행렬을 반환
-	return scaleMat * rotationMat * translationMat;
 }
 
 void ModelAnimator::RenderSingle()
@@ -359,19 +334,21 @@ void ModelAnimator::CreateTexture()
 
 void ModelAnimator::CreateAnimationTransform(uint32 index)
 {
+	// 임시 본 변환 벡터 생성
 	vector<Matrix> tempAnimBoneTransforms(MAX_MODEL_TRANSFORMS, Matrix::Identity);
-
+	// 애니메이션 데이터 가져오기
 	shared_ptr<ModelAnimation> animation = _model->GetAnimationByIndex(index);
-
+	// 프레임 및 본 루프
 	for (uint32 f = 0; f < animation->frameCount; f++)
 	{
 		for (uint32 b = 0; b < _model->GetBoneCount(); b++)
 		{
 			shared_ptr<ModelBone> bone = _model->GetBoneByIndex(b);
 
+			// 애니메이션 변환 행렬 계산
 			Matrix matAnimation;
-
 			shared_ptr<ModelKeyframe> frame = animation->GetKeyframe(bone->name);
+			// 키프레임 데이터에서 변환 행렬 구성
 			if (frame != nullptr)
 			{
 				ModelKeyframeData& data = frame->transforms[f];
@@ -388,20 +365,25 @@ void ModelAnimator::CreateAnimationTransform(uint32 index)
 				matAnimation = Matrix::Identity;
 			}
 
-			// [ !!!!!!! ]
-			Matrix toRootMatrix = bone->transform;
-			Matrix invGlobal = toRootMatrix.Invert();
+			if (!bone->isDummy)
+			{
+				// [ 본의 루트 변환 및 역행렬 계산 ]
+				Matrix toRootMatrix = bone->transform;
+				Matrix invGlobal = toRootMatrix.Invert();	// 애니메이션 적용 후 본을 원점에 맞추기 위해 사용
 
-			int32 parentIndex = bone->parentIndex;
+				// 부모 본 변환 적용
+				int32 parentIndex = bone->parentIndex;
+				Matrix matParent = Matrix::Identity;
+				if (parentIndex >= 0)
+					matParent = tempAnimBoneTransforms[parentIndex];
 
-			Matrix matParent = Matrix::Identity;
-			if (parentIndex >= 0)
-				matParent = tempAnimBoneTransforms[parentIndex];
-			
-			tempAnimBoneTransforms[b] = matAnimation * matParent;
-
-			// 결론
-			_animTransforms[index].transforms[f][b] = invGlobal * tempAnimBoneTransforms[b];
+				// 현재 본의 최종 월드 변환 계산
+				tempAnimBoneTransforms[b] = matAnimation * matParent;
+				// 본의 최종 변환을 _animTransforms에 저장
+				_animTransforms[index].transforms[f][b] = invGlobal * tempAnimBoneTransforms[b];
+			}
+			else
+				_animTransforms[index].transforms[f][b] = _animTransforms[index].transforms[f][bone->parentIndex];
 		}
 	}
 }

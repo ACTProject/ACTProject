@@ -22,10 +22,6 @@ private:
 	shared_ptr<Transform> _transform;
 
 public:
-	// Debug Object
-	shared_ptr<GameObject> _look;
-	shared_ptr<GameObject> _right;
-	shared_ptr<GameObject> _up;
 
 	AnimationState _currentAnimationState = AnimationState::Idle;
 };

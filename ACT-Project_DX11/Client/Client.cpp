@@ -312,56 +312,6 @@ void Client::Init()
 		}
 		CUR_SCENE->Add(enemy2);
 	}
-	
-	// Enemy
-	auto enemy = make_shared<GameObject>();
-	{
-		enemy->GetOrAddTransform()->SetPosition(Vec3(10, 0, 10));
-		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, XMConvertToRadians(180), 0)); // XMConvertToRadians()
-		enemy->GetOrAddTransform()->SetScale(Vec3(0.0001f));
-
-		shared_ptr<Model> enemyModel = make_shared<Model>();
-		// Model
-		{
-			enemyModel->ReadModel(L"Enemy/Rangoon");
-			enemyModel->ReadMaterial(L"Enemy/Rangoon");
-
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_idle", AnimationState::Idle);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_hit", AnimationState::Hit);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_atk", AnimationState::Atk);
-		}
-		shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
-		enemy->AddComponent(ma2);
-		{
-			enemy->GetModelAnimator()->SetModel(enemyModel);
-			enemy->GetModelAnimator()->SetPass(2);
-		}
-		CUR_SCENE->Add(enemy);
-	}
-	auto enemy2 = make_shared<GameObject>();
-	{
-		enemy2->GetOrAddTransform()->SetPosition(Vec3(5, 0, 10));
-		enemy2->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
-		enemy2->GetOrAddTransform()->SetScale(Vec3(0.0001f));
-
-		shared_ptr<Model> enemyModel = make_shared<Model>();
-		// Model
-		{
-			enemyModel->ReadModel(L"Enemy/pistol");
-			enemyModel->ReadMaterial(L"Enemy/pistol");
-
-			enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Idle);
-			/*enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Hit);
-			enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
-		}
-		shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
-		enemy2->AddComponent(ma2);
-		{
-			enemy2->GetModelAnimator()->SetModel(enemyModel);
-			enemy2->GetModelAnimator()->SetPass(2);
-		}
-		CUR_SCENE->Add(enemy2);
-	}
 
 	// Terrain
 	{

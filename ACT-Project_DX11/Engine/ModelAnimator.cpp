@@ -364,26 +364,20 @@ void ModelAnimator::CreateAnimationTransform(uint32 index)
 			{
 				matAnimation = Matrix::Identity;
 			}
+			// [ 본의 루트 변환 및 역행렬 계산 ]
+			Matrix toRootMatrix = bone->transform;
+			Matrix invGlobal = toRootMatrix.Invert();	// 애니메이션 적용 후 본을 원점에 맞추기 위해 사용
 
-			if (!bone->isDummy)
-			{
-				// [ 본의 루트 변환 및 역행렬 계산 ]
-				Matrix toRootMatrix = bone->transform;
-				Matrix invGlobal = toRootMatrix.Invert();	// 애니메이션 적용 후 본을 원점에 맞추기 위해 사용
+			// 부모 본 변환 적용
+			int32 parentIndex = bone->parentIndex;
+			Matrix matParent = Matrix::Identity;
+			if (parentIndex >= 0)
+				matParent = tempAnimBoneTransforms[parentIndex];
 
-				// 부모 본 변환 적용
-				int32 parentIndex = bone->parentIndex;
-				Matrix matParent = Matrix::Identity;
-				if (parentIndex >= 0)
-					matParent = tempAnimBoneTransforms[parentIndex];
-
-				// 현재 본의 최종 월드 변환 계산
-				tempAnimBoneTransforms[b] = matAnimation * matParent;
-				// 본의 최종 변환을 _animTransforms에 저장
-				_animTransforms[index].transforms[f][b] = invGlobal * tempAnimBoneTransforms[b];
-			}
-			else
-				_animTransforms[index].transforms[f][b] = _animTransforms[index].transforms[f][bone->parentIndex];
+			// 현재 본의 최종 월드 변환 계산
+			tempAnimBoneTransforms[b] = matAnimation * matParent;
+			// 본의 최종 변환을 _animTransforms에 저장
+			_animTransforms[index].transforms[f][b] = invGlobal * tempAnimBoneTransforms[b];
 		}
 	}
 }

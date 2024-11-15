@@ -281,7 +281,7 @@ ShaderDesc ShaderManager::GetEffect(wstring fileName)
 	{
 		ComPtr<ID3DBlob> blob;
 		ComPtr<ID3DBlob> error;
-		INT flag = D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY | D3D10_SHADER_PACK_MATRIX_ROW_MAJOR;
+		INT flag = D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY | D3D10_SHADER_PACK_MATRIX_ROW_MAJOR | D3DCOMPILE_DEBUG;
 
 		HRESULT hr = ::D3DCompileFromFile(fileName.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, NULL, "fx_5_0", flag, NULL, blob.GetAddressOf(), error.GetAddressOf());
 		if (FAILED(hr))

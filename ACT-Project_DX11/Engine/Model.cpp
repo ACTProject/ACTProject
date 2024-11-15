@@ -399,6 +399,7 @@ void Model::AddDummyBoneAndAttach(ModelMesh& mesh, const wstring& targetBoneName
 
 		// `ModelMesh`에 더미 본 연결
 		mesh.AttachToDummyBone(dummyBone); // 마지막 자식이 새로 추가된 더미 본
+		mesh.CreateBuffers();
 
 		shared_ptr<ModelMesh> meshPtr = make_shared<ModelMesh>(mesh);
 

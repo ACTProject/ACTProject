@@ -266,83 +266,84 @@ void Client::Init()
 	}
 
 	// Terrain
-	{
-		// Material
+	//{
+	//	// Material
 
-		shared_ptr<Material> material = make_shared<Material>();
-		material->SetShader(renderShader);
-		auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height.png");
-		//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
-		auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
+	//	shared_ptr<Material> material = make_shared<Material>();
+	//	material->SetShader(renderShader);
+	//	auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height.png");
+	//	//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
+	//	auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
 
-		const int32 width = heightMap->GetSize().x;
-		const int32 height = heightMap->GetSize().y;
+	//	const int32 width = heightMap->GetSize().x;
+	//	const int32 height = heightMap->GetSize().y;
 
-		const DirectX::ScratchImage& info = heightMap->GetInfo();
+	//	const DirectX::ScratchImage& info = heightMap->GetInfo();
 
-		// Replace the old heightmap with the filtered one.
-		uint8* pixelBuffer = info.GetPixels();
+	//	// Replace the old heightmap with the filtered one.
+	//	uint8* pixelBuffer = info.GetPixels();
 
-		material->SetDiffuseMap(texture);
-		MaterialDesc& desc = material->GetMaterialDesc();
-		desc.ambient = Vec4(1.f);
-		desc.diffuse = Vec4(1.f);
-		desc.specular = Vec4(1.f);
-		RESOURCES->Add(L"Sand", material);
+	//	material->SetDiffuseMap(texture);
+	//	MaterialDesc& desc = material->GetMaterialDesc();
+	//	desc.ambient = Vec4(1.f);
+	//	desc.diffuse = Vec4(1.f);
+	//	desc.specular = Vec4(1.f);
+	//	RESOURCES->Add(L"Sand", material);
 
 
-		auto obj = make_shared<GameObject>();
-		obj->AddComponent(make_shared<Terrain>());
-		obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
+	//	auto obj = make_shared<GameObject>();
+	//	obj->AddComponent(make_shared<Terrain>());
+	//	obj->GetTerrain()->
+	// (width, height, RESOURCES->Get<Material>(L"Sand"));
 
-		{
-			vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
-			for (int32 z = 0; z < height; z++)
-			{
-				for (int32 x = 0; x < width; x++)
-				{
-					int32 idx = width * z + x;
-					uint8 height = pixelBuffer[idx] / 255.f * 25.f;
-					v[idx].position.y = height - 8.f;
-				}
-			}
+	//	{
+	//		vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
+	//		for (int32 z = 0; z < height; z++)
+	//		{
+	//			for (int32 x = 0; x < width; x++)
+	//			{
+	//				int32 idx = width * z + x;
+	//				uint8 height = pixelBuffer[idx] / 255.f * 25.f;
+	//				v[idx].position.y = height - 8.f;
+	//			}
+	//		}
 
-			// Smooth
-			float avg = 0.0f;
-			float num = 0.0f;
+	//		// Smooth
+	//		float avg = 0.0f;
+	//		float num = 0.0f;
 
-			for (int32 z = 0; z < height; z++)
-			{
-				for (int32 x = 0; x < width; x++)
-				{
-					avg = 0.0f;
-					num = 0.0f;
-					for (int32 m = z - 1; m <= z + 1; ++m) // -1 ~ 1, 0 ~ 2
-					{
+	//		for (int32 z = 0; z < height; z++)
+	//		{
+	//			for (int32 x = 0; x < width; x++)
+	//			{
+	//				avg = 0.0f;
+	//				num = 0.0f;
+	//				for (int32 m = z - 1; m <= z + 1; ++m) // -1 ~ 1, 0 ~ 2
+	//				{
 
-						for (int32 n = x - 1; n <= x + 1; ++n)
-						{
-							if (m >= 0 && m < (int32)height &&
-								n >= 0 && n < (int32)width)
-							{
-								avg += v[m * width + n].position.y;
-								num += 1.0f;
-							}
-						}
+	//					for (int32 n = x - 1; n <= x + 1; ++n)
+	//					{
+	//						if (m >= 0 && m < (int32)height &&
+	//							n >= 0 && n < (int32)width)
+	//						{
+	//							avg += v[m * width + n].position.y;
+	//							num += 1.0f;
+	//						}
+	//					}
 
-					}
-					v[z * height + x].position.y = avg / num;
+	//				}
+	//				v[z * height + x].position.y = avg / num;
 
-				}
-			}
+	//			}
+	//		}
 
-		}
+	//	}
 
-		obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
-		obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetIndices());
+	//	obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
+	//	obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetIndices());
 
-		CUR_SCENE->Add(obj);
-	}
+	//	CUR_SCENE->Add(obj);
+	//}
 }
 
 void Client::Update()

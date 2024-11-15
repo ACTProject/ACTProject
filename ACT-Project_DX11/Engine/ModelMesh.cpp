@@ -10,7 +10,7 @@ shared_ptr<ModelBone> ModelBone::AddDummyBone(const wstring& dummyName, Matrix d
 	dummyBone->index = dummyIndex;
 	dummyBone->parentIndex = index; // 현재 본을 부모로 설정
 	dummyBone->parent = shared_from_this();
-	dummyBone->transform = Matrix::Identity;
+	dummyBone->transform = shared_from_this()->transform;
 
 	children.push_back(dummyBone);
 

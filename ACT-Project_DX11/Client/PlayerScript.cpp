@@ -73,10 +73,10 @@ void PlayerScript::Update()
 	}
 	
 
-	//if (isAttack)
-	//{
-	//	_modelAnimator->SetAnimationState(AnimationState::Attack);
-	//}
+	if (isAttack)
+	{
+		_modelAnimator->SetAnimationState(AnimationState::Attack);
+	}
 
 	if (INPUT->GetButton(KEY_TYPE::KEY_1))
 	{

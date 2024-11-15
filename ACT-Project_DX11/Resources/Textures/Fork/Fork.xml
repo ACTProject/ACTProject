@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Materials>
     <Material>
-        <Name>MatCrabForkno3.005</Name>
+        <Name>MatCrabForkno3.007</Name>
         <DiffuseFile>CrabForkno3_low_CrabForkno3_AlbedoTransparency.png</DiffuseFile>
         <SpecularFile>CrabForkno3_low_CrabForkno3_AlbedoTransparency.png</SpecularFile>
         <NormalFile>CrabForkno3_low_CrabForkno3_AlbedoTransparency.png</NormalFile>

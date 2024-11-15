@@ -68,7 +68,7 @@ void ModelAnimator::UpdateTweenData()
 		// 현재 재생 중인 애니메이션 가져오기
 		shared_ptr<ModelAnimation> currentAnim = _model->GetAnimationByState(static_cast<AnimationState>(desc.curr.state));
 		if (currentAnim)
-		{        
+		{
 			// 프레임 당 시간 계산 (프레임레이트와 재생 속도 고려)
 			float timePerFrame = 1 / (currentAnim->frameRate * desc.curr.speed);
 			// 누적 시간이 프레임 당 시간을 초과하면 다음 프레임으로
@@ -83,59 +83,39 @@ void ModelAnimator::UpdateTweenData()
 			desc.curr.ratio = (desc.curr.sumTime / timePerFrame);
 		}
 
-		//// 모델의 각 본을 갱신합니다.
-		//const uint32 boneCount = _model->GetBoneCount();
-		//for (uint32 i = 0; i < boneCount; i++)
-		//{
-		//	shared_ptr<ModelBone> bone = _model->GetBoneByIndex(i);
-
-		//	if (bone->parentIndex == -1)
-		//		continue;
-		//}
-
-
-		//// 왼손의 위치 계산
-		//int32 handGripIndex = _model->GetBoneByName(L"Hand_Grip_L")->index;
-		//// 해당 본의 최종 월드 변환 행렬 가져오기
-		//Matrix handTransform = _animTransforms[desc.curr.animIndex].transforms[desc.curr.currFrame][handGripIndex];
-		//// 행렬에서 위치 벡터 추출
-		//_weapon->GetTransform()->SetWorldMatrix(handTransform);
-	}
-
-	// 다음 애니메이션이 예약 되어 있다면
-	if (desc.next.animIndex >= 0)
-	{
-		desc.tweenSumTime += DT;
-		desc.tweenRatio = desc.tweenSumTime / desc.tweenDuration;
-
-		if (desc.tweenRatio >= 1.f)
+		// 다음 애니메이션이 예약 되어 있다면
+		if (desc.next.animIndex >= 0)
 		{
-			// 애니메이션 교체 성공
-			desc.curr = desc.next;
-			desc.ClearNextAnim();
-		}
-		else
-		{
-			// 교체중
-			shared_ptr<ModelAnimation> nextAnim = _model->GetAnimationByState(static_cast<AnimationState>(desc.next.state));
-			desc.next.sumTime += DT;
+			desc.tweenSumTime += DT;
+			desc.tweenRatio = desc.tweenSumTime / desc.tweenDuration;
 
-			float timePerFrame = 1.f / (nextAnim->frameRate * desc.next.speed);
-
-			if (desc.next.ratio >= 1.f)
+			if (desc.tweenRatio >= 1.f)
 			{
-				desc.next.sumTime = 0;
-
-				desc.next.currFrame = (desc.next.currFrame + 1) % nextAnim->frameCount;
-				desc.next.nextFrame = (desc.next.currFrame + 1) % nextAnim->frameCount;
+				// 애니메이션 교체 성공
+				desc.curr = desc.next;
+				desc.ClearNextAnim();
 			}
+			else
+			{
+				// 교체중
+				shared_ptr<ModelAnimation> nextAnim = _model->GetAnimationByState(static_cast<AnimationState>(desc.next.state));
+				desc.next.sumTime += DT;
 
-			desc.next.ratio = desc.next.sumTime / timePerFrame;
+				float timePerFrame = 1.f / (nextAnim->frameRate * desc.next.speed);
+
+				if (desc.next.ratio >= 1.f)
+				{
+					desc.next.sumTime = 0;
+
+					desc.next.currFrame = (desc.next.currFrame + 1) % nextAnim->frameCount;
+					desc.next.nextFrame = (desc.next.currFrame + 1) % nextAnim->frameCount;
+				}
+
+				desc.next.ratio = desc.next.sumTime / timePerFrame;
+			}
 		}
 	}
-
 }
-
 void ModelAnimator::RenderSingle()
 {
 	if (_model == nullptr)
@@ -183,10 +163,10 @@ void ModelAnimator::RenderSingle()
 
 		// BoneIndex
 		_shader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
-
+	
 		// Transform
 		auto world = GetTransform()->GetWorldMatrix();
-		_shader->PushTransformData(TransformDesc{ world });
+		_shader->PushTransformData(TransformDesc{ world });	
 
 		mesh->vertexBuffer->PushData();
 		mesh->indexBuffer->PushData();

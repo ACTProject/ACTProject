@@ -191,6 +191,7 @@ void Model::ReadModel(wstring filename)
 				void* data = vertices.data();// 정점 데이터를 읽어옵니다.
 				file->Read(&data, sizeof(ModelVertexType) * count);
 				mesh->geometry->AddVertices(vertices);// 읽어온 정점 데이터를 메시에 추가합니다.
+
 			}
 
 			//IndexData 메시의 인덱스 데이터를 읽어옵니다.

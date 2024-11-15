@@ -289,6 +289,7 @@ MeshOutput VS_Animation(VertexTextureNormalTangentBlend input)
 
 	//output.position = mul(input.position, BoneTransforms[BoneIndex]); // Model Global
 	matrix m = GetAnimationMatrix(input);
+    //matrix m = BoneTransforms[BoneIndex];
 
 	output.position = mul(input.position, m);
 	output.position = mul(output.position, W); // W

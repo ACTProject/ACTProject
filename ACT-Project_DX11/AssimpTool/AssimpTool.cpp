@@ -61,7 +61,7 @@ void AssimpTool::Init()
 		}
 		{
 			shared_ptr<Converter> converter = make_shared<Converter>();
-			converter->ReadAssetFile(L"Enemy/Rangoon.fbx");
+			converter->ReadAssetFile(L"Enemy/Rangoon_mesh.fbx");
 			converter->ExportMaterialData(L"Enemy/Rangoon");
 			converter->ExportModelData(L"Enemy/Rangoon");
 		}
@@ -74,6 +74,27 @@ void AssimpTool::Init()
 			shared_ptr<Converter> converter = make_shared<Converter>();
 			converter->ReadAssetFile(L"Enemy/Rangoon_hit.fbx");
 			converter->ExportAnimationData(L"Enemy/Rangoon_hit");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Enemy/Rangoon_atk.fbx");
+			converter->ExportAnimationData(L"Enemy/Rangoon_atk");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Enemy/pistol_mesh.fbx");
+			converter->ExportMaterialData(L"Enemy/pistol");
+			converter->ExportModelData(L"Enemy/pistol");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Enemy/pistol_Idle.fbx");
+			converter->ExportAnimationData(L"Enemy/pistol_Idle");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Enemy/pistol_shoot.fbx");
+			converter->ExportAnimationData(L"Enemy/pistol_shoot");
 		}
 		//test
 		// 

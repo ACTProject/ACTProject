@@ -401,3 +401,6 @@ ACT-Project_DX11/Binaries/
 ACT-Project_DX11/Intermediate/
 ACT-Project_DX11/Libraries/Include/Engine/*
 ACT-Project_DX11/Libraries/Lib/Engine/*
+ACT-Project_DX11/Libraries/Include/Engine/Types.h
+ACT-Project_DX11/Libraries/Lib/Engine/Engine.idb
+ACT-Project_DX11/Libraries/Lib/Engine/Engine.lib

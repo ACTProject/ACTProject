@@ -400,3 +400,4 @@ ACT-Project_DX11/Binaries/*
 !ACT-Project_DX11/Binaries/assimp-vc143-mtd.dll
 ACT-Project_DX11/Intermediate
 ACT-Project_DX11/Libraries/Include/Engine/*
+ACT-Project_DX11/Libraries/Lib/Engine/*

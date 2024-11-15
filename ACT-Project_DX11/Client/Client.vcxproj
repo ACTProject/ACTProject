@@ -28,7 +28,6 @@
     <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="StaticMeshDemo.h" />
-    <ClInclude Include="WeaponScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BillBoardDemo.cpp" />
@@ -43,7 +42,6 @@
     <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="StaticMeshDemo.cpp" />
-    <ClCompile Include="WeaponScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\00. Global.fx" />

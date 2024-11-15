@@ -209,12 +209,8 @@ void Client::Init()
 	// Player
 	auto player = make_shared<GameObject>();
 
-	// Debug Test
-	auto lookCube = make_shared<GameObject>();
-	auto upCube = make_shared<GameObject>();
-	auto rightCube = make_shared<GameObject>();
-
 	{
+		// Player
 		player->GetOrAddTransform()->SetPosition(Vec3(0, 0, 0));
 		player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 		player->GetOrAddTransform()->SetScale(Vec3(0.01f));
@@ -235,6 +231,18 @@ void Client::Init()
 			
 			//playerModel->ReadAnimation(L"Player/Crab_Death");
 			//playerModel->ReadAnimation(L"Player/Crab_GetUp");
+			
+			// Weapon
+			shared_ptr<Model> weaponModel = make_shared<Model>();
+			{
+				// CustomData -> Memory
+				weaponModel->ReadModel(L"Fork/Fork");
+				weaponModel->ReadMaterial(L"Fork/Fork");
+			}
+
+			ModelMesh& weaponMesh = *weaponModel->GetMeshes()[0];
+			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì±ï¿½
+			playerModel->AddDummyBoneAndAttach(weaponMesh, L"Hand_Grip_L", L"WeaponDummy");
 		}
 		shared_ptr<ModelAnimator> ma1 = make_shared<ModelAnimator>(renderShader);
 		player->AddComponent(ma1);
@@ -286,18 +294,18 @@ void Client::Init()
 		auto transform = player->GetTransform();
 
 		auto mesh = RESOURCES->Get<Mesh>(L"Cube");
-		// Look ¹æÇâ Å¥ºê
+		// Look ï¿½ï¿½ï¿½ï¿½ Å¥ï¿½ï¿½
 		{
-			// Look ¹æÇâ Ç¥½Ã¿ë »¡°£»ö ÀçÁú
+			// Look ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½Ã¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			auto material = make_shared<Material>();
 			material->SetShader(renderShader);
 			MaterialDesc& desc = material->GetMaterialDesc();
 			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(1.0f, 0.0f, 0.0f, 1.0f); // »¡°£»ö
+			desc.diffuse = Vec4(1.0f, 0.0f, 0.0f, 1.0f); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			desc.specular = Vec4(1.f);
 
 			lookCube->GetOrAddTransform()->SetPosition(transform->GetPosition() + transform->GetLook() * 2.5f);
-			lookCube->GetOrAddTransform()->SetScale(Vec3(0.1f, 0.1f, 5.0f));  // Z ¹æÇâÀ¸·Î ±æÂßÇÏ°Ô
+			lookCube->GetOrAddTransform()->SetScale(Vec3(0.1f, 0.1f, 5.0f));  // Z ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
 			lookCube->AddComponent(make_shared<MeshRenderer>());
 			{
 				lookCube->GetMeshRenderer()->SetMaterial(material);
@@ -307,18 +315,18 @@ void Client::Init()
 			CUR_SCENE->Add(lookCube);
 		}
 
-		// Up ¹æÇâ Å¥ºê
+		// Up ï¿½ï¿½ï¿½ï¿½ Å¥ï¿½ï¿½
 		{
-			// Up ¹æÇâ Ç¥½Ã¿ë ÃÊ·Ï»ö ÀçÁú
+			// Up ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½Ã¿ï¿½ ï¿½Ê·Ï»ï¿½ ï¿½ï¿½ï¿½ï¿½
 			auto material = make_shared<Material>();
 			material->SetShader(renderShader);
 			MaterialDesc& desc = material->GetMaterialDesc();
 			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(0.0f, 1.0f, 0.0f, 1.0f);  // ÃÊ·Ï»ö
+			desc.diffuse = Vec4(0.0f, 1.0f, 0.0f, 1.0f);  // ï¿½Ê·Ï»ï¿½
 			desc.specular = Vec4(1.f);
 			
 			upCube->GetOrAddTransform()->SetPosition(transform->GetPosition() + transform->GetUp() * 2.5f);
-			upCube->GetOrAddTransform()->SetScale(Vec3(0.1f, 5.0f, 0.1f));  // Y ¹æÇâÀ¸·Î ±æÂßÇÏ°Ô
+			upCube->GetOrAddTransform()->SetScale(Vec3(0.1f, 5.0f, 0.1f));  // Y ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
 			upCube->AddComponent(make_shared<MeshRenderer>());
 			{
 				upCube->GetMeshRenderer()->SetMaterial(material);
@@ -329,18 +337,18 @@ void Client::Init()
 			CUR_SCENE->Add(upCube);
 		}
 
-		// Right ¹æÇâ Å¥ºê
+		// Right ï¿½ï¿½ï¿½ï¿½ Å¥ï¿½ï¿½
 		{
-			// Right ¹æÇâ Ç¥½Ã¿ë ÆÄ¶õ»ö ÀçÁú
+			// Right ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½Ã¿ï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			auto material = make_shared<Material>();
 			material->SetShader(renderShader);
 			MaterialDesc& desc = material->GetMaterialDesc();
 			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(0.0f, 0.0f, 1.0f, 1.0f);  // ÆÄ¶õ»ö
+			desc.diffuse = Vec4(0.0f, 0.0f, 1.0f, 1.0f);  // ï¿½Ä¶ï¿½ï¿½ï¿½
 			desc.specular = Vec4(1.f);
 
 			rightCube->GetOrAddTransform()->SetPosition(transform->GetPosition() + transform->GetRight() * 2.5f);
-			rightCube->GetOrAddTransform()->SetScale(Vec3(5.0f, 0.1f, 0.1f));  // X ¹æÇâÀ¸·Î ±æÂßÇÏ°Ô
+			rightCube->GetOrAddTransform()->SetScale(Vec3(5.0f, 0.1f, 0.1f));  // X ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
 			rightCube->AddComponent(make_shared<MeshRenderer>());
 			{
 				rightCube->GetMeshRenderer()->SetMaterial(material);
@@ -406,7 +414,6 @@ void Client::Init()
 		auto obj = make_shared<GameObject>();
 		obj->AddComponent(make_shared<Terrain>());
 		obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
-
 		{
 			vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
 			for (int32 z = 0; z < height; z++)

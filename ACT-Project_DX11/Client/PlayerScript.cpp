@@ -32,6 +32,11 @@ void PlayerScript::Update()
 
 	// 이동 방향의 크기를 기준으로 애니메이션 상태 결정
 	AnimationState targetAnimationState;
+
+	//if (isAttack)
+	//{
+	//	targetAnimationState = AnimationState::Attack;
+	//}
 	if (moveDir.LengthSquared() > 0.0f)  // 이동 벡터가 0이 아니라면 이동 중으로 간주
 	{
 		moveDir.Normalize();

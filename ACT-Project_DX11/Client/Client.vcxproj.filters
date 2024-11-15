@@ -66,9 +66,6 @@
     <ClCompile Include="CameraScript.cpp">
       <Filter>Main\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponScript.cpp">
-      <Filter>Main\Player</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -96,9 +93,6 @@
       <Filter>Game\Week3</Filter>
     </ClInclude>
     <ClInclude Include="PlayerScript.h">
-      <Filter>Main\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponScript.h">
       <Filter>Main\Player</Filter>
     </ClInclude>
   </ItemGroup>

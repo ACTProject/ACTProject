@@ -210,14 +210,6 @@ void Client::Init()
 	auto player = make_shared<GameObject>();
 
 	{
-		// Weapon
-		shared_ptr<Model> weaponModel = make_shared<Model>();
-		{
-			// CustomData -> Memory
-			weaponModel->ReadModel(L"Fork/Fork");
-			weaponModel->ReadMaterial(L"Fork/Fork");
-		}
-
 		// Player
 		player->GetOrAddTransform()->SetPosition(Vec3(0, 0, 0));
 		player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
@@ -239,7 +231,14 @@ void Client::Init()
 			
 			//playerModel->ReadAnimation(L"Player/Crab_Death");
 			//playerModel->ReadAnimation(L"Player/Crab_GetUp");
-
+			
+			// Weapon
+			shared_ptr<Model> weaponModel = make_shared<Model>();
+			{
+				// CustomData -> Memory
+				weaponModel->ReadModel(L"Fork/Fork");
+				weaponModel->ReadMaterial(L"Fork/Fork");
+			}
 
 			ModelMesh& weaponMesh = *weaponModel->GetMeshes()[0];
 			// 더미 본 생성 및 무기 붙이기

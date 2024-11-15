@@ -27,8 +27,8 @@ void PlayerScript::Update()
 		moveDir += Vec3(-1.0f, 0.0f, 0.0f);
 	if (INPUT->GetButton(KEY_TYPE::D))
 		moveDir += Vec3(1.0f, 0.0f, 0.0f);
-	if (INPUT->GetButton(KEY_TYPE::LBUTTON))
-		isAttack = true;
+	//if (INPUT->GetButton(KEY_TYPE::LBUTTON))
+	//	isAttack = true;
 
 	// 이동 방향의 크기를 기준으로 애니메이션 상태 결정
 	AnimationState targetAnimationState;
@@ -75,12 +75,6 @@ void PlayerScript::Update()
 	{
 		_modelAnimator->SetAnimationState(targetAnimationState);
 		_currentAnimationState = targetAnimationState;  // 현재 상태 업데이트
-	}
-	
-
-	if (isAttack)
-	{
-		_modelAnimator->SetAnimationState(AnimationState::Attack);
 	}
 
 	if (INPUT->GetButton(KEY_TYPE::KEY_1))

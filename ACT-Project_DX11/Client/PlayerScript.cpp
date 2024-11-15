@@ -11,7 +11,7 @@ void PlayerScript::Start()
 void PlayerScript::Update()
 {
 	float dt = TIME->GetDeltaTime();
-	transform = GetTransform();
+	_transform = GetTransform();
 
 	Vec3 moveDir = Vec3(0.0f);
 	bool isRunning = INPUT->GetButton(KEY_TYPE::SHIFT);  // Shift 키로 달리기 모드 여부 확인
@@ -32,18 +32,23 @@ void PlayerScript::Update()
 
 	// 이동 방향의 크기를 기준으로 애니메이션 상태 결정
 	AnimationState targetAnimationState;
+
+	//if (isAttack)
+	//{
+	//	targetAnimationState = AnimationState::Attack;
+	//}
 	if (moveDir.LengthSquared() > 0.0f)  // 이동 벡터가 0이 아니라면 이동 중으로 간주
 	{
 		moveDir.Normalize();
 		float speed = isRunning ? _speed*2 : _speed;
-		transform->SetPosition(transform->GetPosition() + moveDir * speed * dt);
+		_transform->SetPosition(_transform->GetPosition() + moveDir * speed * dt);
 
 		targetAnimationState = isRunning ? AnimationState::Run : AnimationState::Walk;
 
 
 		// 이동 방향에 따라 회전 설정
 		Vec3 targetForward = moveDir;					// 캐릭터가 이동하려는 방향
-		Vec3 currentForward = transform->GetLook();	// 캐릭터가 현재 바라보는 방향
+		Vec3 currentForward = _transform->GetLook();	// 캐릭터가 현재 바라보는 방향
 
 		// 두 벡터 사이의 각도를 계산하여 회전
 		float angle = std::acos(currentForward.Dot(targetForward));	// 두 벡터 사이의 각도
@@ -56,19 +61,8 @@ void PlayerScript::Update()
 			if (rotationAxis.y < 0) {
 				angle = -angle;  // 왼쪽으로 회전
 			}
-			transform->SetRotation(transform->GetRotation() + Vec3(0, angle, 0));
+			_transform->SetRotation(_transform->GetRotation() + Vec3(0, angle, 0));
 
-		}
-
-		// Debug Object
-		{
-			_look->GetTransform()->SetPosition(transform->GetPosition() + transform->GetLook() * 2.5f);
-			_up->GetTransform()->SetPosition(transform->GetPosition() + transform->GetUp() * 2.5f);
-			_right->GetTransform()->SetPosition(transform->GetPosition() + transform->GetRight() * 2.5f);
-
-			_look->GetTransform()->SetRotation(transform->GetRotation());
-			_up->GetTransform()->SetRotation(transform->GetRotation());
-			_right->GetTransform()->SetRotation(transform->GetRotation());
 		}
 	}
 	else
@@ -84,10 +78,10 @@ void PlayerScript::Update()
 	}
 	
 
-	//if (isAttack)
-	//{
-	//	_modelAnimator->SetAnimationState(AnimationState::Attack);
-	//}
+	if (isAttack)
+	{
+		_modelAnimator->SetAnimationState(AnimationState::Attack);
+	}
 
 	if (INPUT->GetButton(KEY_TYPE::KEY_1))
 	{

@@ -19,13 +19,9 @@ private:
 	float _speed = 5.f;
 	shared_ptr<Model> _player;
 	shared_ptr<ModelAnimator> _modelAnimator;
-	shared_ptr<Transform> transform;
+	shared_ptr<Transform> _transform;
 
 public:
-	// Debug Object
-	shared_ptr<GameObject> _look;
-	shared_ptr<GameObject> _right;
-	shared_ptr<GameObject> _up;
 
 	AnimationState _currentAnimationState = AnimationState::Idle;
 };

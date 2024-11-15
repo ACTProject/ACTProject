@@ -68,7 +68,7 @@ void ModelAnimator::UpdateTweenData()
 		// 현재 재생 중인 애니메이션 가져오기
 		shared_ptr<ModelAnimation> currentAnim = _model->GetAnimationByState(static_cast<AnimationState>(desc.curr.state));
 		if (currentAnim)
-		{        
+		{
 			// 프레임 당 시간 계산 (프레임레이트와 재생 속도 고려)
 			float timePerFrame = 1 / (currentAnim->frameRate * desc.curr.speed);
 			// 누적 시간이 프레임 당 시간을 초과하면 다음 프레임으로
@@ -82,37 +82,37 @@ void ModelAnimator::UpdateTweenData()
 			// 다음 프레임으로 넘어가는 비율 계산
 			desc.curr.ratio = (desc.curr.sumTime / timePerFrame);
 		}
-	}
 
-	// 다음 애니메이션이 예약 되어 있다면
-	if (desc.next.animIndex >= 0)
-	{
-		desc.tweenSumTime += DT;
-		desc.tweenRatio = desc.tweenSumTime / desc.tweenDuration;
-
-		if (desc.tweenRatio >= 1.f)
+		// 다음 애니메이션이 예약 되어 있다면
+		if (desc.next.animIndex >= 0)
 		{
-			// 애니메이션 교체 성공
-			desc.curr = desc.next;
-			desc.ClearNextAnim();
-		}
-		else
-		{
-			// 교체중
-			shared_ptr<ModelAnimation> nextAnim = _model->GetAnimationByState(static_cast<AnimationState>(desc.next.state));
-			desc.next.sumTime += DT;
+			desc.tweenSumTime += DT;
+			desc.tweenRatio = desc.tweenSumTime / desc.tweenDuration;
 
-			float timePerFrame = 1.f / (nextAnim->frameRate * desc.next.speed);
-
-			if (desc.next.ratio >= 1.f)
+			if (desc.tweenRatio >= 1.f)
 			{
-				desc.next.sumTime = 0;
-
-				desc.next.currFrame = (desc.next.currFrame + 1) % nextAnim->frameCount;
-				desc.next.nextFrame = (desc.next.currFrame + 1) % nextAnim->frameCount;
+				// 애니메이션 교체 성공
+				desc.curr = desc.next;
+				desc.ClearNextAnim();
 			}
+			else
+			{
+				// 교체중
+				shared_ptr<ModelAnimation> nextAnim = _model->GetAnimationByState(static_cast<AnimationState>(desc.next.state));
+				desc.next.sumTime += DT;
 
-			desc.next.ratio = desc.next.sumTime / timePerFrame;
+				float timePerFrame = 1.f / (nextAnim->frameRate * desc.next.speed);
+
+				if (desc.next.ratio >= 1.f)
+				{
+					desc.next.sumTime = 0;
+
+					desc.next.currFrame = (desc.next.currFrame + 1) % nextAnim->frameCount;
+					desc.next.nextFrame = (desc.next.currFrame + 1) % nextAnim->frameCount;
+				}
+
+				desc.next.ratio = desc.next.sumTime / timePerFrame;
+			}
 		}
 	}
 }
@@ -163,10 +163,10 @@ void ModelAnimator::RenderSingle()
 
 		// BoneIndex
 		_shader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
-
+	
 		// Transform
 		auto world = GetTransform()->GetWorldMatrix();
-		_shader->PushTransformData(TransformDesc{ world });
+		_shader->PushTransformData(TransformDesc{ world });	
 
 		mesh->vertexBuffer->PushData();
 		mesh->indexBuffer->PushData();
@@ -314,19 +314,21 @@ void ModelAnimator::CreateTexture()
 
 void ModelAnimator::CreateAnimationTransform(uint32 index)
 {
+	// 임시 본 변환 벡터 생성
 	vector<Matrix> tempAnimBoneTransforms(MAX_MODEL_TRANSFORMS, Matrix::Identity);
-
+	// 애니메이션 데이터 가져오기
 	shared_ptr<ModelAnimation> animation = _model->GetAnimationByIndex(index);
-
+	// 프레임 및 본 루프
 	for (uint32 f = 0; f < animation->frameCount; f++)
 	{
 		for (uint32 b = 0; b < _model->GetBoneCount(); b++)
 		{
 			shared_ptr<ModelBone> bone = _model->GetBoneByIndex(b);
 
+			// 애니메이션 변환 행렬 계산
 			Matrix matAnimation;
-
 			shared_ptr<ModelKeyframe> frame = animation->GetKeyframe(bone->name);
+			// 키프레임 데이터에서 변환 행렬 구성
 			if (frame != nullptr)
 			{
 				ModelKeyframeData& data = frame->transforms[f];
@@ -342,20 +344,19 @@ void ModelAnimator::CreateAnimationTransform(uint32 index)
 			{
 				matAnimation = Matrix::Identity;
 			}
-
-			// [ !!!!!!! ]
+			// [ 본의 루트 변환 및 역행렬 계산 ]
 			Matrix toRootMatrix = bone->transform;
-			Matrix invGlobal = toRootMatrix.Invert();
+			Matrix invGlobal = toRootMatrix.Invert();	// 애니메이션 적용 후 본을 원점에 맞추기 위해 사용
 
+			// 부모 본 변환 적용
 			int32 parentIndex = bone->parentIndex;
-
 			Matrix matParent = Matrix::Identity;
 			if (parentIndex >= 0)
 				matParent = tempAnimBoneTransforms[parentIndex];
-			
-			tempAnimBoneTransforms[b] = matAnimation * matParent;
 
-			// 결론
+			// 현재 본의 최종 월드 변환 계산
+			tempAnimBoneTransforms[b] = matAnimation * matParent;
+			// 본의 최종 변환을 _animTransforms에 저장
 			_animTransforms[index].transforms[f][b] = invGlobal * tempAnimBoneTransforms[b];
 		}
 	}

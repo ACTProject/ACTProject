@@ -37,8 +37,8 @@ public:
 	shared_ptr<ModelAnimation> GetAnimationByState(AnimationState state);
 	shared_ptr<ModelAnimation> GetAnimationByName(wstring name);
 	int GetAnimationIndexByState(AnimationState state);
+	float GetAnimationDuration(AnimationState state);
 	string AnimationStateToString(AnimationState state);
-
 
 private:
 	void BindCacheInfo();
@@ -55,5 +55,6 @@ private:
 	vector<shared_ptr<ModelBone>> _bones;
 	vector<shared_ptr<ModelMesh>> _meshes;
 	vector<shared_ptr<ModelAnimation>> _animations;
+	unordered_map<AnimationState, float> _durations;
 };
 

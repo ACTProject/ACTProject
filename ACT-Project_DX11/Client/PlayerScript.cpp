@@ -3,9 +3,22 @@
 #include "Model.h"
 #include "Camera.h"
 #include "ModelAnimator.h"
+#include "MyCoroutine.h"
+#include <coroutine>
 
 void PlayerScript::Start()
 {
+}
+
+
+// 플레이어공격 코루틴 함수 정의
+MyCoroutine PlayAttackAnimation(PlayerScript* playerScript, float animationDuration)
+{
+	// 애니메이션 재생 시간 대기
+	co_await AwaitableSleep(chrono::milliseconds(static_cast<int>(animationDuration * 10)));
+
+	// 애니메이션이 끝난 후 상태 복귀
+	playerScript->ResetAnimationState();
 }
 
 void PlayerScript::Update()
@@ -15,7 +28,7 @@ void PlayerScript::Update()
 
 	Vec3 moveDir = Vec3(0.0f);
 	bool isRunning = INPUT->GetButton(KEY_TYPE::SHIFT);  // Shift 키로 달리기 모드 여부 확인
-	bool isAttack = false;  // Shift 키로 달리기 모드 여부 확인
+	bool isAttack = false;  // 좌클릭으로 공격 여부 확인
 
 
 	// 이동 입력 처리
@@ -27,16 +40,29 @@ void PlayerScript::Update()
 		moveDir += Vec3(-1.0f, 0.0f, 0.0f);
 	if (INPUT->GetButton(KEY_TYPE::D))
 		moveDir += Vec3(1.0f, 0.0f, 0.0f);
-	//if (INPUT->GetButton(KEY_TYPE::LBUTTON))
-	//	isAttack = true;
+	if (INPUT->GetButton(KEY_TYPE::LBUTTON))
+		isAttack = true;
+
+	if (isAttack && !_isPlayeringAttackAnimation)
+	{
+		// 공격 애니메이션 재생 중 상태 설정
+		_isPlayeringAttackAnimation = true;
+
+		// 공격 애니메이션 재생 상태로 설정
+		SetAnimationState(AnimationState::Attack);
+
+		// 공격 애니메이션 코루틴 실행
+		float attackDuration = _player->GetAnimationDuration(AnimationState::Attack);
+		PlayAttackAnimation(this, 0.2);
+	}
+
+	// 공격 애니메이션이 재생 중이면 다른 애니메이션 상태로 전환되지 않음
+	if (_isPlayeringAttackAnimation)
+		return;
 
 	// 이동 방향의 크기를 기준으로 애니메이션 상태 결정
 	AnimationState targetAnimationState;
 
-	//if (isAttack)
-	//{
-	//	targetAnimationState = AnimationState::Attack;
-	//}
 	if (moveDir.LengthSquared() > 0.0f)  // 이동 벡터가 0이 아니라면 이동 중으로 간주
 	{
 		moveDir.Normalize();
@@ -73,8 +99,7 @@ void PlayerScript::Update()
 	// 애니메이션 상태가 변경되었을 때만 상태 전환
 	if (_currentAnimationState != targetAnimationState)
 	{
-		_modelAnimator->SetAnimationState(targetAnimationState);
-		_currentAnimationState = targetAnimationState;  // 현재 상태 업데이트
+		SetAnimationState(targetAnimationState);
 	}
 
 	if (INPUT->GetButton(KEY_TYPE::KEY_1))
@@ -86,4 +111,17 @@ void PlayerScript::Update()
 	{
 		Camera::S_IsWireFrame = true;
 	}
+}
+
+// 공격 애니메이션 상태 관리
+void PlayerScript::SetAnimationState(AnimationState state)
+{
+	_modelAnimator->ChangeAnimation(state);
+	_currentAnimationState = state;
+}
+
+void PlayerScript::ResetAnimationState()
+{
+	_isPlayeringAttackAnimation = false;
+	SetAnimationState(AnimationState::Idle); // 기본 상태로 복귀
 }

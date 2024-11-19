@@ -25,27 +25,17 @@ public:
 
 		void unhandled_exception() { std::exit(1); }
 	};
-
+	
 	// 생성자: promise_type으로부터 생성된 코루틴 핸들러를 저장
 	MyCoroutine(std::coroutine_handle<promise_type> handler) : _handler(handler) {}
 
 	// 소멸자: 핸들러가 유효하면 코루틴 핸들러를 파괴
-	~MyCoroutine()
-	{
-		if ((bool)_handler == true)
-		{
-			_handler.destroy();
-		}
-	}
+	~MyCoroutine() {}
 
-public:
-	// 코루틴 핸들러를 반환
-	const std::coroutine_handle<promise_type> GetHandler() { return _handler; }
-
-	bool isDone() const { return !_handler || _handler.done(); }
+	// 핸들러를 외부에서 관리할 수 있도록 제공
+	std::coroutine_handle<promise_type> GetHandler() { return _handler; }
 
 private:
-	// 코루틴을 제어하기 위한 핸들러
 	std::coroutine_handle<promise_type> _handler;
 };
 
@@ -55,12 +45,16 @@ struct AwaitableSleep
 	explicit AwaitableSleep(std::chrono::milliseconds d) : duration(d) {}
 
 	bool await_ready() const noexcept { return false; }
-	void await_suspend(std::coroutine_handle<> handle) const 
+	void await_suspend(std::coroutine_handle<> handle) const
 	{
-		std::thread([handle, d = duration]() {
+		// 핸들러를 안전하게 캡처하기 위해 shared_ptr 사용
+		auto handlePtr = std::make_shared<std::coroutine_handle<>>(handle);
+
+		std::thread t([handle, d = duration]() {
 			std::this_thread::sleep_for(d);
 			handle.resume();
-			}).detach();
+			});
+		t.detach();
 	}
 	void await_resume() const noexcept {}
 };

@@ -10,13 +10,20 @@ void PlayerScript::Start()
 {
 }
 
+std::coroutine_handle<MyCoroutine::promise_type> coroutineHandle;
+
+void EndAttackCoroutine() {
+	if (coroutineHandle) {
+		coroutineHandle.destroy();
+		coroutineHandle = nullptr;
+	}
+}
 
 // 플레이어공격 코루틴 함수 정의
 MyCoroutine PlayAttackAnimation(PlayerScript* playerScript, float animationDuration)
 {
 	// 애니메이션 재생 시간 대기
-	co_await AwaitableSleep(chrono::milliseconds(static_cast<int>(animationDuration * 10)));
-
+	co_await AwaitableSleep(chrono::milliseconds(static_cast<int>(animationDuration * 1000)));
 	// 애니메이션이 끝난 후 상태 복귀
 	playerScript->ResetAnimationState();
 }
@@ -45,6 +52,7 @@ void PlayerScript::Update()
 
 	if (isAttack && !_isPlayeringAttackAnimation)
 	{
+		OutputDebugString(L"x\n");
 		// 공격 애니메이션 재생 중 상태 설정
 		_isPlayeringAttackAnimation = true;
 
@@ -53,7 +61,10 @@ void PlayerScript::Update()
 
 		// 공격 애니메이션 코루틴 실행
 		float attackDuration = _player->GetAnimationDuration(AnimationState::Attack);
-		PlayAttackAnimation(this, 0.2);
+		MyCoroutine attackCoroutine = PlayAttackAnimation(this, attackDuration);
+		coroutineHandle = attackCoroutine.GetHandler();
+		coroutineHandle.resume();
+
 	}
 
 	// 공격 애니메이션이 재생 중이면 다른 애니메이션 상태로 전환되지 않음
@@ -123,5 +134,6 @@ void PlayerScript::SetAnimationState(AnimationState state)
 void PlayerScript::ResetAnimationState()
 {
 	_isPlayeringAttackAnimation = false;
+	EndAttackCoroutine();
 	SetAnimationState(AnimationState::Idle); // 기본 상태로 복귀
 }

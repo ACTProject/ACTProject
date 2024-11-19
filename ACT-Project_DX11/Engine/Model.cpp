@@ -234,7 +234,7 @@ void Model::ReadAnimation(wstring filename, AnimationState state)
     animation->frameCount = file->Read<uint32>();             // 전체 프레임 수
 
 	// 애니메이션 지속시간 저장
-	_durations.insert(make_pair(state, animation->duration));
+	_durations.insert(make_pair(state, animation->duration / animation->frameRate));
 
     // 키프레임의 총 개수
     uint32 keyframesCount = file->Read<uint32>();

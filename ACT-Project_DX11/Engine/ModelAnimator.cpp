@@ -29,16 +29,12 @@ void ModelAnimator::SetModel(shared_ptr<Model> model)
 	}
 }
 
-void ModelAnimator::SetAnimationState(AnimationState newState)
+void ModelAnimator::ChangeAnimation(AnimationState newState)
 {
 	int stateAsInt = static_cast<int>(newState);
 
 	if (_tweenDesc.curr.state != stateAsInt) // 새로운 상태일 때만 전환
 	{
-		// 다음 애니메이션 예약
-		//_tweenDesc.next.state = stateAsInt;
-		//_tweenDesc.next.animIndex = _model->GetAnimationIndexByState(newState); // 상태에 맞는 애니메이션 인덱스를 가져옴
-		
 		_tweenDesc.curr.state = stateAsInt;
 		_tweenDesc.curr.animIndex = _model->GetAnimationIndexByState(newState); // 상태에 맞는 애니메이션 인덱스를 가져옴
 		_tweenDesc.tweenSumTime = 0; // 트윈 시작

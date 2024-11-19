@@ -22,7 +22,7 @@ public:
 	void SetModel(shared_ptr<Model> model);
 	void SetPass(uint8 pass) { _pass = pass; }
 	void SetTechnique(uint8 technique) { _technique = technique; }
-	void SetAnimationState(AnimationState newState);
+	void ChangeAnimation(AnimationState newState);
 	shared_ptr<Shader> GetShader() { return _shader; }
 
 	virtual void Update() override;

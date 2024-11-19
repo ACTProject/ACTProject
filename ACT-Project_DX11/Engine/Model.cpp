@@ -233,6 +233,9 @@ void Model::ReadAnimation(wstring filename, AnimationState state)
     animation->frameRate = file->Read<float>();               // 초당 프레임 수
     animation->frameCount = file->Read<uint32>();             // 전체 프레임 수
 
+	// 애니메이션 지속시간 저장
+	_durations.insert(make_pair(state, animation->duration));
+
     // 키프레임의 총 개수
     uint32 keyframesCount = file->Read<uint32>();
 
@@ -312,7 +315,6 @@ std::shared_ptr<ModelAnimation> Model::GetAnimationByName(wstring name)
 	return nullptr;
 }
 
-
 int Model::GetAnimationIndexByState(AnimationState state)
 {
 	for (size_t i = 0; i < _animations.size(); ++i)
@@ -325,6 +327,16 @@ int Model::GetAnimationIndexByState(AnimationState state)
 	return -1; // 이름에 해당하는 애니메이션이 없는 경우
 }
 
+float Model::GetAnimationDuration(AnimationState state)
+{
+	if (_durations.empty())
+		return -1;
+
+	auto iter = _durations.find(state);
+	if (iter != _durations.end())
+		return iter->second;
+}
+
 // AnimationState 값을 문자열로 반환
 string Model::AnimationStateToString(AnimationState state)
 {
@@ -333,7 +345,10 @@ string Model::AnimationStateToString(AnimationState state)
 	case AnimationState::Idle:   return "Idle";
 	case AnimationState::Walk:   return "Walk";
 	case AnimationState::Run:    return "Run";
-	case AnimationState::Attack: return "Attack";
+	case AnimationState::Attack1: return "Attack1";
+	case AnimationState::Attack2: return "Attack2";
+	case AnimationState::Attack3: return "Attack3";
+	case AnimationState::Attack4: return "Attack4";
 	case AnimationState::Jump:   return "Jump";
 	case AnimationState::Hit:   return "Hit";
 	case AnimationState::Atk:   return "Atk";

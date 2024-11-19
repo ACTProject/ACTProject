@@ -29,7 +29,10 @@ enum class AnimationState
 	Idle,
 	Walk,
 	Run,
-	Attack,
+	Attack1,
+	Attack2,
+	Attack3,
+	Attack4,
 	Jump,
 	Hit, //피격
 	Atk, //공격

@@ -234,7 +234,7 @@ void Model::ReadAnimation(wstring filename, AnimationState state)
     animation->frameCount = file->Read<uint32>();             // 전체 프레임 수
 
 	// 애니메이션 지속시간 저장
-	_durations.insert(make_pair(state, animation->duration / animation->frameRate));
+	_durations.insert(make_pair(state, animation->duration));
 
     // 키프레임의 총 개수
     uint32 keyframesCount = file->Read<uint32>();
@@ -345,7 +345,10 @@ string Model::AnimationStateToString(AnimationState state)
 	case AnimationState::Idle:   return "Idle";
 	case AnimationState::Walk:   return "Walk";
 	case AnimationState::Run:    return "Run";
-	case AnimationState::Attack: return "Attack";
+	case AnimationState::Attack1: return "Attack1";
+	case AnimationState::Attack2: return "Attack2";
+	case AnimationState::Attack3: return "Attack3";
+	case AnimationState::Attack4: return "Attack4";
 	case AnimationState::Jump:   return "Jump";
 	case AnimationState::Hit:   return "Hit";
 	case AnimationState::Atk:   return "Atk";

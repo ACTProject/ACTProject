@@ -52,7 +52,8 @@ struct AwaitableSleep
 
 		std::thread t([handle, d = duration]() {
 			std::this_thread::sleep_for(d);
-			handle.resume();
+			if (!handle)
+				handle.resume();
 			});
 		t.detach();
 	}

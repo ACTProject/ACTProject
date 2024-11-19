@@ -6,37 +6,40 @@
 #include "MyCoroutine.h"
 #include <coroutine>
 
-void PlayerScript::Start()
-{
-}
-
-std::coroutine_handle<MyCoroutine::promise_type> coroutineHandle;
+// Coroutine
+std::coroutine_handle<MyCoroutine::promise_type> currentCoroutine;
 
 void EndAttackCoroutine() {
-	if (coroutineHandle) {
-		coroutineHandle.destroy();
-		coroutineHandle = nullptr;
+	if (currentCoroutine) {
+		currentCoroutine.destroy();
+		currentCoroutine = nullptr;
 	}
 }
 
 // 플레이어공격 코루틴 함수 정의
-MyCoroutine PlayAttackAnimation(PlayerScript* playerScript, float animationDuration)
+MyCoroutine PlayAttackCoroutine(PlayerScript* playerScript, float animationDuration)
 {
 	// 애니메이션 재생 시간 대기
 	co_await AwaitableSleep(chrono::milliseconds(static_cast<int>(animationDuration * 1000)));
-	// 애니메이션이 끝난 후 상태 복귀
-	playerScript->ResetAnimationState();
+	EndAttackCoroutine();
+}
+
+void PlayerScript::Start()
+{
+
 }
 
 void PlayerScript::Update()
 {
+	_FPS = static_cast<float>(TIME->GetFps());
 	float dt = TIME->GetDeltaTime();
+	for (int i = 0; i < 4; ++i) {
+		_attackDurations[i] = _player->GetAnimationDuration(static_cast<AnimationState>((int)AnimationState::Attack1 + i));
+	}
 	_transform = GetTransform();
 
 	Vec3 moveDir = Vec3(0.0f);
 	bool isRunning = INPUT->GetButton(KEY_TYPE::SHIFT);  // Shift 키로 달리기 모드 여부 확인
-	bool isAttack = false;  // 좌클릭으로 공격 여부 확인
-
 
 	// 이동 입력 처리
 	if (INPUT->GetButton(KEY_TYPE::W))
@@ -47,24 +50,27 @@ void PlayerScript::Update()
 		moveDir += Vec3(-1.0f, 0.0f, 0.0f);
 	if (INPUT->GetButton(KEY_TYPE::D))
 		moveDir += Vec3(1.0f, 0.0f, 0.0f);
-	if (INPUT->GetButton(KEY_TYPE::LBUTTON))
-		isAttack = true;
-
-	if (isAttack && !_isPlayeringAttackAnimation)
-	{
-		OutputDebugString(L"x\n");
-		// 공격 애니메이션 재생 중 상태 설정
+	// 공격 입력 처리
+	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON)) {
 		_isPlayeringAttackAnimation = true;
+		if (!_isAttacking) {
+			StartAttack();
+		}
+		else if (_attackTimer < _attackCooldown) {
+			ContinueAttack();
+		}
+	}
 
-		// 공격 애니메이션 재생 상태로 설정
-		SetAnimationState(AnimationState::Attack);
+	// 공격 타이머 갱신
+	if (_isAttacking) {
+		_attackTimer += dt;
 
-		// 공격 애니메이션 코루틴 실행
-		float attackDuration = _player->GetAnimationDuration(AnimationState::Attack);
-		MyCoroutine attackCoroutine = PlayAttackAnimation(this, attackDuration);
-		coroutineHandle = attackCoroutine.GetHandler();
-		coroutineHandle.resume();
-
+		// 공격 단계 시간 초과 시 Idle로 복귀
+		if (_attackTimer >= ((_attackDurations[_attackStage - 1]) / _FPS) - 0.1f ) {
+			_attackStage = 0;  // 마지막 공격이 아니면 초기화
+			_isAttacking = false;
+			ResetToIdleState();
+		}
 	}
 
 	// 공격 애니메이션이 재생 중이면 다른 애니메이션 상태로 전환되지 않음
@@ -131,9 +137,58 @@ void PlayerScript::SetAnimationState(AnimationState state)
 	_currentAnimationState = state;
 }
 
-void PlayerScript::ResetAnimationState()
+void PlayerScript::StartAttack()
 {
+	_isAttacking = true;
+	_attackStage = 1;
+	_attackTimer = 0.0f;
+
+	// 1타 공격 애니메이션 재생
+	PlayAttackAnimation(_attackStage);
+	MyCoroutine attackCoroutine = PlayAttackCoroutine(this, _attackDurations[_attackStage - 1] / _FPS);
+	currentCoroutine = attackCoroutine.GetHandler();
+	currentCoroutine.resume();
+}
+
+void PlayerScript::ContinueAttack()
+{
+	if (_attackStage < 4) {
+		_attackStage++;
+		_attackTimer = 0.0f;
+		EndAttackCoroutine();
+
+		// 다음 공격 애니메이션 재생
+		PlayAttackAnimation(_attackStage);
+		MyCoroutine attackCoroutine = PlayAttackCoroutine(this, _attackDurations[_attackStage - 1] / _FPS);
+		currentCoroutine = attackCoroutine.GetHandler();
+		currentCoroutine.resume();
+	}
+}
+
+void PlayerScript::PlayAttackAnimation(int stage) 
+{
+	switch (stage) 
+	{
+	case 1:
+		SetAnimationState(AnimationState::Attack1);
+		break;
+	case 2:
+		SetAnimationState(AnimationState::Attack2);
+		break;
+	case 3:
+		SetAnimationState(AnimationState::Attack3);
+		break;
+	case 4:
+		SetAnimationState(AnimationState::Attack4);
+		break;
+	default:
+		SetAnimationState(AnimationState::Idle);
+		break;
+	}
+}
+
+void PlayerScript::ResetToIdleState() {
 	_isPlayeringAttackAnimation = false;
 	EndAttackCoroutine();
-	SetAnimationState(AnimationState::Idle); // 기본 상태로 복귀
+	SetAnimationState(AnimationState::Idle);
 }

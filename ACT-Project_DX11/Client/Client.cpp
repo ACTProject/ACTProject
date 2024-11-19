@@ -224,10 +224,10 @@ void Client::Init()
 			playerModel->ReadAnimation(L"Player/Idle", AnimationState::Idle);
 			playerModel->ReadAnimation(L"Player/Walk", AnimationState::Walk);
 			playerModel->ReadAnimation(L"Player/Run", AnimationState::Run);
-			playerModel->ReadAnimation(L"Player/Crab_Atk_Combo1", AnimationState::Attack);
-			//playerModel->ReadAnimation(L"Player/Crab_Atk_Combo2", AnimationState::Attack2);
-			//playerModel->ReadAnimation(L"Player/Crab_Atk_Combo3", AnimationState::Attack3);
-			//playerModel->ReadAnimation(L"Player/Crab_Atk_Combo4", AnimationState::Attack4);
+			playerModel->ReadAnimation(L"Player/Crab_Atk_Combo1", AnimationState::Attack1);
+			playerModel->ReadAnimation(L"Player/Crab_Atk_Combo2", AnimationState::Attack2);
+			playerModel->ReadAnimation(L"Player/Crab_Atk_Combo3", AnimationState::Attack3);
+			playerModel->ReadAnimation(L"Player/Crab_Atk_Combo4", AnimationState::Attack4);
 
 			//playerModel->ReadAnimation(L"Player/Crab_Death");
 			//playerModel->ReadAnimation(L"Player/Crab_GetUp");
@@ -254,6 +254,7 @@ void Client::Init()
 
 		// Player::PlayerScript
 		shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();
+
 		playerScript->SetPlayer(playerModel);
 		playerScript->SetModelAnimator(ma1);
 

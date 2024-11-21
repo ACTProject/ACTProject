@@ -28,6 +28,7 @@
 #include "Camera.h"
 #include "Button.h"
 #include "Billboard.h"
+#include "Rangoon.h"
 
 void Client::Init()
 {
@@ -268,7 +269,7 @@ void Client::Init()
 	auto enemy = make_shared<GameObject>();
 	{
 		enemy->GetOrAddTransform()->SetPosition(Vec3(10, 0, 10));
-		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, XMConvertToRadians(180), 0)); // XMConvertToRadians()
+		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 		enemy->GetOrAddTransform()->SetScale(Vec3(0.0001f));
 
 		shared_ptr<Model> enemyModel = make_shared<Model>();
@@ -287,8 +288,17 @@ void Client::Init()
 			enemy->GetModelAnimator()->SetModel(enemyModel);
 			enemy->GetModelAnimator()->SetPass(2);
 		}
+
+		shared_ptr<Rangoon> rangoon = make_shared<Rangoon>();
+
+		rangoon->SetPlayer(enemyModel);
+		rangoon->SetModelAnimator(ma2);
+
+		enemy->AddComponent(rangoon);	
+
 		CUR_SCENE->Add(enemy);
 	}
+
 	auto enemy2 = make_shared<GameObject>();
 	{
 		enemy2->GetOrAddTransform()->SetPosition(Vec3(5, 0, 10));
@@ -302,8 +312,8 @@ void Client::Init()
 			enemyModel->ReadMaterial(L"Enemy/pistol");
 
 			enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Idle);
-			/*enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Hit);
-			enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
+			//enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Hit);
+			//enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
 		}
 		shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
 		enemy2->AddComponent(ma2);

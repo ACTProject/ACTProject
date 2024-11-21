@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="A_Star.h" />
     <ClInclude Include="BillBoardDemo.h" />
     <ClInclude Include="ButtonDemo.h" />
     <ClInclude Include="CameraScript.h" />
@@ -27,9 +28,11 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Rangoon.h" />
     <ClInclude Include="StaticMeshDemo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="A_Star.cpp" />
     <ClCompile Include="BillBoardDemo.cpp" />
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />
@@ -41,6 +44,7 @@
     </ClCompile>
     <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Rangoon.cpp" />
     <ClCompile Include="StaticMeshDemo.cpp" />
   </ItemGroup>
   <ItemGroup>

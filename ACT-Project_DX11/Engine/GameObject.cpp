@@ -166,6 +166,12 @@ std::shared_ptr<SnowBillboard> GameObject::GetSnowBillboard()
 	return static_pointer_cast<SnowBillboard>(component);
 }
 
+shared_ptr<Rigidbody> GameObject::GetRigidbody()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::Rigidbody);
+	return static_pointer_cast<Rigidbody>(component);
+}
+
 std::shared_ptr<Transform> GameObject::GetOrAddTransform()
 {
 	if (GetTransform() == nullptr)

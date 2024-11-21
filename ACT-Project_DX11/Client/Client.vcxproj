@@ -28,7 +28,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="Client.h" />
-    <ClInclude Include="Rangoon.h" />
+    <ClInclude Include="RangoonScript.h" />
     <ClInclude Include="StaticMeshDemo.h" />
   </ItemGroup>
   <ItemGroup>
@@ -44,7 +44,7 @@
     </ClCompile>
     <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="Rangoon.cpp" />
+    <ClCompile Include="RangoonScript.cpp" />
     <ClCompile Include="StaticMeshDemo.cpp" />
   </ItemGroup>
   <ItemGroup>

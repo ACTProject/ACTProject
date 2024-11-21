@@ -28,7 +28,7 @@
 #include "Camera.h"
 #include "Button.h"
 #include "Billboard.h"
-#include "Rangoon.h"
+#include "RangoonScript.h"
 
 void Client::Init()
 {
@@ -210,7 +210,7 @@ void Client::Init()
 	// Player
 	auto player = make_shared<GameObject>();
 
-	{
+	
 		// Player
 		player->GetOrAddTransform()->SetPosition(Vec3(0, 0, 0));
 		player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
@@ -263,13 +263,13 @@ void Client::Init()
 
 		CUR_SCENE->Add(player);
 		CUR_SCENE->SetPlayer(player);
-	}
+	
 
 // Enemy
 	auto enemy = make_shared<GameObject>();
 	{
 		enemy->GetOrAddTransform()->SetPosition(Vec3(10, 0, 10));
-		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
+		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, XMConvertToRadians(180), 0)); // XMConvertToRadians()
 		enemy->GetOrAddTransform()->SetScale(Vec3(0.0001f));
 
 		shared_ptr<Model> enemyModel = make_shared<Model>();
@@ -289,9 +289,9 @@ void Client::Init()
 			enemy->GetModelAnimator()->SetPass(2);
 		}
 
-		shared_ptr<Rangoon> rangoon = make_shared<Rangoon>();
+		shared_ptr<RangoonScript> rangoon = make_shared<RangoonScript>();
 
-		rangoon->SetPlayer(enemyModel);
+		rangoon->SetEnemy(enemyModel);
 		rangoon->SetModelAnimator(ma2);
 
 		enemy->AddComponent(rangoon);	

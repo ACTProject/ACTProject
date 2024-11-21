@@ -69,7 +69,7 @@
     <ClCompile Include="CameraScript.cpp">
       <Filter>Main\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Rangoon.cpp">
+    <ClCompile Include="RangoonScript.cpp">
       <Filter>Main\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="A_Star.cpp">
@@ -104,7 +104,7 @@
     <ClInclude Include="PlayerScript.h">
       <Filter>Main\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Rangoon.h">
+    <ClInclude Include="RangoonScript.h">
       <Filter>Main\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="A_Star.h">

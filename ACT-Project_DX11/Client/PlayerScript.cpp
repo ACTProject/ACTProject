@@ -66,7 +66,7 @@ void PlayerScript::Update()
 		_attackTimer += dt;
 
 		// 공격 단계 시간 초과 시 Idle로 복귀
-		if (_attackTimer >= ((_attackDurations[_attackStage - 1]) / _FPS) - 0.1f ) {
+		if (_attackTimer >= ((_attackDurations[_attackStage - 1]) / _FPS) - 0.1f) {
 			_attackStage = 0;  // 마지막 공격이 아니면 초기화
 			_isAttacking = false;
 			ResetToIdleState();
@@ -83,7 +83,7 @@ void PlayerScript::Update()
 	if (moveDir.LengthSquared() > 0.0f)  // 이동 벡터가 0이 아니라면 이동 중으로 간주
 	{
 		moveDir.Normalize();
-		float speed = isRunning ? _speed*2 : _speed;
+		float speed = isRunning ? _speed * 2 : _speed;
 		_transform->SetPosition(_transform->GetPosition() + moveDir * speed * dt);
 
 		targetAnimationState = isRunning ? AnimationState::Run : AnimationState::Walk;
@@ -128,6 +128,13 @@ void PlayerScript::Update()
 	{
 		Camera::S_IsWireFrame = true;
 	}
+	GetPos();
+}
+
+void PlayerScript::GetPos()
+{
+	_transform = GetTransform();
+	pos = _transform->GetPosition();
 }
 
 // 공격 애니메이션 상태 관리

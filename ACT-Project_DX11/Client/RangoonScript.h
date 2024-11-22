@@ -4,10 +4,10 @@
 #include "A_Star.h"
 #include "Model.h"
 #include "ModelAnimator.h"
+#include "PlayerScript.h"
 
 class Model;
 class ModelAnimator;
-
 
 class RangoonScript : public MonoBehaviour
 {
@@ -23,15 +23,22 @@ public:
 	void SetAnimationState(AnimationState state); 
 
 	void Aggro(Vec3& s, Vec3& t);
-	void Move(const Vec3& targetPos);
+	void Move(const Vec3 targetPos);
+	void Rota(const Vec3 targetPos);
 	void Attack();
 	void Tracking(Vec3 pos, const std::vector<Node3D>& path);
 
+	//float angle; 
+	float distance;
+	Vec3 direction;
+	Vec3 CurForward;
+
 private:
-	float _speed = 1.f;
-	float _deltaTime = 0.1f;
+	float _speed = 0.1f;
+	float _deltaTime = 1.f;
 	shared_ptr<Model> _rangoon;
 	shared_ptr<ModelAnimator> _modelAnimator;
 	shared_ptr<Transform> _transform;
+	shared_ptr<GameObject> _player;
 };
 

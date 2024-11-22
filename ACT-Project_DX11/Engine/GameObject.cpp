@@ -12,6 +12,7 @@
 #include "Button.h"
 #include "Billboard.h"
 #include "SnowBillboard.h"
+#include "Rigidbody.h"
 
 GameObject::GameObject()
 {
@@ -166,7 +167,7 @@ std::shared_ptr<SnowBillboard> GameObject::GetSnowBillboard()
 	return static_pointer_cast<SnowBillboard>(component);
 }
 
-shared_ptr<Rigidbody> GameObject::GetRigidbody()
+std::shared_ptr<Rigidbody> GameObject::GetRigidbody()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::Rigidbody);
 	return static_pointer_cast<Rigidbody>(component);

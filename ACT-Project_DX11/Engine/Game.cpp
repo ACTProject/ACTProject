@@ -22,7 +22,9 @@ WPARAM Game::Run(GameDesc& desc)
 	GUI->Init();
 	RESOURCES->Init();
 	
-	_desc.app->Init();
+	SCENE->Awake();
+	_desc.app->Init(); // 게임오브젝트 생성
+	SCENE->Start();
 
 	MSG msg = { 0 };
 
@@ -42,6 +44,36 @@ WPARAM Game::Run(GameDesc& desc)
 	return msg.wParam;
 }
 
+void Game::Update()
+{
+	TIME->Update();
+	INPUT->Update();
+	ShowFps();
+
+	GRAPHICS->RenderBegin();
+
+	GUI->Update();
+
+	SCENE->FixedUpdate();
+	SCENE->Update();
+
+	_desc.app->Update();
+	_desc.app->Render();
+	GUI->Render();
+
+	GRAPHICS->RenderEnd();
+}
+
+void Game::ShowFps()
+{
+	uint32 fps = GET_SINGLE(TimeManager)->GetFps();
+
+	WCHAR text[100] = L"";
+	::wsprintf(text, L"FPS : %d", fps);
+
+	::SetWindowText(_desc.hWnd, text);
+
+}
 
 ATOM Game::MyRegisterClass()
 {
@@ -97,34 +129,5 @@ LRESULT CALLBACK Game::WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM 
 	default:
 		return ::DefWindowProc(handle, message, wParam, lParam);
 	}
-}
-
-void Game::Update()
-{
-	TIME->Update();
-	INPUT->Update();
-	ShowFps();
-
-	GRAPHICS->RenderBegin();
-
-	GUI->Update();
-
-	SCENE->Update();
-	_desc.app->Update();
-	_desc.app->Render();
-	GUI->Render();
-
-	GRAPHICS->RenderEnd();
-}
-
-void Game::ShowFps()
-{
-	uint32 fps = GET_SINGLE(TimeManager)->GetFps();
-
-	WCHAR text[100] = L"";
-	::wsprintf(text, L"FPS : %d", fps);
-
-	::SetWindowText(_desc.hWnd, text);
-
 }
 

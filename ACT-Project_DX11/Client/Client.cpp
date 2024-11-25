@@ -425,7 +425,7 @@ void Client::Init()
 		// Material »ý¼º
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(renderShader);
-		auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height.png");
+		auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height4.png");
 		auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
 		//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
 
@@ -478,7 +478,7 @@ void Client::Init()
 			for (int32 x = 0; x <= width; x++) {
 				int32 idx = (width + 1) * z + x;
 				uint8 heightValue = expandedPixelBuffer[idx];
-				vertices[idx].position.y = static_cast<float>(heightValue) / 255.f * 80.f - 25.f;
+				vertices[idx].position.y = static_cast<float>(heightValue) / 255.f * 25.f - 25.f;
 			}
 		}
 

@@ -77,5 +77,5 @@ void QuadTree::Clear(QuadTreeNode* node)
             node->children[i] = nullptr;
         }
     }
-    delete node;
+    delete node;//
 }

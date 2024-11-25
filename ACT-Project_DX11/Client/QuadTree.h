@@ -27,5 +27,5 @@ private:
     QuadTreeNode* root = nullptr;
 
     void BuildRecursive(int startX, int startZ, int size, QuadTreeNode*& node);
-    void Clear(QuadTreeNode* node);
+    void Clear(QuadTreeNode* node);///////
 };

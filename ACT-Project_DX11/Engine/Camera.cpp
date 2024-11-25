@@ -85,6 +85,9 @@ void Camera::UpdateCameraWithMouseInput()
 	float y = _cameraDistance * sinf(_pitch);
 	float z = _cameraDistance * cosf(_pitch) * cosf(_yaw);
 
+	float a = 10;
+
+
 	// 카메라 위치를 플레이어 위치 기준으로 설정
 	if (_player == nullptr)
 	{

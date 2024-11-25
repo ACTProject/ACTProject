@@ -266,6 +266,8 @@
     </ClInclude>
     <ClInclude Include="MapManager.h">
       <Filter>02. Managers\test</Filter>
+    <ClInclude Include="Rigidbody.h">
+      <Filter>04. Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -466,6 +468,8 @@
     </ClCompile>
     <ClCompile Include="MapManager.cpp">
       <Filter>02. Managers\test</Filter>
+    <ClCompile Include="Rigidbody.cpp">
+      <Filter>04. Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

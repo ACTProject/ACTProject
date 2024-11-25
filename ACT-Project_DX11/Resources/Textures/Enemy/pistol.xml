@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Materials>
     <Material>
-        <Name>Mat_PistolShrimp.001</Name>
+        <Name>Mat_PistolShrimp.002</Name>
         <DiffuseFile>ShrimpBaseColor_New.png</DiffuseFile>
         <SpecularFile>ShrimpBaseColor_New.png</SpecularFile>
         <NormalFile>ShrimpBaseColor_New.png</NormalFile>
@@ -11,7 +11,7 @@
         <Emissive R="0" G="0" B="0" A="1"/>
     </Material>
     <Material>
-        <Name>ShotGunShell_mat.001</Name>
+        <Name>ShotGunShell_mat.002</Name>
         <DiffuseFile>PistolShrimp_low_03_ShotGun_Shell_AlbedoTransparency.png</DiffuseFile>
         <SpecularFile>PistolShrimp_low_03_ShotGun_Shell_AlbedoTransparency.png</SpecularFile>
         <NormalFile>PistolShrimp_low_03_ShotGun_Shell_AlbedoTransparency.png</NormalFile>

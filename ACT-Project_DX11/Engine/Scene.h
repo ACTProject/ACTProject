@@ -4,9 +4,11 @@
 class Scene
 {
 public:
-	virtual void Start();
-	virtual void Update();
-	virtual void LateUpdate();
+	virtual void Awake();		// 다른 오브젝트나 컴포넌트를 참조하기 전에 실행
+	virtual void Start();		// 오브젝트 활성화된 이후 초기화 수행
+	virtual void Update();		// 매 프레임마다 호출
+	virtual void FixedUpdate(); // 고정된 시간 간격마다 호출 (물리 연산) 
+	virtual void LateUpdate();	// 다른 오브젝트가 Update()에서 변경한 데이터를 기반으로 작업할 때 호출
 
 	virtual void Render();
 
@@ -14,12 +16,14 @@ public:
 	virtual void Remove(shared_ptr<GameObject> object);
 
 	void SetPlayer(shared_ptr<GameObject> player) { _player = player; }
+	void SetTerrain(shared_ptr<GameObject> terrain) { _terrain = terrain; }
 
 	unordered_set<shared_ptr<GameObject>>& GetObjects() { return _objects; }
 	shared_ptr<GameObject> GetMainCamera();
 	shared_ptr<GameObject> GetUICamera();
 	shared_ptr<GameObject> GetLight() { return _lights.empty() ? nullptr : *_lights.begin(); }
 	shared_ptr<GameObject> GetPlayer() { return _player; }
+	shared_ptr<GameObject> GetCurrentTerrain() { return _terrain; }
 
 	void PickUI();
 	shared_ptr<class GameObject> Pick(int32 screenX, int32 screenY);
@@ -34,6 +38,7 @@ private:
 	unordered_set<shared_ptr<GameObject>> _lights;
 
 	shared_ptr<GameObject> _player;
+	shared_ptr<GameObject> _terrain;	// currentTerrain
 
 };
 

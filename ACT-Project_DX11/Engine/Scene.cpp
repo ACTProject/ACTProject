@@ -5,6 +5,17 @@
 #include "Camera.h"
 #include "Terrain.h"
 #include "Button.h"
+#include "Rigidbody.h"
+
+void Scene::Awake()
+{
+	unordered_set<shared_ptr<GameObject>> objects = _objects;
+
+	for (shared_ptr<GameObject> object : objects)
+	{
+		object->Awake();
+	}
+}
 
 #include "MapManager.h"
 
@@ -29,13 +40,23 @@ void Scene::Update()
 
 	PickUI();
 
-	// ÀÌ ¾Æ·¡´Â ¸Ê Å×½ºÆ® ÄÚµå
+	// ì´ ì•„ë˜ëŠ” ë§µ í…ŒìŠ¤íŠ¸ ì½”ë“œ
 	MapManager::GetInstance()->Update();
 
 	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
 	{
 		POINT screenPt = INPUT->GetMousePos();
 		Pick(screenPt.x, screenPt.y);
+	}
+}
+
+void Scene::FixedUpdate()
+{
+	unordered_set<shared_ptr<GameObject>> objects = _objects;
+
+	for (shared_ptr<GameObject> object : objects)
+	{
+		object->FixedUpdate();
 	}
 }
 
@@ -157,16 +178,16 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 		if (gameObject->GetCollider() == nullptr)
 			continue;
 
-		// ViewSpace¿¡¼­ÀÇ Ray Á¤ÀÇ
+		// ViewSpaceì—ì„œì˜ Ray ì •ì˜
 		Vec4 rayOrigin = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		Vec4 rayDir = Vec4(viewX, viewY, 1.0f, 0.0f);
 
-		// WorldSpace¿¡¼­ÀÇ Ray Á¤ÀÇ
+		// WorldSpaceì—ì„œì˜ Ray ì •ì˜
 		Vec3 worldRayOrigin = XMVector3TransformCoord(rayOrigin, viewMatrixInv);
 		Vec3 worldRayDir = XMVector3TransformNormal(rayDir, viewMatrixInv);
 		worldRayDir.Normalize();
 
-		// WorldSpace¿¡¼­ ¿¬»ê
+		// WorldSpaceì—ì„œ ì—°ì‚°
 		Ray ray = Ray(worldRayOrigin, worldRayDir);
 
 		float distance = 0.f;
@@ -182,7 +203,7 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 
 
 
-	////// Terrain ÇÇÅ· ÀÛ¾÷
+	////// Terrain í”¼í‚¹ ì‘ì—…
 	for (auto& gameObject : gameObjects)
 	{
 		if (gameObject->GetTerrain() == nullptr)
@@ -193,12 +214,12 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 		if (gameObject->GetTerrain()->Pick(screenX, screenY, OUT pickPos, OUT distance) == false)
 			continue;
 
-		// ¾À¿¡´Ù°¡ °ÔÀÓ¿ÉÁ§ ÀúÀå½ÃÄÑ³õ°í, µü ÂïÀ¸¸é pickPosÀ§Ä¡¿¡´Ù°¡ Ãß°¡µÇ°Ô²û ¸¸µé¸é µÉ µí
-		// Scene¿¡´Ù°¡ 
+		// ì”¬ì—ë‹¤ê°€ ê²Œì„ì˜µì  ì €ì¥ì‹œì¼œë†“ê³ , ë”± ì°ìœ¼ë©´ pickPosìœ„ì¹˜ì—ë‹¤ê°€ ì¶”ê°€ë˜ê²Œë” ë§Œë“¤ë©´ ë  ë“¯
+		// Sceneì—ë‹¤ê°€ 
 		{
 			if(MapManager::GetInstance()->ChekMapObjSelect())
 			{
-				// °¡²û y°ªÀÌ ÀÌ»óÇØÁú ¶§°¡ ÀÖ´Ù.
+				// ê°€ë” yê°’ì´ ì´ìƒí•´ì§ˆ ë•Œê°€ ìˆë‹¤.
 				shared_ptr<GameObject> obj = MapManager::GetInstance()->Create(pickPos);
 
 				Add(obj);
@@ -239,3 +260,4 @@ void Scene::CheckCollision()
 		}
 	}
 }
+

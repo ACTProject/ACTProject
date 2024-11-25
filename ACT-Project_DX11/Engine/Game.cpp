@@ -9,10 +9,10 @@ WPARAM Game::Run(GameDesc& desc)
 	_desc = desc;
 	assert(_desc.app != nullptr);
 
-	// 1) À©µµ¿ì Ã¢ Á¤º¸ µî·Ï
+	// 1) ìœˆë„ìš° ì°½ ì •ë³´ ë“±ë¡
 	MyRegisterClass();
 
-	// 2) À©µµ¿ì Ã¢ »ý¼º
+	// 2) ìœˆë„ìš° ì°½ ìƒì„±
 	if (!InitInstance(SW_SHOWNORMAL))
 		return FALSE;
 		
@@ -21,9 +21,10 @@ WPARAM Game::Run(GameDesc& desc)
 	INPUT->Init(_desc.hWnd);
 	GUI->Init();
 	RESOURCES->Init();
-	
-	_desc.app->Init();
 	MAP->Init();
+	SCENE->Awake();
+	_desc.app->Init(); // ê²Œìž„ì˜¤ë¸Œì íŠ¸ ìƒì„±
+	SCENE->Start();
 
 	MSG msg = { 0 };
 
@@ -44,6 +45,36 @@ WPARAM Game::Run(GameDesc& desc)
 	return msg.wParam;
 }
 
+void Game::Update()
+{
+	TIME->Update();
+	INPUT->Update();
+	ShowFps();
+
+	GRAPHICS->RenderBegin();
+
+	GUI->Update();
+
+	SCENE->FixedUpdate();
+	SCENE->Update();
+
+	_desc.app->Update();
+	_desc.app->Render();
+	GUI->Render();
+
+	GRAPHICS->RenderEnd();
+}
+
+void Game::ShowFps()
+{
+	uint32 fps = GET_SINGLE(TimeManager)->GetFps();
+
+	WCHAR text[100] = L"";
+	::wsprintf(text, L"FPS : %d", fps);
+
+	::SetWindowText(_desc.hWnd, text);
+
+}
 
 ATOM Game::MyRegisterClass()
 {
@@ -99,34 +130,5 @@ LRESULT CALLBACK Game::WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM 
 	default:
 		return ::DefWindowProc(handle, message, wParam, lParam);
 	}
-}
-
-void Game::Update()
-{
-	TIME->Update();
-	INPUT->Update();
-	ShowFps();
-
-	GRAPHICS->RenderBegin();
-
-	GUI->Update();
-
-	SCENE->Update();
-	_desc.app->Update();
-	_desc.app->Render();
-	GUI->Render();
-
-	GRAPHICS->RenderEnd();
-}
-
-void Game::ShowFps()
-{
-	uint32 fps = GET_SINGLE(TimeManager)->GetFps();
-
-	WCHAR text[100] = L"";
-	::wsprintf(text, L"FPS : %d", fps);
-
-	::SetWindowText(_desc.hWnd, text);
-
 }
 

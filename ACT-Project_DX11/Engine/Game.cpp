@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Game.h"
 #include "IExecute.h"
-#include "MapManager.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -24,7 +23,7 @@ WPARAM Game::Run(GameDesc& desc)
 	RESOURCES->Init();
 	
 	_desc.app->Init();
-	MapManager::GetInstance()->Init();
+	MAP->Init();
 
 	MSG msg = { 0 };
 
@@ -40,7 +39,7 @@ WPARAM Game::Run(GameDesc& desc)
 			Update();
 		}
 	}
-	MapManager::GetInstance()->ExportMapObj();
+	MAP->ExportMapObj();
 
 	return msg.wParam;
 }

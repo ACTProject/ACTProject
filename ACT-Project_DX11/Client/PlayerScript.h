@@ -16,6 +16,9 @@ public:
 	void SetModelAnimator(shared_ptr<ModelAnimator> modelAnimator) { _modelAnimator = modelAnimator; }
 	void SetAnimationState(AnimationState state);
 
+	void GetPos();
+	Vec3 pos;
+
 	void StartAttack();
 	void ContinueAttack();
 	void PlayAttackAnimation(int stage);

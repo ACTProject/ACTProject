@@ -28,6 +28,7 @@
 #include "Camera.h"
 #include "Button.h"
 #include "Billboard.h"
+#include "RangoonScript.h"
 #include "Rigidbody.h"
 
 void Client::Init()
@@ -210,7 +211,7 @@ void Client::Init()
 	// Player
 	auto player = make_shared<GameObject>();
 
-	{
+	
 		// Player
 		player->GetOrAddTransform()->SetPosition(Vec3(1, 0, 1));
 		player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
@@ -267,13 +268,13 @@ void Client::Init()
 
 		CUR_SCENE->Add(player);
 		CUR_SCENE->SetPlayer(player);
-	}
+	
 
 	// Enemy
 	auto enemy = make_shared<GameObject>();
 	{
-		enemy->GetOrAddTransform()->SetPosition(Vec3(30, 0, 30));
-		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, XMConvertToRadians(180), 0)); // XMConvertToRadians()
+		enemy->GetOrAddTransform()->SetPosition(Vec3(10, 0, 10));
+		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 		enemy->GetOrAddTransform()->SetScale(Vec3(0.0001f));
 
 		shared_ptr<Model> enemyModel = make_shared<Model>();
@@ -292,6 +293,13 @@ void Client::Init()
 			enemy->GetModelAnimator()->SetModel(enemyModel);
 			enemy->GetModelAnimator()->SetPass(2);
 		}
+		shared_ptr<RangoonScript> rangoon = make_shared<RangoonScript>();
+
+		rangoon->SetEnemy(enemyModel);
+		rangoon->SetModelAnimator(ma2);
+
+		enemy->AddComponent(rangoon);	
+
 		// Rigidbody
 		shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
 		rigidBody->SetUseGravity(true);
@@ -299,6 +307,7 @@ void Client::Init()
 
 		CUR_SCENE->Add(enemy);
 	}
+
 	//auto enemy2 = make_shared<GameObject>();
 	//{
 	//	enemy2->GetOrAddTransform()->SetPosition(Vec3(5, 0, 10));
@@ -312,8 +321,9 @@ void Client::Init()
 	//		enemyModel->ReadMaterial(L"Enemy/pistol");
 
 	//		enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Idle);
-	//		/*enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Hit);
-	//		enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
+	//		//enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Hit);
+	//		//enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
+
 	//	}
 	//	shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
 	//	enemy2->AddComponent(ma2);
@@ -406,6 +416,7 @@ void Client::Init()
 
 void Client::Update()
 {
+	
 }
 
 void Client::Render()

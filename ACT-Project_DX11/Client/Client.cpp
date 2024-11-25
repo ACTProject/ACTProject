@@ -29,8 +29,6 @@
 #include "Button.h"
 #include "Billboard.h"
 
-#include "MapManager.h"
-
 void Client::Init()
 {
 	shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
@@ -119,7 +117,7 @@ void Client::Init()
 		player->AddComponent(playerScript);
 
 		CUR_SCENE->Add(player);
-		CUR_SCENE->SetPlayer(player);
+		//CUR_SCENE->SetPlayer(player);
 	}
 
 	// Enemy
@@ -411,10 +409,10 @@ void Client::Init()
 	////MapObj
 	// TODO - 피킹된 옵젝 삭제.
 	shared_ptr<MapObjDesc> src = make_shared<MapObjDesc>(L"Obj/recyclingBox", L"23. RenderDemo.fx");
-	MapManager::GetInstance()->AddMapObj(src);
+	MAP->AddMapObj(src);
 	
 	shared_ptr<MapObjDesc> src1 = make_shared<MapObjDesc>(L"Obj/TutorialWallsLeft", L"23. RenderDemo.fx");
-	MapManager::GetInstance()->AddMapObj(src1);
+	MAP->AddMapObj(src1);
 
 }
 

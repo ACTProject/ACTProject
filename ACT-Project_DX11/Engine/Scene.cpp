@@ -5,6 +5,17 @@
 #include "Camera.h"
 #include "Terrain.h"
 #include "Button.h"
+#include "Rigidbody.h"
+
+void Scene::Awake()
+{
+	unordered_set<shared_ptr<GameObject>> objects = _objects;
+
+	for (shared_ptr<GameObject> object : objects)
+	{
+		object->Awake();
+	}
+}
 
 void Scene::Start()
 {
@@ -26,6 +37,16 @@ void Scene::Update()
 	}
 
 	PickUI();
+}
+
+void Scene::FixedUpdate()
+{
+	unordered_set<shared_ptr<GameObject>> objects = _objects;
+
+	for (shared_ptr<GameObject> object : objects)
+	{
+		object->FixedUpdate();
+	}
 }
 
 void Scene::LateUpdate()
@@ -176,7 +197,7 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 
 		Vec3 pickPos;
 		float distance = 0.f;
-		if (gameObject->GetTerrain()->Pick(screenX, screenY, OUT pickPos, OUT distance) == false)
+		if (_terrain->GetTerrain()->Pick(screenX, screenY, OUT pickPos, OUT distance) == false)
 			continue;
 
 		if (distance < minDistance)
@@ -214,3 +235,4 @@ void Scene::CheckCollision()
 		}
 	}
 }
+

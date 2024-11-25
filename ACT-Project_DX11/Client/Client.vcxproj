@@ -90,6 +90,11 @@
     <FxCompile Include="..\Shaders\28. BillBoardDemo.fx" />
     <FxCompile Include="..\Shaders\29. SnowDemo.fx" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.vcxproj">
+      <Project>{4f5c1012-31bd-4947-831e-bf2cc095398f}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

@@ -261,6 +261,9 @@
     <ClInclude Include="MyCoroutine.h">
       <Filter>98. Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Rigidbody.h">
+      <Filter>04. Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -457,6 +460,9 @@
     </ClCompile>
     <ClCompile Include="MyCoroutine.cpp">
       <Filter>98. Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Rigidbody.cpp">
+      <Filter>04. Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

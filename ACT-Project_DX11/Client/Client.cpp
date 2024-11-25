@@ -283,6 +283,7 @@ void Client::Init()
 			enemyModel->ReadModel(L"Enemy/Rangoon");
 			enemyModel->ReadMaterial(L"Enemy/Rangoon");
 
+			enemyModel->ReadAnimation(L"Enemy/Rangoon_Taunt", AnimationState::Run);
 			enemyModel->ReadAnimation(L"Enemy/Rangoon_idle", AnimationState::Idle);
 			enemyModel->ReadAnimation(L"Enemy/Rangoon_hit", AnimationState::Hit);
 			enemyModel->ReadAnimation(L"Enemy/Rangoon_atk", AnimationState::Atk);

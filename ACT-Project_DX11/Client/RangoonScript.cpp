@@ -13,8 +13,12 @@ void RangoonScript::Move(const Vec3 targetPos)
     direction = targetPos - _transform->GetPosition();  // 목표 위치 방향 계산
     distance = direction.Length();    // 목표와의 거리
     if (distance < 5.f) {
+        onTarget = true;
         return; // 목표에 도달
     }
+    
+    onTarget = false;
+
     direction.Normalize();  // 방향 벡터를 단위 벡터로 정규화
 
     _transform->SetPosition(_transform->GetPosition() + direction * _speed * _deltaTime);  // 일정 거리만큼 이동
@@ -72,9 +76,6 @@ void RangoonScript::Tracking(Vec3 pos, const std::vector<Node3D>& path)
     }
 }
 
-
-
-
 void RangoonScript::Attack()
 {
 
@@ -101,7 +102,20 @@ void RangoonScript::Update()
     {
         Move(playerPosition);
         Rota(playerPosition);
+        if (onTarget == true)
+        {
+            SetAnimationState(AnimationState::Atk);
+        }
+        else
+        {
+            SetAnimationState(AnimationState::Run);
+        }
     }
     
 }
 
+void RangoonScript::SetAnimationState(AnimationState state)
+{
+    _modelAnimator->ChangeAnimation(state);
+    _currentAnimationState = state;
+}

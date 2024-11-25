@@ -32,6 +32,7 @@ public:
 	float distance;
 	Vec3 direction;
 	Vec3 CurForward;
+	bool onTarget = false;
 
 private:
 	float _speed = 0.1f;
@@ -40,5 +41,6 @@ private:
 	shared_ptr<ModelAnimator> _modelAnimator;
 	shared_ptr<Transform> _transform;
 	shared_ptr<GameObject> _player;
+	AnimationState _currentAnimationState = AnimationState::Idle;
 };
 

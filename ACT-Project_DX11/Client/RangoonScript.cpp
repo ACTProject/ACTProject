@@ -1,16 +1,6 @@
 #include "pch.h"
 #include "RangoonScript.h"
 
-
-#include <sstream>
-
-std::string Vec3ToString(const Vec3& vec)
-{
-    std::ostringstream oss;
-    oss << "Vec3(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
-    return oss.str();
-}
-
 void RangoonScript::Aggro(Vec3& s, Vec3& t)
 {
 
@@ -38,12 +28,6 @@ void RangoonScript::Rota(const Vec3 targetPos)
     direction = targetPos - _transform->GetPosition();
     direction.Normalize();
 
-    // Vec3를 문자열로 변환하여 출력
-    std::string forwardStr = Vec3ToString(CurForward);
-    std::string directionStr = Vec3ToString(direction);
-
-
-
     // 외적을 이용한 회전 축 계산
     Vec3 rotationAxis = CurForward.Cross(direction);
 
@@ -63,33 +47,30 @@ void RangoonScript::Rota(const Vec3 targetPos)
     {
         return;
     }
-    // 디버그 메시지 출력
-    OutputDebugStringA(("CurForward: " + forwardStr + "\n").c_str());
-    OutputDebugStringA(("Direction: " + directionStr + "\n").c_str());
     // 방향에 따라 각도 조정 (y축 중심 회전)
     if (rotationAxis.y < 0) {
         angle = -angle;  // 왼쪽 회전
     }
 
-        // 현재 회전값 업데이트
-    Vec3 currentRotation = _transform->GetRotation();
-    _transform->SetRotation(Vec3(0, currentRotation.y, 0) + Vec3(0, angle, 0));
+    // 현재 회전값 업데이트
+    Vec3 currentRotation = _transform->GetLocalRotation();
+    _transform->SetRotation(currentRotation + Vec3(0, angle, 0));
    
 }
 
 void RangoonScript::Tracking(Vec3 pos, const std::vector<Node3D>& path)
 {
-    //if (path.empty()) {
-    //    return;
-    //}
+    if (path.empty()) {
+        return;
+    }
 
-    //// 경로 상의 각 노드를 따라 이동
-    //for (size_t i = 0; i < path.size(); ++i) {
-    //    // 현재 위치가 목표 노드에 도달했다면 다음 노드로 이동
-    //    if (i + 1 < path.size()) {
-    //        Move(pos, path[i + 1].pos);
-    //    }
-    //}
+    // 경로 상의 각 노드를 따라 이동
+    for (size_t i = 0; i < path.size(); ++i) {
+        // 현재 위치가 목표 노드에 도달했다면 다음 노드로 이동
+        if (i + 1 < path.size()) {
+            Move(path[i + 1].pos);
+        }
+    }
 }
 
 
@@ -111,12 +92,12 @@ void RangoonScript::Update()
     _player = SCENE->GetCurrentScene()->GetPlayer();
     Vec3 playerPosition = _player->GetTransform()->GetPosition();
 
-    //Node3D start = { enemy->GetOrAddTransform()->GetPosition(), 0, 0, nullptr };
+    //Node3D start = { _transform->GetPosition(), 0, 0, nullptr };
     //Node3D goal = { {0,0,0},0,0,nullptr };
     
     //std::vector<Node3D> path = astar.findPath(start, goal);
 
-    //Tracking(enemy->GetTransform()->GetPosition(), path);
+    //Tracking(_transform->GetPosition(), path);
     //if (INPUT->GetButton(KEY_TYPE::KEY_4))
     {
         Move(playerPosition);

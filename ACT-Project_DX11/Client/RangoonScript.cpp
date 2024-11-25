@@ -23,8 +23,6 @@ void RangoonScript::Move(const Vec3 targetPos)
 void RangoonScript::Rota(const Vec3 targetPos)
 {
     CurForward = _transform->GetLook();
-    if (CurForward.z > 0)
-        int a = 0;
     direction = targetPos - _transform->GetPosition();
     direction.Normalize();
 
@@ -43,7 +41,7 @@ void RangoonScript::Rota(const Vec3 targetPos)
     float angle = std::acos(CurForward.Dot(direction));
 
     // 작은 각도는 무시
-    if (abs(angle) < 0.01f) // 0.01 라디안(약 0.57도) 이하 회전 무시
+    if (abs(angle) < 0.001f) // 0.01 라디안(약 0.57도) 이하 회전 무시
     {
         return;
     }
@@ -54,7 +52,8 @@ void RangoonScript::Rota(const Vec3 targetPos)
 
     // 현재 회전값 업데이트
     Vec3 currentRotation = _transform->GetLocalRotation();
-    _transform->SetRotation(currentRotation + Vec3(0, angle, 0));
+    Vec3 newRotation = Vec3::Lerp(currentRotation, currentRotation + Vec3(0, angle, 0), 0.1f); // 0.1f는 보간 속도
+    _transform->SetRotation(newRotation);
    
 }
 

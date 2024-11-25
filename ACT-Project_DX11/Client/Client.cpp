@@ -400,7 +400,6 @@ void Client::Init()
 		obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetIndices());
 
 		CUR_SCENE->Add(obj);
-		CUR_SCENE->SetTerrain(obj);
 	}
 }
 

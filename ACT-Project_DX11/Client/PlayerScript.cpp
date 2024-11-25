@@ -65,8 +65,9 @@ void PlayerScript::Update()
 	if (_isAttacking) {
 		_attackTimer += dt;
 
+		float a = ((_attackDurations[_attackStage - 1]) / _FPS);
 		// 공격 단계 시간 초과 시 Idle로 복귀
-		if (_attackTimer >= ((_attackDurations[_attackStage - 1]) / _FPS) - 0.1f ) {
+		if (_attackTimer >= a) {
 			_attackStage = 0;  // 마지막 공격이 아니면 초기화
 			_isAttacking = false;
 			ResetToIdleState();

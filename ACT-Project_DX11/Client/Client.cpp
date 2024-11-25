@@ -28,6 +28,7 @@
 #include "Camera.h"
 #include "Button.h"
 #include "Billboard.h"
+#include "Rigidbody.h"
 
 void Client::Init()
 {
@@ -211,7 +212,7 @@ void Client::Init()
 
 	{
 		// Player
-		player->GetOrAddTransform()->SetPosition(Vec3(0, 0, 0));
+		player->GetOrAddTransform()->SetPosition(Vec3(1, 0, 1));
 		player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 		player->GetOrAddTransform()->SetScale(Vec3(0.01f));
 
@@ -251,6 +252,10 @@ void Client::Init()
 			player->GetModelAnimator()->SetModel(playerModel);
 			player->GetModelAnimator()->SetPass(2);
 		}
+		// Rigidbody
+		shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
+		rigidBody->SetUseGravity(true);
+		player->AddComponent(rigidBody);
 
 		// Player::PlayerScript
 		shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();
@@ -264,10 +269,10 @@ void Client::Init()
 		CUR_SCENE->SetPlayer(player);
 	}
 
-// Enemy
+	// Enemy
 	auto enemy = make_shared<GameObject>();
 	{
-		enemy->GetOrAddTransform()->SetPosition(Vec3(10, 0, 10));
+		enemy->GetOrAddTransform()->SetPosition(Vec3(30, 0, 30));
 		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, XMConvertToRadians(180), 0)); // XMConvertToRadians()
 		enemy->GetOrAddTransform()->SetScale(Vec3(0.0001f));
 
@@ -287,110 +292,115 @@ void Client::Init()
 			enemy->GetModelAnimator()->SetModel(enemyModel);
 			enemy->GetModelAnimator()->SetPass(2);
 		}
+		// Rigidbody
+		shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
+		rigidBody->SetUseGravity(true);
+		enemy->AddComponent(rigidBody);
+
 		CUR_SCENE->Add(enemy);
 	}
-	auto enemy2 = make_shared<GameObject>();
-	{
-		enemy2->GetOrAddTransform()->SetPosition(Vec3(5, 0, 10));
-		enemy2->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
-		enemy2->GetOrAddTransform()->SetScale(Vec3(0.0001f));
+	//auto enemy2 = make_shared<GameObject>();
+	//{
+	//	enemy2->GetOrAddTransform()->SetPosition(Vec3(5, 0, 10));
+	//	enemy2->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
+	//	enemy2->GetOrAddTransform()->SetScale(Vec3(0.0001f));
 
-		shared_ptr<Model> enemyModel = make_shared<Model>();
-		// Model
-		{
-			enemyModel->ReadModel(L"Enemy/pistol");
-			enemyModel->ReadMaterial(L"Enemy/pistol");
+	//	shared_ptr<Model> enemyModel = make_shared<Model>();
+	//	// Model
+	//	{
+	//		enemyModel->ReadModel(L"Enemy/pistol");
+	//		enemyModel->ReadMaterial(L"Enemy/pistol");
 
-			enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Idle);
-			/*enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Hit);
-			enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
-		}
-		shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
-		enemy2->AddComponent(ma2);
-		{
-			enemy2->GetModelAnimator()->SetModel(enemyModel);
-			enemy2->GetModelAnimator()->SetPass(2);
-		}
-		CUR_SCENE->Add(enemy2);
-	}
+	//		enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Idle);
+	//		/*enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Hit);
+	//		enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
+	//	}
+	//	shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
+	//	enemy2->AddComponent(ma2);
+	//	{
+	//		enemy2->GetModelAnimator()->SetModel(enemyModel);
+	//		enemy2->GetModelAnimator()->SetPass(2);
+	//	}
+	//	CUR_SCENE->Add(enemy2);
+	//}
 
 	// Terrain
-	//{
-	//	// Material
+	{
+		// Material
 
-	//	shared_ptr<Material> material = make_shared<Material>();
-	//	material->SetShader(renderShader);
-	//	auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height.png");
-	//	//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
-	//	auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(renderShader);
+		auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height.png");
+		//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
+		auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
 
-	//	const int32 width = heightMap->GetSize().x;
-	//	const int32 height = heightMap->GetSize().y;
+		const int32 width = heightMap->GetSize().x;
+		const int32 height = heightMap->GetSize().y;
 
-	//	const DirectX::ScratchImage& info = heightMap->GetInfo();
+		const DirectX::ScratchImage& info = heightMap->GetInfo();
 
-	//	// Replace the old heightmap with the filtered one.
-	//	uint8* pixelBuffer = info.GetPixels();
+		// Replace the old heightmap with the filtered one.
+		uint8* pixelBuffer = info.GetPixels();
 
-	//	material->SetDiffuseMap(texture);
-	//	MaterialDesc& desc = material->GetMaterialDesc();
-	//	desc.ambient = Vec4(1.f);
-	//	desc.diffuse = Vec4(1.f);
-	//	desc.specular = Vec4(1.f);
-	//	RESOURCES->Add(L"Sand", material);
+		material->SetDiffuseMap(texture);
+		MaterialDesc& desc = material->GetMaterialDesc();
+		desc.ambient = Vec4(1.f);
+		desc.diffuse = Vec4(1.f);
+		desc.specular = Vec4(1.f);
+		RESOURCES->Add(L"Sand", material);
 
 
-	//	auto obj = make_shared<GameObject>();
-	//	obj->AddComponent(make_shared<Terrain>());
-	//	obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
-	//	{
-	//		vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
-	//		for (int32 z = 0; z < height; z++)
-	//		{
-	//			for (int32 x = 0; x < width; x++)
-	//			{
-	//				int32 idx = width * z + x;
-	//				uint8 height = pixelBuffer[idx] / 255.f * 25.f;
-	//				v[idx].position.y = height - 8.f;
-	//			}
-	//		}
+		auto obj = make_shared<GameObject>();
+		obj->AddComponent(make_shared<Terrain>());
+		obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
+		{
+			vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
+			for (int32 z = 0; z < height; z++)
+			{
+				for (int32 x = 0; x < width; x++)
+				{
+					int32 idx = width * z + x;
+					uint8 height = pixelBuffer[idx] / 255.f * 25.f;
+					v[idx].position.y = height - 8.f;
+				}
+			}
 
-	//		// Smooth
-	//		float avg = 0.0f;
-	//		float num = 0.0f;
+			// Smooth
+			float avg = 0.0f;
+			float num = 0.0f;
 
-	//		for (int32 z = 0; z < height; z++)
-	//		{
-	//			for (int32 x = 0; x < width; x++)
-	//			{
-	//				avg = 0.0f;
-	//				num = 0.0f;
-	//				for (int32 m = z - 1; m <= z + 1; ++m) // -1 ~ 1, 0 ~ 2
-	//				{
+			for (int32 z = 0; z < height; z++)
+			{
+				for (int32 x = 0; x < width; x++)
+				{
+					avg = 0.0f;
+					num = 0.0f;
+					for (int32 m = z - 1; m <= z + 1; ++m) // -1 ~ 1, 0 ~ 2
+					{
 
-	//					for (int32 n = x - 1; n <= x + 1; ++n)
-	//					{
-	//						if (m >= 0 && m < (int32)height &&
-	//							n >= 0 && n < (int32)width)
-	//						{
-	//							avg += v[m * width + n].position.y;
-	//							num += 1.0f;
-	//						}
-	//					}
+						for (int32 n = x - 1; n <= x + 1; ++n)
+						{
+							if (m >= 0 && m < (int32)height &&
+								n >= 0 && n < (int32)width)
+							{
+								avg += v[m * width + n].position.y;
+								num += 1.0f;
+							}
+						}
 
-	//				}
-	//				v[z * height + x].position.y = avg / num;
+					}
+					v[z * height + x].position.y = avg / num;
 
-	//			}
-	//		}
+				}
+			}
 
-	//	}
+		}
 
-	//	obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
-	//	obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetIndices());
+		obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
+		obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetIndices());
 
-	//	CUR_SCENE->Add(obj);
-	//}
+		CUR_SCENE->Add(obj);
+	}
 }
 
 void Client::Update()

@@ -17,6 +17,8 @@ public:
 	void SetTechnique(uint8 technique) { _technique = technique; }
 	void SetPass(uint8 pass) { _pass = pass; }
 
+	shared_ptr<Model> GetModel() { return _model; };
+	shared_ptr<Shader> GetShader() { return _shader; };
 	void RenderInstancing(shared_ptr<class InstancingBuffer>& buffer);
 	void RenderSingle();
 	InstanceID GetInstanceID();

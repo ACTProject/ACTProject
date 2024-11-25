@@ -101,6 +101,14 @@ void AssimpTool::Init()
 			converter->ReadAssetFile(L"Enemy/Rangoon_Taunt.fbx");
 			converter->ExportAnimationData(L"Enemy/Rangoon_Taunt");
 		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Obj/TutorialWallsLeft.fbx");
+			converter->ExportMaterialData(L"Obj/TutorialWallsLeft");
+			converter->ExportModelData(L"Obj/TutorialWallsLeft");
+		}
+
+
 		//test
 		// 
 		//{

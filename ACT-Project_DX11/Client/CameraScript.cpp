@@ -12,6 +12,16 @@ void CameraScript::Update()
 {
 	float dt = TIME->GetDeltaTime();
 
+	//// 이부분바꿈
+	//if (INPUT->GetButton(KEY_TYPE::SHIFT))
+	//{
+	//	_speed = 100.0f;
+	//}
+	//else
+	//{
+	//	_speed = 10.0f;
+	//}
+
 	// Right, Up, Look 벡터 업데이트 (뷰 행렬의 열 벡터를 사용)
 	Vec3 right = Vec3(Camera::S_MatView._11, Camera::S_MatView._21, Camera::S_MatView._31);  // X축 방향
 	Vec3 up = Vec3(Camera::S_MatView._12, Camera::S_MatView._22, Camera::S_MatView._32);     // Y축 방향

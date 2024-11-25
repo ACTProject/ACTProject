@@ -29,6 +29,8 @@
 #include "Button.h"
 #include "Billboard.h"
 
+#include "MapManager.h"
+
 void Client::Init()
 {
 	shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
@@ -42,155 +44,10 @@ void Client::Init()
 		{
 			camera->GetCamera()->SetCameraOffset(Vec3(0.f, 7.f, -14.f));
 		}
-		//camera->AddComponent(make_shared<CameraScript>());
+		camera->AddComponent(make_shared<CameraScript>());
 		camera->GetCamera()->SetCullingMaskLayerOnOff(Layer_UI, true);
 
 		CUR_SCENE->Add(camera);
-	}
-
-	// UI_Camera
-	{
-		auto camera = make_shared<GameObject>();
-		camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
-		camera->AddComponent(make_shared<Camera>());
-		camera->GetCamera()->SetProjectionType(ProjectionType::Orthographic);
-		camera->GetCamera()->SetNear(1.f);
-		camera->GetCamera()->SetFar(100.f);
-
-
-		camera->GetCamera()->SetCullingMaskAll();
-		camera->GetCamera()->SetCullingMaskLayerOnOff(Layer_UI, false);
-		CUR_SCENE->Add(camera);
-	}
-
-	//UI_HPBar
-	{
-		// Material
-		{
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(renderShader);
-			auto texture = RESOURCES->Load<Texture>(L"HealBar", L"..\\Resources\\Textures\\UI\\BackBorder_Health.png");
-			material->SetDiffuseMap(texture);
-			MaterialDesc& desc = material->GetMaterialDesc();
-			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(1.f);
-			desc.specular = Vec4(1.f);
-			RESOURCES->Add(L"HealBar", material);
-		}
-		// Material
-		{
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(renderShader);
-			auto texture = RESOURCES->Load<Texture>(L"ArmorBar", L"..\\Resources\\Textures\\UI\\BackBorder_Armor.png");
-			material->SetDiffuseMap(texture);
-			MaterialDesc& desc = material->GetMaterialDesc();
-			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(1.f);
-			desc.specular = Vec4(1.f);
-			RESOURCES->Add(L"ArmorBar", material);
-		}
-		// Material
-		{
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(renderShader);
-			auto texture = RESOURCES->Load<Texture>(L"RedBar", L"..\\Resources\\Textures\\UI\\FrontBprder_HPBar.png");
-			material->SetDiffuseMap(texture);
-			MaterialDesc& desc = material->GetMaterialDesc();
-			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(1.f);
-			desc.specular = Vec4(1.f);
-			RESOURCES->Add(L"RedBar", material);
-		}
-
-
-		// MeshHealBar
-		{
-			auto obj = make_shared<GameObject>();
-			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-230.f, -260.f, 0.0f));
-			obj->GetOrAddTransform()->SetScale(Vec3(180, 30, 100));
-			obj->AddComponent(make_shared<MeshRenderer>());
-
-			obj->SetLayerIndex(Layer_UI);
-			{
-				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"HealBar"));
-
-			}
-			{
-				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
-				obj->GetMeshRenderer()->SetMesh(mesh);
-				obj->GetMeshRenderer()->SetPass(0);
-				obj->GetMeshRenderer()->SetAlphaBlend(true);
-			}
-
-			CUR_SCENE->Add(obj);
-		}
-		// MeshArmorBar
-		{
-			auto obj = make_shared<GameObject>();
-			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-210.f, -230.f, -0.1f));
-			obj->GetOrAddTransform()->SetScale(Vec3(200, 30, 100));
-			obj->AddComponent(make_shared<MeshRenderer>());
-
-			obj->SetLayerIndex(Layer_UI);
-			{
-				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"ArmorBar"));
-
-			}
-			{
-				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
-				obj->GetMeshRenderer()->SetMesh(mesh);
-				obj->GetMeshRenderer()->SetAlphaBlend(true);
-				obj->GetMeshRenderer()->SetPass(0);
-			}
-
-			CUR_SCENE->Add(obj);
-		}
-		// RedBar HPMesh
-		{
-			auto obj = make_shared<GameObject>();
-			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-228.f, -261.f, -0.2f));
-			//obj->GetOrAddTransform()->SetScale(Vec3(150, 10, 100));
-			obj->GetOrAddTransform()->SetScale(Vec3(126, 8, 100));
-
-			obj->AddComponent(make_shared<MeshRenderer>());
-
-			obj->SetLayerIndex(Layer_UI);
-			{
-				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"RedBar"));
-
-			}
-			{
-				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
-				obj->GetMeshRenderer()->SetMesh(mesh);
-				obj->GetMeshRenderer()->SetAlphaBlend(true);
-				obj->GetMeshRenderer()->SetPass(0);
-			}
-
-			CUR_SCENE->Add(obj);
-		}
-
-		// RedBar ARmor Mesh
-		{
-			auto obj = make_shared<GameObject>();
-			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-207.f, -234.f, -0.2f));
-			obj->GetOrAddTransform()->SetScale(Vec3(164, 7, 100));
-
-			obj->AddComponent(make_shared<MeshRenderer>());
-
-			obj->SetLayerIndex(Layer_UI);
-			{
-				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"RedBar"));
-
-			}
-			{
-				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
-				obj->GetMeshRenderer()->SetMesh(mesh);
-				//obj->GetMeshRenderer()->SetAlphaBlend(true);
-				obj->GetMeshRenderer()->SetPass(0);
-			}
-
-			CUR_SCENE->Add(obj);
-		}
 	}
 
 	// Light
@@ -205,6 +62,7 @@ void Client::Init()
 		light->GetLight()->SetLightDesc(lightDesc);
 		CUR_SCENE->Add(light);
 	}
+
 
 	// Player
 	auto player = make_shared<GameObject>();
@@ -264,7 +122,7 @@ void Client::Init()
 		CUR_SCENE->SetPlayer(player);
 	}
 
-// Enemy
+	// Enemy
 	auto enemy = make_shared<GameObject>();
 	{
 		enemy->GetOrAddTransform()->SetPosition(Vec3(10, 0, 10));
@@ -314,7 +172,10 @@ void Client::Init()
 		CUR_SCENE->Add(enemy2);
 	}
 
+
+
 	// Terrain
+
 	//{
 	//	// Material
 
@@ -391,6 +252,170 @@ void Client::Init()
 
 	//	CUR_SCENE->Add(obj);
 	//}
+
+
+
+
+
+
+	// UI_Camera
+	{
+		auto camera = make_shared<GameObject>();
+		camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+		camera->AddComponent(make_shared<Camera>());
+		camera->GetCamera()->SetProjectionType(ProjectionType::Orthographic);
+		camera->GetCamera()->SetNear(1.f);
+		camera->GetCamera()->SetFar(100.f);
+		camera->GetCamera()->SetCullingMaskAll();
+		camera->GetCamera()->SetCullingMaskLayerOnOff(Layer_UI, false);
+		CUR_SCENE->Add(camera);
+	}
+
+	//UI_HPBar
+	{
+		// Material
+		{
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(renderShader);
+			auto texture = RESOURCES->Load<Texture>(L"HealBar", L"..\\Resources\\Textures\\UI\\BackBorder_Health.png");
+			material->SetDiffuseMap(texture);
+			MaterialDesc& desc = material->GetMaterialDesc();
+			desc.ambient = Vec4(1.f);
+			desc.diffuse = Vec4(1.f);
+			desc.specular = Vec4(1.f);
+			RESOURCES->Add(L"HealBar", material);
+		}
+		{
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(renderShader);
+			auto texture = RESOURCES->Load<Texture>(L"ArmorBar", L"..\\Resources\\Textures\\UI\\BackBorder_Armor.png");
+			material->SetDiffuseMap(texture);
+			MaterialDesc& desc = material->GetMaterialDesc();
+			desc.ambient = Vec4(1.f);
+			desc.diffuse = Vec4(1.f);
+			desc.specular = Vec4(1.f);
+			RESOURCES->Add(L"ArmorBar", material);
+		}
+		{
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(renderShader);
+			auto texture = RESOURCES->Load<Texture>(L"RedBar", L"..\\Resources\\Textures\\UI\\FrontBprder_HPBar.png");
+			material->SetDiffuseMap(texture);
+			MaterialDesc& desc = material->GetMaterialDesc();
+			desc.ambient = Vec4(1.f);
+			desc.diffuse = Vec4(1.f);
+			desc.specular = Vec4(1.f);
+			RESOURCES->Add(L"RedBar", material);
+		}
+
+
+		// MeshHealBar
+		{
+			auto obj = make_shared<GameObject>();
+			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-230.f, -260.f, 0.0f));
+			obj->GetOrAddTransform()->SetScale(Vec3(180, 30, 100));
+			obj->AddComponent(make_shared<MeshRenderer>());
+
+			obj->SetLayerIndex(Layer_UI);
+			{
+				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"HealBar"));
+			}
+			{
+				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+				obj->GetMeshRenderer()->SetMesh(mesh);
+				obj->GetMeshRenderer()->SetPass(0);
+				obj->GetMeshRenderer()->SetAlphaBlend(true);
+			}
+
+			CUR_SCENE->Add(obj);
+		}
+		// MeshArmorBar
+		{
+			auto obj = make_shared<GameObject>();
+			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-210.f, -230.f, -0.1f));
+			obj->GetOrAddTransform()->SetScale(Vec3(200, 30, 100));
+			obj->AddComponent(make_shared<MeshRenderer>());
+
+			obj->SetLayerIndex(Layer_UI);
+			{
+				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"ArmorBar"));
+
+			}
+			{
+				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+				obj->GetMeshRenderer()->SetMesh(mesh);
+				obj->GetMeshRenderer()->SetAlphaBlend(true);
+				obj->GetMeshRenderer()->SetPass(0);
+			}
+
+			CUR_SCENE->Add(obj);
+		}
+		// RedBar HPMesh
+		{
+			auto obj = make_shared<GameObject>();
+			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-228.f, -261.f, -0.2f));
+			//obj->GetOrAddTransform()->SetScale(Vec3(150, 10, 100));
+			obj->GetOrAddTransform()->SetScale(Vec3(126, 8, 100));
+
+			obj->AddComponent(make_shared<MeshRenderer>());
+
+			obj->SetLayerIndex(Layer_UI);
+			{
+				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"RedBar"));
+
+			}
+			{
+				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+				obj->GetMeshRenderer()->SetMesh(mesh);
+				obj->GetMeshRenderer()->SetAlphaBlend(true);
+				obj->GetMeshRenderer()->SetPass(0);
+			}
+
+			CUR_SCENE->Add(obj);
+		}
+		// RedBar ARmor Mesh
+		{
+			auto obj = make_shared<GameObject>();
+			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-207.f, -234.f, -0.2f));
+			obj->GetOrAddTransform()->SetScale(Vec3(164, 7, 100));
+
+			obj->AddComponent(make_shared<MeshRenderer>());
+
+			obj->SetLayerIndex(Layer_UI);
+			{
+				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"RedBar"));
+
+			}
+			{
+				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+				obj->GetMeshRenderer()->SetMesh(mesh);
+				//obj->GetMeshRenderer()->SetAlphaBlend(true);
+				obj->GetMeshRenderer()->SetPass(0);
+			}
+
+			CUR_SCENE->Add(obj);
+		}
+	}
+
+
+	// Test_Terrain - ±Ë¿Á»Ò
+	{
+		auto obj = make_shared<GameObject>();
+		obj->AddComponent(make_shared<Terrain>());
+		obj->GetTerrain()->Create(30, 30, RESOURCES->Get<Material>(L"HealBar"));
+		obj->GetTerrain()->GetTransform()->SetLocalPosition(Vec3(0.f));
+		CUR_SCENE->Add(obj);
+	}
+
+
+	////MapObj
+	// TODO - ««≈∑µ» ø…¡ß ªË¡¶.
+	shared_ptr<MapObjDesc> src = make_shared<MapObjDesc>(L"Obj/recyclingBox", L"23. RenderDemo.fx");
+	MapManager::GetInstance()->AddMapObj(src);
+	
+	shared_ptr<MapObjDesc> src1 = make_shared<MapObjDesc>(L"Obj/TutorialWallsLeft", L"23. RenderDemo.fx");
+	MapManager::GetInstance()->AddMapObj(src1);
+
 }
 
 void Client::Update()

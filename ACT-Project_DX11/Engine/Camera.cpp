@@ -2,9 +2,9 @@
 #include "Camera.h"
 #include "Scene.h"
 
-Matrix	Camera::S_MatView		= Matrix::Identity;
-Matrix	Camera::S_MatProjection = Matrix::Identity;
-bool	Camera::S_IsWireFrame	= false;
+Matrix	Camera::S_MatView			= Matrix::Identity;
+Matrix	Camera::S_MatProjection		= Matrix::Identity;
+bool	Camera::S_IsWireFrame		= false;
 
 void Camera::SetCameraOffset(Vec3 v)
 {	
@@ -42,6 +42,7 @@ void Camera::Render_Forward()
 	// 내가 이제 그릴 카메라니까 나의 정보들로 갱신 
 	S_MatView = _matView;
 	S_MatProjection = _matProjection;
+
 
 	GET_SINGLE(InstancingManager)->Render(_vecForward);
 }
@@ -111,19 +112,26 @@ void Camera::UpdateMatrix()
 		eyePosition = _cameraPosition;
 		focusPosition = _focusPosition;
 		upDirection = Vec3(0.0f, 1.0f, 0.0f);
+		_matView = ::XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);
+
+
+		/////////////// KJH - 이 부분 추가. 카메라 이동을 하고 싶었는데, S_MatView가 업데이트가 되고 있지 않았음.//////////////////////
+		Camera::S_MatView = _matView;
 	}
 	else // UI 카메라
 	{
 		eyePosition = GetTransform()->GetPosition();
 		focusPosition = eyePosition + GetTransform()->GetLook();
 		upDirection = GetTransform()->GetUp();
+		_matView = ::XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);
 	}
 
-	_matView = ::XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);
-
+	
+	//////////////// KHJ - 이거바꿈. _matProjection이 공유되고 있어서 피킹이 잘 되지 않았음.////////////////////
 	if (_type == ProjectionType::Perspective)
 	{
 		_matProjection = ::XMMatrixPerspectiveFovLH(_fov, _width / _height, _near, _far);
+		S_MatProjection = _matProjection; 
 	}
 	else
 	{

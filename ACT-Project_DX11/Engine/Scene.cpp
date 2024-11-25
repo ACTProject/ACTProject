@@ -6,6 +6,8 @@
 #include "Terrain.h"
 #include "Button.h"
 
+#include "MapManager.h"
+
 void Scene::Start()
 {
 	unordered_set<shared_ptr<GameObject>> objects = _objects;
@@ -26,6 +28,15 @@ void Scene::Update()
 	}
 
 	PickUI();
+
+	// 이 아래는 맵 테스트 코드
+	MapManager::GetInstance()->Update();
+
+	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
+	{
+		POINT screenPt = INPUT->GetMousePos();
+		Pick(screenPt.x, screenPt.y);
+	}
 }
 
 void Scene::LateUpdate()
@@ -169,16 +180,30 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 		}
 	}
 
+
+
+	////// Terrain 피킹 작업
 	for (auto& gameObject : gameObjects)
 	{
 		if (gameObject->GetTerrain() == nullptr)
 			continue;
 
 		Vec3 pickPos;
-		float distance = 0.f;
+		float distance = 0.0f;
 		if (gameObject->GetTerrain()->Pick(screenX, screenY, OUT pickPos, OUT distance) == false)
 			continue;
 
+		// 씬에다가 게임옵젝 저장시켜놓고, 딱 찍으면 pickPos위치에다가 추가되게끔 만들면 될 듯
+		// Scene에다가 
+		{
+			if(MapManager::GetInstance()->ChekMapObjSelect())
+			{
+				// 가끔 y값이 이상해질 때가 있다.
+				shared_ptr<GameObject> obj = MapManager::GetInstance()->Create(pickPos);
+
+				Add(obj);
+			}
+		}
 		if (distance < minDistance)
 		{
 			minDistance = distance;

@@ -436,3 +436,18 @@ void Shader::PushSnowData(const SnowBillboardDesc& desc)
 	_snowBuffer->CopyData(_snowDesc);
 	_snowEffectBuffer->SetConstantBuffer(_snowBuffer->GetComPtr().Get());
 }
+
+void Shader::PushTessellationData(const TessellationDesc& desc)
+{
+	if (_tessEffectBuffer == nullptr)
+	{
+		_tessBuffer = make_shared<ConstantBuffer<TessellationDesc>>();
+		_tessBuffer->Create(); // Constant Buffer 생성
+		_tessEffectBuffer = GetConstantBuffer("TessellationBuffer"); // Shader에서 Constant Buffer 이름으로 가져오기
+	}
+
+	// Tessellation 데이터를 업데이트
+	_tessDesc = desc; // 로컬 데이터 업데이트
+	_tessBuffer->CopyData(_tessDesc); // Constant Buffer에 데이터 복사
+	_tessEffectBuffer->SetConstantBuffer(_tessBuffer->GetComPtr().Get()); // Shader에 전달
+}

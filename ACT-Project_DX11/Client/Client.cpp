@@ -32,7 +32,8 @@
 void Client::Init()
 {
 	shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
-
+	shared_ptr<Shader> skyShader = make_shared<Shader>(L"18. SkyDemo.fx");
+	shared_ptr<Shader> tessellationShader = make_shared<Shader>(L"TessellationDemo.fx");
 	// Camera
 	{
 		auto camera = make_shared<GameObject>();
@@ -313,84 +314,194 @@ void Client::Init()
 		}
 		CUR_SCENE->Add(enemy2);
 	}
+	//SKY
+	{
+		RESOURCES->Init();
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(skyShader);
+		auto texture = RESOURCES->Load<Texture>(L"SKY", L"../Resources/Textures/Terrain/Sky01.jpg");
+		material->SetDiffuseMap(texture);
+		MaterialDesc& desc = material->GetMaterialDesc();
+		desc.ambient = Vec4(1.f);
+		desc.diffuse = Vec4(1.f);
+		desc.specular = Vec4(1.f);
+		RESOURCES->Add(L"SKY", material);
 
+		auto obj = make_shared<GameObject>();
+		obj->GetOrAddTransform();
+		obj->AddComponent(make_shared<MeshRenderer>());
+		{
+			auto mesh = RESOURCES->Get<Mesh>(L"Sphere");
+			obj->GetMeshRenderer()->SetMesh(mesh);
+		}
+		{
+			auto material = RESOURCES->Get<Material>(L"SKY");
+			obj->GetMeshRenderer()->SetMaterial(material);
+		}
+		CUR_SCENE->Add(obj);
+	}
 	// Terrain
-	//{
-	//	// Material
+	{
+		// Material
 
-	//	shared_ptr<Material> material = make_shared<Material>();
-	//	material->SetShader(renderShader);
-	//	auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height.png");
-	//	//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
-	//	auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(renderShader);
+		//material->SetShader(tessellationShader);
+		auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height.png");
+		//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
+		auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
+	
+		const int32 width = heightMap->GetSize().x;
+		const int32 height = heightMap->GetSize().y;
 
-	//	const int32 width = heightMap->GetSize().x;
-	//	const int32 height = heightMap->GetSize().y;
+		const DirectX::ScratchImage& info = heightMap->GetInfo();
+		//size_t pixelDataSize = info.GetPixelsSize();
+		// Replace the old heightmap with the filtered one.
+		uint8* pixelBuffer = info.GetPixels();
+		std::vector<uint8> expandedPixelBuffer((width+1)* (height+1));
 
-	//	const DirectX::ScratchImage& info = heightMap->GetInfo();
+		for (int z = 0; z <= height; ++z) {
+			for (int x = 0; x <= width; ++x) {
+				int idxExpanded = z * (width + 1) + x;
 
-	//	// Replace the old heightmap with the filtered one.
-	//	uint8* pixelBuffer = info.GetPixels();
+				if (x < width && z < height) {
+					// 원본 데이터를 복사
+					int idxOriginal = z * width + x;
+					expandedPixelBuffer[idxExpanded] = pixelBuffer[idxOriginal];
+				}
+				else {
+					// 경계값 처리
+					if (x == width && z != height) {
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[z * (width + 1) + x - 1]; // 왼쪽 데이터 복사
+					}
+					else if (z == height && x != width) {
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x]; // 위쪽 데이터 복사
+					}
+					else if (x == width && z == height) {
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x - 1]; // 왼쪽-위 데이터 복사
+					}
+				}
+			}
+		}
 
-	//	material->SetDiffuseMap(texture);
-	//	MaterialDesc& desc = material->GetMaterialDesc();
-	//	desc.ambient = Vec4(1.f);
-	//	desc.diffuse = Vec4(1.f);
-	//	desc.specular = Vec4(1.f);
-	//	RESOURCES->Add(L"Sand", material);
+
+		material->SetDiffuseMap(texture);
+		MaterialDesc& desc = material->GetMaterialDesc();
+		desc.ambient = Vec4(1.f);
+		desc.diffuse = Vec4(1.f);
+		desc.specular = Vec4(1.f);
+		RESOURCES->Add(L"Sand", material);
 
 
-	//	auto obj = make_shared<GameObject>();
-	//	obj->AddComponent(make_shared<Terrain>());
-	//	obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
-	//	{
-	//		vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
-	//		for (int32 z = 0; z < height; z++)
-	//		{
-	//			for (int32 x = 0; x < width; x++)
-	//			{
-	//				int32 idx = width * z + x;
-	//				uint8 height = pixelBuffer[idx] / 255.f * 25.f;
-	//				v[idx].position.y = height - 8.f;
-	//			}
-	//		}
+		auto obj = make_shared<GameObject>();
+		obj->AddComponent(make_shared<Terrain>());
+		obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
+		{
+			Vec3 cameraPos = player->GetTransform()->GetPosition();
+			Vec3 terrainPos = obj->GetTransform()->GetPosition(); //터레인 중심 위치
+			float cameraDistance = (cameraPos - terrainPos).Length();
 
-	//		// Smooth
-	//		float avg = 0.0f;
-	//		float num = 0.0f;
+			vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
+			assert(v.size() == (width+1) * (height+1));
+			for (int32 z = 0; z <= height; z++)
+			{
+				for (int32 x = 0; x <= width; x++)
+				{
+					int32 idx = (width + 1) * z + x;
+						uint8 height = expandedPixelBuffer[idx] / 255.f * 80.f;
+						v[idx].position.y = height - 25.f;
+				}
+			}
 
-	//		for (int32 z = 0; z < height; z++)
-	//		{
-	//			for (int32 x = 0; x < width; x++)
-	//			{
-	//				avg = 0.0f;
-	//				num = 0.0f;
-	//				for (int32 m = z - 1; m <= z + 1; ++m) // -1 ~ 1, 0 ~ 2
-	//				{
+			// Smooth
+			float avg = 0.0f;
+			float num = 0.0f;
 
-	//					for (int32 n = x - 1; n <= x + 1; ++n)
-	//					{
-	//						if (m >= 0 && m < (int32)height &&
-	//							n >= 0 && n < (int32)width)
-	//						{
-	//							avg += v[m * width + n].position.y;
-	//							num += 1.0f;
-	//						}
-	//					}
+			for (int32 z = 0; z < height; z++)
+			{
+				for (int32 x = 0; x < width; x++)
+				{
+					avg = 0.0f;
+					num = 0.0f;
+					for (int32 m = z - 1; m <= z + 1; ++m) // -1 ~ 1, 0 ~ 2
+					{
 
-	//				}
-	//				v[z * height + x].position.y = avg / num;
+						for (int32 n = x - 1; n <= x + 1; ++n)
+						{
+							if (m >= 0 && m < (int32)height && n >= 0 && n < (int32)width)
+							{
+								avg += v[m * width + n].position.y;
+								num += 1.0f;
+							}
+						}
+					}
+					v[z * height + x].position.y = avg / num;
+				}
+			}
+		}
 
-	//			}
-	//		}
+		obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
+		obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetIndices());
 
-	//	}
+		CUR_SCENE->Add(obj);
 
-	//	obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
-	//	obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetIndices());
 
-	//	CUR_SCENE->Add(obj);
+	//// Material
+	//shared_ptr<Material> material = make_shared<Material>();
+	//material->SetShader(renderShader);
+	//auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height.png");
+	//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
+
+	//const int32 width = heightMap->GetSize().x;
+	//const int32 height = heightMap->GetSize().y;
+
+	//const DirectX::ScratchImage& info = heightMap->GetInfo();
+	//uint8* pixelBuffer = info.GetPixels();
+
+	//material->SetDiffuseMap(texture);
+	//MaterialDesc& desc = material->GetMaterialDesc();
+	//desc.ambient = Vec4(1.f);
+	//desc.diffuse = Vec4(1.f);
+	//desc.specular = Vec4(1.f);
+	//RESOURCES->Add(L"Sand", material);
+
+	//auto obj = make_shared<GameObject>();
+	//obj->AddComponent(make_shared<Terrain>());
+	//obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
+
+
+	//// Minimap 및 LOD 생성
+	//const int LOD_LEVELS = 3;
+	//vector<vector<uint8>> minimapLevels = CreateMinimapLevels(pixelBuffer, width, height, LOD_LEVELS);
+	//vector<vector<VertexTextureNormalTangentData>> lodVertices(LOD_LEVELS);
+	//vector<vector<uint32>> lodIndices(LOD_LEVELS);
+
+	//for (int lod = 0; lod < LOD_LEVELS; ++lod) {
+	//	int lodWidth = width / (1 << lod);
+	//	int lodHeight = height / (1 << lod);
+
+	//	lodVertices[lod] = GenerateLODVertices(minimapLevels[lod], lodWidth, lodHeight, 80); // 최대 높이 80
+	//	lodIndices[lod] = GenerateLODIndices(lodWidth, lodHeight);
 	//}
+
+	//// 테스트용 고정 LOD 적용
+	//int testLOD = 1; // 테스트할 LOD 단계 (0: High, 1: Medium, 2: Low)
+	//if (testLOD >= 0 && testLOD < LOD_LEVELS) {
+	//	obj->GetTerrain()->GetMesh()->GetGeometry()->SetVertices(lodVertices[testLOD]);
+	//	obj->GetTerrain()->GetMesh()->GetGeometry()->SetIndices(lodIndices[testLOD]);
+	//	obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(lodVertices[testLOD]);
+	//	obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(lodIndices[testLOD]);
+
+	//	cout << "LOD " << testLOD << " applied successfully!" << endl;
+	//}
+	//else {
+	//	cout << "Error: Invalid testLOD value!" << endl;
+	//}
+
+	//// 오브젝트 추가
+	//CUR_SCENE->Add(obj);
+	
+	}
 }
 
 void Client::Update()
@@ -400,4 +511,90 @@ void Client::Update()
 void Client::Render()
 {
 
+}
+
+vector<vector<uint8>> Client::CreateMinimapLevels(uint8* heightMapData, int width, int height, int lodLevels) {
+	vector<vector<uint8>> minimapLevels(lodLevels);
+
+	for (int lod = 0; lod < lodLevels; ++lod) {
+		int factor = 1 << lod; // LOD 단계에 따른 축소 비율
+		int lodWidth = width / factor;
+		int lodHeight = height / factor;
+
+		minimapLevels[lod].resize(lodWidth * lodHeight);
+
+		for (int z = 0; z < lodHeight; ++z) {
+			for (int x = 0; x < lodWidth; ++x) {
+				int originalZ = z * factor;
+				int originalX = x * factor;
+
+				float avgHeight = 0.0f;
+				int count = 0;
+
+				for (int dz = 0; dz < factor; ++dz) {
+					for (int dx = 0; dx < factor; ++dx) {
+						int srcX = originalX + dx;
+						int srcZ = originalZ + dz;
+
+						// 경계 조건 처리
+						if (srcX < width && srcZ < height) {
+							avgHeight += heightMapData[srcZ * width + srcX];
+							count++;
+						}
+					}
+				}
+
+				// 평균 계산
+				if (count > 0) {
+					avgHeight /= count;
+				}
+
+				minimapLevels[lod][z * lodWidth + x] = static_cast<uint8>(avgHeight);
+			}
+		}
+	}
+
+	return minimapLevels;
+}
+// LOD 버텍스 생성 함수
+vector<VertexTextureNormalTangentData> Client::GenerateLODVertices(
+	const vector<uint8>& minimap, int lodWidth, int lodHeight, int maxHeight) {
+	vector<VertexTextureNormalTangentData> vertices((lodWidth + 1) * (lodHeight + 1));
+
+	for (int z = 0; z <= lodHeight; ++z) {
+		for (int x = 0; x <= lodWidth; ++x) {
+			int idx = z * (lodWidth + 1) + x;
+			int mapIdx = min(z, lodHeight - 1) * lodWidth + min(x, lodWidth - 1);
+
+			float normalizedHeight = minimap[mapIdx] / 255.f * maxHeight;
+			vertices[idx].position = Vec3(x, normalizedHeight, z);
+			vertices[idx].normal = Vec3(0, 1, 0); // 초기 노멀 값
+		}
+	}
+
+	return vertices;
+}
+
+// LOD 인덱스 생성 함수
+vector<uint32> Client::GenerateLODIndices(int lodWidth, int lodHeight) {
+	vector<uint32> indices;
+
+	for (int z = 0; z < lodHeight; ++z) {
+		for (int x = 0; x < lodWidth; ++x) {
+			int topLeft = z * (lodWidth + 1) + x;
+			int topRight = topLeft + 1;
+			int bottomLeft = (z + 1) * (lodWidth + 1) + x;
+			int bottomRight = bottomLeft + 1;
+
+			indices.push_back(topLeft);
+			indices.push_back(bottomLeft);
+			indices.push_back(topRight);
+
+			indices.push_back(topRight);
+			indices.push_back(bottomLeft);
+			indices.push_back(bottomRight);
+		}
+	}
+
+	return indices;
 }

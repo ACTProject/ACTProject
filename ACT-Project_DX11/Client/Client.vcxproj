@@ -27,7 +27,9 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="SkyDemo.h" />
     <ClInclude Include="StaticMeshDemo.h" />
+    <ClInclude Include="TerrainScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BillBoardDemo.cpp" />
@@ -41,7 +43,9 @@
     </ClCompile>
     <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="SkyDemo.cpp" />
     <ClCompile Include="StaticMeshDemo.cpp" />
+    <ClCompile Include="TerrainScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\00. Global.fx" />
@@ -85,6 +89,9 @@
     <FxCompile Include="..\Shaders\27. StructuredBufferDemo.fx" />
     <FxCompile Include="..\Shaders\28. BillBoardDemo.fx" />
     <FxCompile Include="..\Shaders\29. SnowDemo.fx" />
+    <FxCompile Include="..\Shaders\TessellationDemo.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

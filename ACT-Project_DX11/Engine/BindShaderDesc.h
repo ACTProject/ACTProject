@@ -104,3 +104,11 @@ struct SnowBillboardDesc
 	Vec3 extent = Vec3(0, 0, 0);
 	float time;
 };
+
+struct TessellationDesc
+{
+	float tessellationFactor = 6.0f; // 테셀레이션 강도 (기본값)
+	float minDistance = 50.0f;       // 최소 거리 (테셀레이션이 최대 강도를 가지는 거리)
+	float maxDistance = 500.0f;      // 최대 거리 (테셀레이션이 0이 되는 거리)
+	float padding;
+};

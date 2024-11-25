@@ -65,6 +65,7 @@ public:
 	void PushTweenData(const TweenDesc& desc);
 	void PushInstancedTweenData(const InstancedTweenDesc& desc);
 	void PushSnowData(const SnowBillboardDesc& desc);
+	void PushTessellationData(const TessellationDesc& desc);
 
 private:
 	GlobalDesc _globalDesc;
@@ -102,6 +103,10 @@ private:
 	SnowBillboardDesc _snowDesc;
 	shared_ptr<ConstantBuffer<SnowBillboardDesc>> _snowBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> _snowEffectBuffer;
+
+	TessellationDesc _tessDesc;
+	shared_ptr<ConstantBuffer<TessellationDesc>> _tessBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> _tessEffectBuffer;
 };
 
 class ShaderManager

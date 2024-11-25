@@ -399,6 +399,7 @@ void Client::Init()
 		obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
 		obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetIndices());
 
+		CUR_SCENE->SetTerrain(obj);
 		CUR_SCENE->Add(obj);
 	}
 }

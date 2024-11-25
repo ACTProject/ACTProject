@@ -52,9 +52,6 @@
     <Filter Include="06. UI &amp; Effect">
       <UniqueIdentifier>{f18b1053-df94-431a-81f8-f0618b76df06}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Managers\test">
-      <UniqueIdentifier>{40691dca-eedf-480d-946a-82cebc68c1ba}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -264,8 +261,6 @@
     <ClInclude Include="MyCoroutine.h">
       <Filter>98. Utils</Filter>
     </ClInclude>
-    <ClInclude Include="MapManager.h">
-      <Filter>02. Managers\test</Filter>
     <ClInclude Include="Rigidbody.h">
       <Filter>04. Component</Filter>
     </ClInclude>
@@ -466,8 +461,6 @@
     <ClCompile Include="MyCoroutine.cpp">
       <Filter>98. Utils</Filter>
     </ClCompile>
-    <ClCompile Include="MapManager.cpp">
-      <Filter>02. Managers\test</Filter>
     <ClCompile Include="Rigidbody.cpp">
       <Filter>04. Component</Filter>
     </ClCompile>

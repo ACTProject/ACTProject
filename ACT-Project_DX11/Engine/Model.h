@@ -40,8 +40,6 @@ public:
 	float GetAnimationDuration(AnimationState state);
 	string AnimationStateToString(AnimationState state);
 
-	wstring GetTextureName() { return _textureName; };
-
 private:
 	void BindCacheInfo();
 public:
@@ -50,7 +48,6 @@ public:
 private:
 	wstring _modelPath = L"../Resources/Models/";
 	wstring _texturePath = L"../Resources/Textures/";
-	wstring _textureName;
 
 private:
 	shared_ptr<ModelBone> _root;

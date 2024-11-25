@@ -9,10 +9,10 @@ WPARAM Game::Run(GameDesc& desc)
 	_desc = desc;
 	assert(_desc.app != nullptr);
 
-	// 1) ìœˆë„ìš° ì°½ ì •ë³´ ë“±ë¡
+	// 1) À©µµ¿ì Ã¢ Á¤º¸ µî·Ï
 	MyRegisterClass();
 
-	// 2) ìœˆë„ìš° ì°½ ìƒì„±
+	// 2) À©µµ¿ì Ã¢ »ý¼º
 	if (!InitInstance(SW_SHOWNORMAL))
 		return FALSE;
 		
@@ -21,9 +21,9 @@ WPARAM Game::Run(GameDesc& desc)
 	INPUT->Init(_desc.hWnd);
 	GUI->Init();
 	RESOURCES->Init();
-	MAP->Init();
+	
 	SCENE->Awake();
-	_desc.app->Init(); // ê²Œìž„ì˜¤ë¸Œì íŠ¸ ìƒì„±
+	_desc.app->Init(); // °ÔÀÓ¿ÀºêÁ§Æ® »ý¼º
 	SCENE->Start();
 
 	MSG msg = { 0 };
@@ -40,7 +40,6 @@ WPARAM Game::Run(GameDesc& desc)
 			Update();
 		}
 	}
-	MAP->ExportMapObj();
 
 	return msg.wParam;
 }

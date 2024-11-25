@@ -21,8 +21,6 @@ Model::~Model()
 // XML 파일에서 재질 데이터를 읽어오는 함수
 void Model::ReadMaterial(wstring filename)
 {
-	_textureName = filename;
-
 	// 재질 파일의 전체 경로를 구성합니다.
 	wstring fullPath = _texturePath + filename + L".xml";
 	auto parentPath = filesystem::path(fullPath).parent_path();

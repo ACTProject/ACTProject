@@ -264,6 +264,9 @@
     <ClInclude Include="Rigidbody.h">
       <Filter>04. Component</Filter>
     </ClInclude>
+    <ClInclude Include="Slider.h">
+      <Filter>04. Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -462,6 +465,9 @@
       <Filter>98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="Rigidbody.cpp">
+      <Filter>04. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Slider.cpp">
       <Filter>04. Component</Filter>
     </ClCompile>
   </ItemGroup>

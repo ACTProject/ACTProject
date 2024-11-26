@@ -29,7 +29,8 @@
 #include "Button.h"
 #include "Billboard.h"
 #include "RangoonScript.h"
-#include "Rigidbody.h"
+//#include "Rigidbody.h"
+#include "Slider.h"
 
 void Client::Init()
 {
@@ -193,6 +194,19 @@ void Client::Init()
 
 			CUR_SCENE->Add(obj);
 		}
+
+		// Mesh
+		{
+			auto obj = make_shared<GameObject>();
+			obj->AddComponent(make_shared<Slider>());
+
+			obj->GetSlider()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"HealBar"));
+
+			//obj->GetButton()->AddOnClickedEvent([obj]() { CUR_SCENE->Remove(obj); });
+
+			CUR_SCENE->Add(obj);
+		}
+
 	}
 
 	// Light

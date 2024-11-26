@@ -13,6 +13,7 @@ class Button;
 class Billboard;
 class SnowBillboard;
 class Rigidbody;
+class Slider;
 
 class GameObject : public enable_shared_from_this<GameObject>
 {
@@ -39,6 +40,7 @@ public:
 	shared_ptr<Billboard> GetBillboard();
 	shared_ptr<SnowBillboard> GetSnowBillboard();
 	shared_ptr<Rigidbody> GetRigidbody();
+	shared_ptr<Slider> GetSlider();
 
 	shared_ptr<Transform> GetOrAddTransform();
 	void AddComponent(shared_ptr<Component> component);

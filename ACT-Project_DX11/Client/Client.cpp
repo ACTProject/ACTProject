@@ -346,17 +346,46 @@ void Client::Init()
 
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(renderShader);
-		auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height.png");
-		//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
-		auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
 
+		//material->SetShader(tessellationShader);
+		auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height4.png");
+		auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
+		//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
+    
 		const int32 width = heightMap->GetSize().x;
 		const int32 height = heightMap->GetSize().y;
 
 		const DirectX::ScratchImage& info = heightMap->GetInfo();
-
+    
+		//size_t pixelDataSize = info.GetPixelsSize();
 		// Replace the old heightmap with the filtered one.
 		uint8* pixelBuffer = info.GetPixels();
+		std::vector<uint8> expandedPixelBuffer((width+1)* (height+1));
+
+		for (int z = 0; z <= height; ++z) {
+			for (int x = 0; x <= width; ++x) {
+				int idxExpanded = z * (width + 1) + x;
+
+				if (x < width && z < height) {
+					// ���� �����͸� ����
+					int idxOriginal = z * width + x;
+					expandedPixelBuffer[idxExpanded] = pixelBuffer[idxOriginal];
+				}
+				else {
+					// ��谪 ó��
+					if (x == width && z != height) {
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[z * (width + 1) + x - 1]; // ���� ������ ����
+					}
+					else if (z == height && x != width) {
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x]; // ���� ������ ����
+					}
+					else if (x == width && z == height) {
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x - 1]; // ����-�� ������ ����
+					}
+				}
+			}
+		}
+
 
 		material->SetDiffuseMap(texture);
 		MaterialDesc& desc = material->GetMaterialDesc();
@@ -370,14 +399,17 @@ void Client::Init()
 		obj->AddComponent(make_shared<Terrain>());
 		obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
 		{
+
+
 			vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
-			for (int32 z = 0; z < height; z++)
+			assert(v.size() == (width+1) * (height+1));
+			for (int32 z = 0; z <= height; z++)
 			{
-				for (int32 x = 0; x < width; x++)
+				for (int32 x = 0; x <= width; x++)
 				{
-					int32 idx = width * z + x;
-					uint8 height = pixelBuffer[idx] / 255.f * 25.f;
-					v[idx].position.y = height - 8.f;
+					int32 idx = (width + 1) * z + x;
+						uint8 height = expandedPixelBuffer[idx] / 255.f * 25.f;
+						v[idx].position.y = height - 8.f;
 				}
 			}
 
@@ -396,20 +428,17 @@ void Client::Init()
 
 						for (int32 n = x - 1; n <= x + 1; ++n)
 						{
-							if (m >= 0 && m < (int32)height &&
-								n >= 0 && n < (int32)width)
+
+							if (m >= 0 && m < (int32)height && n >= 0 && n < (int32)width)
 							{
 								avg += v[m * width + n].position.y;
 								num += 1.0f;
 							}
 						}
-
-					}
+				}
 					v[z * height + x].position.y = avg / num;
-
 				}
 			}
-
 		}
 
 		obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());

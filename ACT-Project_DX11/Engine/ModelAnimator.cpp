@@ -6,6 +6,7 @@
 #include "ModelAnimation.h"
 #include "Camera.h"
 #include "Light.h"
+#include "BaseCollider.h"
 
 ModelAnimator::ModelAnimator(shared_ptr<Shader> shader)
 	: Super(ComponentType::Animator), _shader(shader)
@@ -174,6 +175,8 @@ void ModelAnimator::RenderSingle()
 
 		_shader->DrawIndexed(_technique, _pass, mesh->indexBuffer->GetCount(), 0, 0);
 	}
+
+	RenderCollider();
 }
 
 void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
@@ -228,9 +231,23 @@ void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 
 		_shader->DrawIndexedInstanced(_technique, _pass, mesh->indexBuffer->GetCount(), buffer->GetCount());
 	}
+
+	RenderCollider();
 }
 
-
+void ModelAnimator::RenderCollider()
+{
+	if (DEBUG->IsDebugEnabled())
+	{
+		shared_ptr<BaseCollider> collider = GetGameObject()->GetCollider();
+		if (collider)
+		{
+			collider->RenderCollider(_shader);
+			// 기본 토폴로지 복구
+			DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		}
+	}
+}
 
 InstanceID ModelAnimator::GetInstanceID()
 {

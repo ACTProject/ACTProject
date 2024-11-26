@@ -10,64 +10,12 @@ void CameraScript::Start()
 
 void CameraScript::Update()
 {
-	float dt = TIME->GetDeltaTime();
+	ProcessInput();	
+}
 
-	// Right, Up, Look º¤ÅÍ ¾÷µ¥ÀÌÆ® (ºä Çà·ÄÀÇ ¿­ º¤ÅÍ¸¦ »ç¿ë)
-	Vec3 right = Vec3(Camera::S_MatView._11, Camera::S_MatView._21, Camera::S_MatView._31);  // XÃà ¹æÇâ
-	Vec3 up = Vec3(Camera::S_MatView._12, Camera::S_MatView._22, Camera::S_MatView._32);     // YÃà ¹æÇâ
-	Vec3 look = Vec3(Camera::S_MatView._13, Camera::S_MatView._23, Camera::S_MatView._33);   // ZÃà ¹æÇâ
-
-	// º¤ÅÍ Á¤±ÔÈ­ (Ä«¸Þ¶óÀÇ ¹æÇâ º¤ÅÍµéÀº ´ÜÀ§ º¤ÅÍ°¡ µÇ¾î¾ß ÇÔ)
-	right.Normalize();
-	up.Normalize();
-	look.Normalize();
-
-
-	Vec3 pos = GetTransform()->GetPosition();
-
-	if (INPUT->GetButton(KEY_TYPE::W))
-		pos += look * _speed * dt;
-
-	if (INPUT->GetButton(KEY_TYPE::S))
-		pos -= look * _speed * dt;
-
-	if (INPUT->GetButton(KEY_TYPE::A))
-		pos -= right * _speed * dt;
-
-	if (INPUT->GetButton(KEY_TYPE::D))
-		pos += right * _speed * dt;
-
-	GetTransform()->SetPosition(pos);
-
-	//if (INPUT->GetButton(KEY_TYPE::Q))
-	//{
-	//	Vec3 rotation = GetTransform()->GetLocalRotation();
-	//	rotation.x += dt * 0.5f;
-	//	GetTransform()->SetLocalRotation(rotation);
-	//}
-
-	//if (INPUT->GetButton(KEY_TYPE::E))
-	//{
-	//	Vec3 rotation = GetTransform()->GetLocalRotation();
-	//	rotation.x -= dt * 0.5f;
-	//	GetTransform()->SetLocalRotation(rotation);
-	//}
-
-	//if (INPUT->GetButton(KEY_TYPE::Z))
-	//{
-	//	Vec3 rotation = GetTransform()->GetLocalRotation();
-	//	rotation.y += dt * 0.5f;
-	//	GetTransform()->SetLocalRotation(rotation);
-	//}
-
-	//if (INPUT->GetButton(KEY_TYPE::C))
-	//{
-	//	Vec3 rotation = GetTransform()->GetLocalRotation();
-	//	rotation.y -= dt * 0.5f;
-	//	GetTransform()->SetLocalRotation(rotation);
-	//}
-
-	if (INPUT->GetButton(KEY_TYPE::KEY_1))
+void CameraScript::ProcessInput()
+{
+	if (INPUT->GetButtonDown(KEY_TYPE::KEY_F1)) // F1 Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ON/OFF
 	{
 		Camera::S_IsWireFrame = false;
 	}

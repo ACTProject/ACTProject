@@ -22,6 +22,7 @@ WPARAM Game::Run(GameDesc& desc)
 	GUI->Init();
 	RESOURCES->Init();
 	
+	MAP->Init();
 	SCENE->Awake();
 	_desc.app->Init(); // 게임오브젝트 생성
 	SCENE->Start();
@@ -40,6 +41,7 @@ WPARAM Game::Run(GameDesc& desc)
 			Update();
 		}
 	}
+	MAP->ExportMapObj();
 
 	return msg.wParam;
 }

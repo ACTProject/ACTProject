@@ -22,17 +22,17 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 	if (_mesh == nullptr || _material == nullptr)
 		return;
 
-	auto shader = _material->GetShader();
-	if (shader == nullptr)
+	_shader = _material->GetShader();
+	if (_shader == nullptr)
 		return;
 
 	// GlobalData
-	shader->PushGlobalData(Camera::S_MatView, Camera::S_MatProjection);
+	_shader->PushGlobalData(Camera::S_MatView, Camera::S_MatProjection);
 
 	// Light
 	auto lightObj = SCENE->GetCurrentScene()->GetLight();
 	if (lightObj)
-		shader->PushLightData(lightObj->GetLight()->GetLightDesc());
+		_shader->PushLightData(lightObj->GetLight()->GetLightDesc());
 
 	// Light
 	_material->Update();
@@ -48,7 +48,9 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 	else
 		_technique = 0;
 
-	shader->DrawIndexedInstanced(_technique, _pass, _mesh->GetIndexBuffer()->GetCount(), buffer->GetCount());
+	_shader->DrawIndexedInstanced(_technique, _pass, _mesh->GetIndexBuffer()->GetCount(), buffer->GetCount());
+
+	RenderCollider();
 }
 
 void MeshRenderer::RenderSingle()
@@ -56,25 +58,27 @@ void MeshRenderer::RenderSingle()
 	if (_mesh == nullptr || _material == nullptr)
 		return;
 
-	auto shader = _material->GetShader();
-	if (shader == nullptr)
+	_shader = _material->GetShader();
+	if (_shader == nullptr)
 		return;
 
-
 	// GlobalData
-	shader->PushGlobalData(Camera::S_MatView, Camera::S_MatProjection);
+	if (GetGameObject()->GetLayerIndex() == LayerMask::Layer_UI)
+		_shader->PushGlobalData(Camera::S_UIMatView, Camera::S_UIMatProjection);
+	else
+		_shader->PushGlobalData(Camera::S_MatView, Camera::S_MatProjection);
 
 	// Light
 	auto lightObj = SCENE->GetCurrentScene()->GetLight();
 	if (lightObj)
-		shader->PushLightData(lightObj->GetLight()->GetLightDesc());
+		_shader->PushLightData(lightObj->GetLight()->GetLightDesc());
 
 	// Light
 	_material->Update();
 
 	// Transform
 	auto world = GetTransform()->GetWorldMatrix();
-	shader->PushTransformData(TransformDesc{ world });
+	_shader->PushTransformData(TransformDesc{ world });
 
 	// IA
 	_mesh->GetVertexBuffer()->PushData();
@@ -88,7 +92,23 @@ void MeshRenderer::RenderSingle()
 
 	if (_isAlphaBlend)
 		_technique = 4;
-	shader->DrawIndexed(_technique, _pass, _mesh->GetIndexBuffer()->GetCount(), 0, 0);
+	_shader->DrawIndexed(_technique, _pass, _mesh->GetIndexBuffer()->GetCount(), 0, 0);
+
+	RenderCollider();
+}
+
+void MeshRenderer::RenderCollider()
+{
+	if (DEBUG->IsDebugEnabled())
+	{
+		shared_ptr<BaseCollider> collider = GetGameObject()->GetCollider();
+		if (collider)
+		{
+			collider->RenderCollider(_shader);
+			// �⺻ �������� ����
+			DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		}
+	}
 }
 
 InstanceID MeshRenderer::GetInstanceID()

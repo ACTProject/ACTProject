@@ -24,6 +24,8 @@ public:										\
 #define INSTANCING	GET_SINGLE(InstancingManager)
 #define GUI			GET_SINGLE(ImGuiManager)
 #define SCENE		GET_SINGLE(SceneManager)
+#define DEBUG		GET_SINGLE(DebugManager)
+#define MAP			GET_SINGLE(MapManager)
 #define CUR_SCENE	SCENE->GetCurrentScene()
 
 enum LayerMask

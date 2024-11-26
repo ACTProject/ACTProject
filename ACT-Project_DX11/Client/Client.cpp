@@ -253,6 +253,11 @@ void Client::Init()
 			player->GetModelAnimator()->SetModel(playerModel);
 			player->GetModelAnimator()->SetPass(2);
 		}
+
+		// Collider
+		auto collider = make_shared<SphereCollider>();
+		collider->SetRadius(5.0f);
+		player->AddComponent(collider);
 		// Rigidbody
 		shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
 		rigidBody->SetUseGravity(true);
@@ -413,6 +418,13 @@ void Client::Init()
 		CUR_SCENE->SetTerrain(obj);
 		CUR_SCENE->Add(obj);
 	}
+
+	////MapObj
+	shared_ptr<MapObjDesc> src = make_shared<MapObjDesc>(L"Obj/recyclingBox", L"23. RenderDemo.fx");
+	MAP->AddMapObj(src);
+
+	shared_ptr<MapObjDesc> src1 = make_shared<MapObjDesc>(L"Obj/TutorialWallsLeft", L"23. RenderDemo.fx");
+	MAP->AddMapObj(src1);
 }
 
 void Client::Update()

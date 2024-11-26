@@ -74,6 +74,8 @@ void ModelRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 
 		_shader->DrawIndexedInstanced(_technique, _pass, mesh->indexBuffer->GetCount(), buffer->GetCount());
 	}
+
+	RenderCollider();
 }
 
 void ModelRenderer::RenderSingle()
@@ -123,6 +125,22 @@ void ModelRenderer::RenderSingle()
 			_technique = 1;
 
 		_shader->DrawIndexed(_technique, _pass, mesh->indexBuffer->GetCount(), 0, 0);
+	}
+
+	RenderCollider();
+}
+
+void ModelRenderer::RenderCollider()
+{
+	if (DEBUG->IsDebugEnabled())
+	{
+		shared_ptr<BaseCollider> collider = GetGameObject()->GetCollider();
+		if (collider)
+		{
+			collider->RenderCollider(_shader);
+			// 기본 토폴로지 복구
+			DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		}
 	}
 }
 

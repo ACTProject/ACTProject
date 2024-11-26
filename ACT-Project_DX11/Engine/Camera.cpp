@@ -2,8 +2,10 @@
 #include "Camera.h"
 #include "Scene.h"
 
-Matrix	Camera::S_MatView		= Matrix::Identity;
-Matrix	Camera::S_MatProjection = Matrix::Identity;
+Matrix	Camera::S_MatView			= Matrix::Identity;
+Matrix	Camera::S_MatProjection		= Matrix::Identity;
+Matrix	Camera::S_UIMatView			= Matrix::Identity;
+Matrix	Camera::S_UIMatProjection	= Matrix::Identity;
 bool	Camera::S_IsWireFrame	= false;
 
 void Camera::SetCameraOffset(Vec3 v)
@@ -59,10 +61,88 @@ Camera::~Camera()
 
 void Camera::Update()
 {
-	// 마우스 입력을 통한 카메라 위치 및 방향 업데이트
-	UpdateCameraWithMouseInput();
-	// 업데이트된 카메라 위치와 방향을 기반으로 매트릭스 설정
+	if (DEBUG->IsDebugEnabled())
+	{
+		if (!_debugInitialized) // 디버깅 모드 최초 진입
+		{
+			_debugInitialized = true;
+
+			// 디버깅 모드 초기 위치와 방향 설정
+			_cameraPosition = Vec3(0.0f, 20.0f, -5.0f); // 위에서 아래를 바라보는 위치
+			_focusPosition = Vec3(0.0f, 0.0f, 0.0f);     // 초점은 원점
+			_yaw = XM_PIDIV4;                           // 45도 회전
+			_pitch = -XM_PIDIV4;                        // 아래를 45도 바라봄
+
+			UpdateMatrix();
+
+			return;
+		}
+		FreeCameraMovement();
+	}
+	else
+	{
+		if (_debugInitialized) // 디버깅 모드 종료
+		{
+			_debugInitialized = false;
+		}
+
+		UpdateCameraWithMouseInput();
+	}
+
+	// 카메라 매트릭스 업데이트
 	UpdateMatrix();
+}
+
+void Camera::FreeCameraMovement()	// WASD 키로 이동, 마우스로 회전
+{
+	// WASD 이동
+	Vec3 movement(0.0f);
+	// 방향 벡터 계산
+	Vec3 forward(
+		cosf(_pitch) * sinf(_yaw),
+		sinf(_pitch),
+		cosf(_pitch) * cosf(_yaw)
+	);
+	forward.Normalize();
+
+	Vec3 right = forward.Cross(Vec3(0.0f, 1.0f, 0.0f));
+	right.Normalize();
+
+	Vec3 up = right.Cross(forward);
+	up.Normalize();
+
+	if (INPUT->GetButton(KEY_TYPE::W)) movement += forward;    // 앞으로
+	if (INPUT->GetButton(KEY_TYPE::S)) movement -= forward;    // 뒤로
+	if (INPUT->GetButton(KEY_TYPE::A)) movement += right;      // 왼쪽
+	if (INPUT->GetButton(KEY_TYPE::D)) movement -= right;      // 오른쪽
+	if (INPUT->GetButton(KEY_TYPE::Q)) movement -= up;         // 아래로
+	if (INPUT->GetButton(KEY_TYPE::E)) movement += up;         // 위로
+
+	// 이동 속도 (Shift 키로 속도 변경)
+	float speed = (INPUT->GetButton(KEY_TYPE::SHIFT)) ? _fastSpeed : _normalSpeed;
+	_cameraPosition += movement * speed * TIME->GetDeltaTime();
+
+	if (INPUT->GetButton(KEY_TYPE::LBUTTON)) // 드래그 상태 확인
+	{
+		// 마우스 입력
+		float dx = INPUT->GetMouseDeltaX();
+		float dy = INPUT->GetMouseDeltaY();
+
+		// yaw와 pitch 각도를 마우스 이동에 따라 조절
+		_yaw += dx * _sensitivity;
+		_pitch -= dy * _sensitivity;
+
+		// pitch 값의 범위를 제한하여 카메라가 뒤집히지 않도록 조정 (-90도 ~ 90도 사이)
+		_pitch = std::clamp(_pitch, -XM_PIDIV2 + 0.1f, XM_PIDIV2 - 0.1f);
+	}	
+	// 카메라 초점 갱신
+	forward = Vec3(
+		cosf(_pitch) * sinf(_yaw),
+		sinf(_pitch),
+		cosf(_pitch) * cosf(_yaw)
+	);
+	forward.Normalize(); 
+	_focusPosition = _cameraPosition + forward;
 }
 
 void Camera::UpdateCameraWithMouseInput()
@@ -83,9 +163,6 @@ void Camera::UpdateCameraWithMouseInput()
 	float x = _cameraDistance * cosf(_pitch) * sinf(_yaw);
 	float y = _cameraDistance * sinf(_pitch);
 	float z = _cameraDistance * cosf(_pitch) * cosf(_yaw);
-
-	float a = 10;
-
 
 	// 카메라 위치를 플레이어 위치 기준으로 설정
 	if (_player == nullptr)
@@ -110,7 +187,6 @@ void Camera::UpdateMatrix()
 
 	if (_type == ProjectionType::Perspective) // Main 카메라
 	{
-		// eyePosition과 focusPosition은 UpdateCameraWithMouseInput에서 설정된 값 사용
 		eyePosition = _cameraPosition;
 		focusPosition = _focusPosition;
 		upDirection = Vec3(0.0f, 1.0f, 0.0f);
@@ -124,13 +200,17 @@ void Camera::UpdateMatrix()
 
 	_matView = ::XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);
 
-	if (_type == ProjectionType::Perspective)
+	if (_type == ProjectionType::Perspective) 
 	{
 		_matProjection = ::XMMatrixPerspectiveFovLH(_fov, _width / _height, _near, _far);
+		S_MatView = _matView;
+		S_MatProjection = _matProjection;
 	}
 	else
 	{
 		_matProjection = ::XMMatrixOrthographicLH(_width, _height, _near, _far);
+		S_UIMatView = _matView;
+		S_UIMatProjection = _matProjection;
 	}
 	
 }

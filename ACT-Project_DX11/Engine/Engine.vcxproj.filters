@@ -202,6 +202,9 @@
     <ClCompile Include="MyCoroutine.cpp">
       <Filter>98. Utils</Filter>
     </ClCompile>
+    <ClCompile Include="MapManager.cpp">
+      <Filter>02. Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModelMesh.h">
@@ -416,6 +419,9 @@
     </ClInclude>
     <ClInclude Include="MyCoroutine.h">
       <Filter>98. Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MapManager.h">
+      <Filter>02. Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

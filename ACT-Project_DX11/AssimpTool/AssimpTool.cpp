@@ -113,6 +113,19 @@ void AssimpTool::Init()
 		//	converter->ReadAssetFile(L"Player/Crab_GetUp.fbx");
 		//	converter->ExportAnimationData(L"Player/Crab_GetUp");
 		//}
+
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Obj/TutorialWallsLeft.fbx");
+			converter->ExportMaterialData(L"Obj/TutorialWallsLeft");
+			converter->ExportModelData(L"Obj/TutorialWallsLeft");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Obj/recyclingBox.fbx");
+			converter->ExportMaterialData(L"Obj/recyclingBox");
+			converter->ExportModelData(L"Obj/recyclingBox");
+		}
 	}
 }
 

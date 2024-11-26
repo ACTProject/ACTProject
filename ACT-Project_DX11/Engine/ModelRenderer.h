@@ -13,12 +13,16 @@ public:
 	ModelRenderer(shared_ptr<Shader> shader);
 	virtual ~ModelRenderer();
 
+	shared_ptr<Model> GetModel() { return _model; };
+	shared_ptr<Shader> GetShader() { return _shader; };
+
 	void SetModel(shared_ptr<Model> model);
 	void SetTechnique(uint8 technique) { _technique = technique; }
 	void SetPass(uint8 pass) { _pass = pass; }
 
 	void RenderInstancing(shared_ptr<class InstancingBuffer>& buffer);
 	void RenderSingle();
+	void RenderCollider();
 	InstanceID GetInstanceID();
 
 private:

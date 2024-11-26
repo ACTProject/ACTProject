@@ -16,10 +16,10 @@ void EndAttackCoroutine() {
 	}
 }
 
-// ÇÃ·¹ÀÌ¾î°ø°İ ÄÚ·çÆ¾ ÇÔ¼ö Á¤ÀÇ
+// í”Œë ˆì´ì–´ê³µê²© ì½”ë£¨í‹´ í•¨ìˆ˜ ì •ì˜
 MyCoroutine PlayAttackCoroutine(PlayerScript* playerScript, float animationDuration)
 {
-	// ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı ½Ã°£ ´ë±â
+	// ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ ì‹œê°„ ëŒ€ê¸°
 	co_await AwaitableSleep(chrono::milliseconds(static_cast<int>(animationDuration * 1000)));
 	EndAttackCoroutine();
 }
@@ -39,9 +39,9 @@ void PlayerScript::Update()
 	_transform = GetTransform();
 
 	Vec3 moveDir = Vec3(0.0f);
-	bool isRunning = INPUT->GetButton(KEY_TYPE::SHIFT);  // Shift Å°·Î ´Ş¸®±â ¸ğµå ¿©ºÎ È®ÀÎ
+	bool isRunning = INPUT->GetButton(KEY_TYPE::SHIFT);  // Shift í‚¤ë¡œ ë‹¬ë¦¬ê¸° ëª¨ë“œ ì—¬ë¶€ í™•ì¸
 
-	// ÀÌµ¿ ÀÔ·Â Ã³¸®
+	// ì´ë™ ì…ë ¥ ì²˜ë¦¬
 	if (INPUT->GetButton(KEY_TYPE::W))
 		moveDir += Vec3(0.0f, 0.0f, 1.0f);
 	if (INPUT->GetButton(KEY_TYPE::S))
@@ -50,7 +50,7 @@ void PlayerScript::Update()
 		moveDir += Vec3(-1.0f, 0.0f, 0.0f);
 	if (INPUT->GetButton(KEY_TYPE::D))
 		moveDir += Vec3(1.0f, 0.0f, 0.0f);
-	// °ø°İ ÀÔ·Â Ã³¸®
+	// ê³µê²© ì…ë ¥ ì²˜ë¦¬
 	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON)) {
 		_isPlayeringAttackAnimation = true;
 		if (!_isAttacking) {
@@ -61,48 +61,49 @@ void PlayerScript::Update()
 		}
 	}
 
-	// °ø°İ Å¸ÀÌ¸Ó °»½Å
+	// ê³µê²© íƒ€ì´ë¨¸ ê°±ì‹ 
 	if (_isAttacking) {
 		_attackTimer += dt;
 
-		// °ø°İ ´Ü°è ½Ã°£ ÃÊ°ú ½Ã Idle·Î º¹±Í
-		if (_attackTimer >= ((_attackDurations[_attackStage - 1]) / _FPS) - 0.1f ) {
-			_attackStage = 0;  // ¸¶Áö¸· °ø°İÀÌ ¾Æ´Ï¸é ÃÊ±âÈ­
+		float a = ((_attackDurations[_attackStage - 1]) / _FPS);
+		// ê³µê²© ë‹¨ê³„ ì‹œê°„ ì´ˆê³¼ ì‹œ Idleë¡œ ë³µê·€
+		if (_attackTimer >= ((_attackDurations[_attackStage - 1]) / _FPS) - 0.1f) {
+			_attackStage = 0;  // ë§ˆì§€ë§‰ ê³µê²©ì´ ì•„ë‹ˆë©´ ì´ˆê¸°í™”
 			_isAttacking = false;
 			ResetToIdleState();
 		}
 	}
 
-	// °ø°İ ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ Àç»ı ÁßÀÌ¸é ´Ù¸¥ ¾Ö´Ï¸ŞÀÌ¼Ç »óÅÂ·Î ÀüÈ¯µÇÁö ¾ÊÀ½
+	// ê³µê²© ì• ë‹ˆë©”ì´ì…˜ì´ ì¬ìƒ ì¤‘ì´ë©´ ë‹¤ë¥¸ ì• ë‹ˆë©”ì´ì…˜ ìƒíƒœë¡œ ì „í™˜ë˜ì§€ ì•ŠìŒ
 	if (_isPlayeringAttackAnimation)
 		return;
 
-	// ÀÌµ¿ ¹æÇâÀÇ Å©±â¸¦ ±âÁØÀ¸·Î ¾Ö´Ï¸ŞÀÌ¼Ç »óÅÂ °áÁ¤
+	// ì´ë™ ë°©í–¥ì˜ í¬ê¸°ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ì• ë‹ˆë©”ì´ì…˜ ìƒíƒœ ê²°ì •
 	AnimationState targetAnimationState;
 
-	if (moveDir.LengthSquared() > 0.0f)  // ÀÌµ¿ º¤ÅÍ°¡ 0ÀÌ ¾Æ´Ï¶ó¸é ÀÌµ¿ ÁßÀ¸·Î °£ÁÖ
+	if (moveDir.LengthSquared() > 0.0f)  // ì´ë™ ë²¡í„°ê°€ 0ì´ ì•„ë‹ˆë¼ë©´ ì´ë™ ì¤‘ìœ¼ë¡œ ê°„ì£¼
 	{
 		moveDir.Normalize();
-		float speed = isRunning ? _speed*2 : _speed;
+		float speed = isRunning ? _speed * 2 : _speed;
 		_transform->SetPosition(_transform->GetPosition() + moveDir * speed * dt);
 
 		targetAnimationState = isRunning ? AnimationState::Run : AnimationState::Walk;
 
 
-		// ÀÌµ¿ ¹æÇâ¿¡ µû¶ó È¸Àü ¼³Á¤
-		Vec3 targetForward = moveDir;					// Ä³¸¯ÅÍ°¡ ÀÌµ¿ÇÏ·Á´Â ¹æÇâ
-		Vec3 currentForward = _transform->GetLook();	// Ä³¸¯ÅÍ°¡ ÇöÀç ¹Ù¶óº¸´Â ¹æÇâ
+		// ì´ë™ ë°©í–¥ì— ë”°ë¼ íšŒì „ ì„¤ì •
+		Vec3 targetForward = moveDir;					// ìºë¦­í„°ê°€ ì´ë™í•˜ë ¤ëŠ” ë°©í–¥
+		Vec3 currentForward = _transform->GetLook();	// ìºë¦­í„°ê°€ í˜„ì¬ ë°”ë¼ë³´ëŠ” ë°©í–¥
 
-		// µÎ º¤ÅÍ »çÀÌÀÇ °¢µµ¸¦ °è»êÇÏ¿© È¸Àü
-		float angle = std::acos(currentForward.Dot(targetForward));	// µÎ º¤ÅÍ »çÀÌÀÇ °¢µµ
+		// ë‘ ë²¡í„° ì‚¬ì´ì˜ ê°ë„ë¥¼ ê³„ì‚°í•˜ì—¬ íšŒì „
+		float angle = std::acos(currentForward.Dot(targetForward));	// ë‘ ë²¡í„° ì‚¬ì´ì˜ ê°ë„
 		if (angle != 0.f)
 		{
-			Vec3 rotationAxis = currentForward.Cross(targetForward);	// µÎ º¤ÅÍ°¡ ÀÌ·ç´Â Æò¸éÀÇ ¹ı¼±º¤ÅÍ
+			Vec3 rotationAxis = currentForward.Cross(targetForward);	// ë‘ ë²¡í„°ê°€ ì´ë£¨ëŠ” í‰ë©´ì˜ ë²•ì„ ë²¡í„°
 			rotationAxis.Normalize();
 
-			// È¸Àü ÃàÀÇ y °ªÀ¸·Î ÁÂ¿ì ¹æÇâÀ» ±¸ºĞ
+			// íšŒì „ ì¶•ì˜ y ê°’ìœ¼ë¡œ ì¢Œìš° ë°©í–¥ì„ êµ¬ë¶„
 			if (rotationAxis.y < 0) {
-				angle = -angle;  // ¿ŞÂÊÀ¸·Î È¸Àü
+				angle = -angle;  // ì™¼ìª½ìœ¼ë¡œ íšŒì „
 			}
 			_transform->SetRotation(_transform->GetRotation() + Vec3(0, angle, 0));
 
@@ -113,7 +114,7 @@ void PlayerScript::Update()
 		targetAnimationState = AnimationState::Idle;
 	}
 
-	// ¾Ö´Ï¸ŞÀÌ¼Ç »óÅÂ°¡ º¯°æµÇ¾úÀ» ¶§¸¸ »óÅÂ ÀüÈ¯
+	// ì• ë‹ˆë©”ì´ì…˜ ìƒíƒœê°€ ë³€ê²½ë˜ì—ˆì„ ë•Œë§Œ ìƒíƒœ ì „í™˜
 	if (_currentAnimationState != targetAnimationState)
 	{
 		SetAnimationState(targetAnimationState);
@@ -130,7 +131,7 @@ void PlayerScript::Update()
 	}
 }
 
-// °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç »óÅÂ °ü¸®
+// ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ìƒíƒœ ê´€ë¦¬
 void PlayerScript::SetAnimationState(AnimationState state)
 {
 	_modelAnimator->ChangeAnimation(state);
@@ -143,7 +144,7 @@ void PlayerScript::StartAttack()
 	_attackStage = 1;
 	_attackTimer = 0.0f;
 
-	// 1Å¸ °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+	// 1íƒ€ ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
 	PlayAttackAnimation(_attackStage);
 	MyCoroutine attackCoroutine = PlayAttackCoroutine(this, _attackDurations[_attackStage - 1] / _FPS);
 	currentCoroutine = attackCoroutine.GetHandler();
@@ -157,7 +158,7 @@ void PlayerScript::ContinueAttack()
 		_attackTimer = 0.0f;
 		EndAttackCoroutine();
 
-		// ´ÙÀ½ °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+		// ë‹¤ìŒ ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
 		PlayAttackAnimation(_attackStage);
 		MyCoroutine attackCoroutine = PlayAttackCoroutine(this, _attackDurations[_attackStage - 1] / _FPS);
 		currentCoroutine = attackCoroutine.GetHandler();

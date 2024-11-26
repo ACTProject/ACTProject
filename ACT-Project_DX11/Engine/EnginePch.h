@@ -16,6 +16,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
+#include <queue>
 using namespace std;
 
 // WIN
@@ -70,6 +71,8 @@ using namespace Microsoft::WRL;
 #include "InstancingManager.h"
 #include "ImGuiManager.h"
 #include "SceneManager.h"
+#include "DebugManager.h"
+#include "MapManager.h"
 
 // Engine
 #include "VertexData.h"

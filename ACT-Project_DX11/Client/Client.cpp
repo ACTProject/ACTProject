@@ -28,6 +28,8 @@
 #include "Camera.h"
 #include "Button.h"
 #include "Billboard.h"
+#include "RangoonScript.h"
+#include "Rigidbody.h"
 
 void Client::Init()
 {
@@ -209,9 +211,9 @@ void Client::Init()
 	// Player
 	auto player = make_shared<GameObject>();
 
-	{
+	
 		// Player
-		player->GetOrAddTransform()->SetPosition(Vec3(0, 0, 0));
+		player->GetOrAddTransform()->SetPosition(Vec3(1, 0, 1));
 		player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 		player->GetOrAddTransform()->SetScale(Vec3(0.01f));
 
@@ -252,6 +254,15 @@ void Client::Init()
 			player->GetModelAnimator()->SetPass(2);
 		}
 
+		// Collider
+		auto collider = make_shared<SphereCollider>();
+		collider->SetRadius(5.0f);
+		player->AddComponent(collider);
+		// Rigidbody
+		shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
+		rigidBody->SetUseGravity(true);
+		player->AddComponent(rigidBody);
+
 		// Player::PlayerScript
 		shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();
 
@@ -262,13 +273,13 @@ void Client::Init()
 
 		CUR_SCENE->Add(player);
 		CUR_SCENE->SetPlayer(player);
-	}
+	
 
-// Enemy
+	// Enemy
 	auto enemy = make_shared<GameObject>();
 	{
 		enemy->GetOrAddTransform()->SetPosition(Vec3(10, 0, 10));
-		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, XMConvertToRadians(180), 0)); // XMConvertToRadians()
+		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 		enemy->GetOrAddTransform()->SetScale(Vec3(0.0001f));
 
 		shared_ptr<Model> enemyModel = make_shared<Model>();
@@ -277,6 +288,7 @@ void Client::Init()
 			enemyModel->ReadModel(L"Enemy/Rangoon");
 			enemyModel->ReadMaterial(L"Enemy/Rangoon");
 
+			enemyModel->ReadAnimation(L"Enemy/Rangoon_Taunt", AnimationState::Run);
 			enemyModel->ReadAnimation(L"Enemy/Rangoon_idle", AnimationState::Idle);
 			enemyModel->ReadAnimation(L"Enemy/Rangoon_hit", AnimationState::Hit);
 			enemyModel->ReadAnimation(L"Enemy/Rangoon_atk", AnimationState::Atk);
@@ -287,32 +299,46 @@ void Client::Init()
 			enemy->GetModelAnimator()->SetModel(enemyModel);
 			enemy->GetModelAnimator()->SetPass(2);
 		}
+		shared_ptr<RangoonScript> rangoon = make_shared<RangoonScript>();
+
+		rangoon->SetEnemy(enemyModel);
+		rangoon->SetModelAnimator(ma2);
+
+		enemy->AddComponent(rangoon);	
+
+		// Rigidbody
+		shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
+		rigidBody->SetUseGravity(true);
+		enemy->AddComponent(rigidBody);
+
 		CUR_SCENE->Add(enemy);
 	}
-	auto enemy2 = make_shared<GameObject>();
-	{
-		enemy2->GetOrAddTransform()->SetPosition(Vec3(5, 0, 10));
-		enemy2->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
-		enemy2->GetOrAddTransform()->SetScale(Vec3(0.0001f));
 
-		shared_ptr<Model> enemyModel = make_shared<Model>();
-		// Model
-		{
-			enemyModel->ReadModel(L"Enemy/pistol");
-			enemyModel->ReadMaterial(L"Enemy/pistol");
+	//auto enemy2 = make_shared<GameObject>();
+	//{
+	//	enemy2->GetOrAddTransform()->SetPosition(Vec3(5, 0, 10));
+	//	enemy2->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
+	//	enemy2->GetOrAddTransform()->SetScale(Vec3(0.0001f));
 
-			enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Idle);
-			/*enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Hit);
-			enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
-		}
-		shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
-		enemy2->AddComponent(ma2);
-		{
-			enemy2->GetModelAnimator()->SetModel(enemyModel);
-			enemy2->GetModelAnimator()->SetPass(2);
-		}
-		CUR_SCENE->Add(enemy2);
-	}
+	//	shared_ptr<Model> enemyModel = make_shared<Model>();
+	//	// Model
+	//	{
+	//		enemyModel->ReadModel(L"Enemy/pistol");
+	//		enemyModel->ReadMaterial(L"Enemy/pistol");
+
+	//		enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Idle);
+	//		//enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Hit);
+	//		//enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
+
+	//	}
+	//	shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
+	//	enemy2->AddComponent(ma2);
+	//	{
+	//		enemy2->GetModelAnimator()->SetModel(enemyModel);
+	//		enemy2->GetModelAnimator()->SetPass(2);
+	//	}
+	//	CUR_SCENE->Add(enemy2);
+	//}
 
 	// Terrain
 	{
@@ -320,15 +346,17 @@ void Client::Init()
 
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(renderShader);
+
 		//material->SetShader(tessellationShader);
 		auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height4.png");
 		auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
 		//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
-
+    
 		const int32 width = heightMap->GetSize().x;
 		const int32 height = heightMap->GetSize().y;
 
 		const DirectX::ScratchImage& info = heightMap->GetInfo();
+    
 		//size_t pixelDataSize = info.GetPixelsSize();
 		// Replace the old heightmap with the filtered one.
 		uint8* pixelBuffer = info.GetPixels();
@@ -339,20 +367,20 @@ void Client::Init()
 				int idxExpanded = z * (width + 1) + x;
 
 				if (x < width && z < height) {
-					// ¿øº» µ¥ÀÌÅÍ¸¦ º¹»ç
+					// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 					int idxOriginal = z * width + x;
 					expandedPixelBuffer[idxExpanded] = pixelBuffer[idxOriginal];
 				}
 				else {
-					// °æ°è°ª Ã³¸®
+					// ï¿½ï¿½è°ª Ã³ï¿½ï¿½
 					if (x == width && z != height) {
-						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[z * (width + 1) + x - 1]; // ¿ÞÂÊ µ¥ÀÌÅÍ º¹»ç
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[z * (width + 1) + x - 1]; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 					}
 					else if (z == height && x != width) {
-						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x]; // À§ÂÊ µ¥ÀÌÅÍ º¹»ç
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x]; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 					}
 					else if (x == width && z == height) {
-						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x - 1]; // ¿ÞÂÊ-À§ µ¥ÀÌÅÍ º¹»ç
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x - 1]; // ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 					}
 				}
 			}
@@ -371,6 +399,7 @@ void Client::Init()
 		obj->AddComponent(make_shared<Terrain>());
 		obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
 		{
+
 
 			vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
 			assert(v.size() == (width+1) * (height+1));
@@ -399,13 +428,14 @@ void Client::Init()
 
 						for (int32 n = x - 1; n <= x + 1; ++n)
 						{
+
 							if (m >= 0 && m < (int32)height && n >= 0 && n < (int32)width)
 							{
 								avg += v[m * width + n].position.y;
 								num += 1.0f;
 							}
 						}
-					}
+				}
 					v[z * height + x].position.y = avg / num;
 				}
 			}
@@ -414,12 +444,21 @@ void Client::Init()
 		obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
 		obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetIndices());
 
+		CUR_SCENE->SetTerrain(obj);
 		CUR_SCENE->Add(obj);
 	}
+
+	////MapObj
+	shared_ptr<MapObjDesc> src = make_shared<MapObjDesc>(L"Obj/recyclingBox", L"23. RenderDemo.fx");
+	MAP->AddMapObj(src);
+
+	shared_ptr<MapObjDesc> src1 = make_shared<MapObjDesc>(L"Obj/TutorialWallsLeft", L"23. RenderDemo.fx");
+	MAP->AddMapObj(src1);
 }
 
 void Client::Update()
 {
+	
 }
 
 void Client::Render()

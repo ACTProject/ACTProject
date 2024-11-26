@@ -5,6 +5,17 @@
 #include "Camera.h"
 #include "Terrain.h"
 #include "Button.h"
+#include "Rigidbody.h"
+
+void Scene::Awake()
+{
+	unordered_set<shared_ptr<GameObject>> objects = _objects;
+
+	for (shared_ptr<GameObject> object : objects)
+	{
+		object->Awake();
+	}
+}
 
 void Scene::Start()
 {
@@ -26,6 +37,18 @@ void Scene::Update()
 	}
 
 	PickUI();
+
+	MAP->Update();
+}
+
+void Scene::FixedUpdate()
+{
+	unordered_set<shared_ptr<GameObject>> objects = _objects;
+
+	for (shared_ptr<GameObject> object : objects)
+	{
+		object->FixedUpdate();
+	}
 }
 
 void Scene::LateUpdate()
@@ -179,6 +202,18 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 		if (gameObject->GetTerrain()->Pick(screenX, screenY, OUT pickPos, OUT distance) == false)
 			continue;
 
+		// 씬에다가 게임옵젝 저장시켜놓고, 딱 찍으면 pickPos위치에다가 추가되게끔 만들면 될 듯
+		// Scene에다가 
+		{
+			if (MAP->ChekMapObjSelect())
+			{
+				// 가끔 y값이 이상해질 때가 있다.
+				shared_ptr<GameObject> obj = MAP->Create(pickPos);
+
+				Add(obj);
+			}
+		}
+
 		if (distance < minDistance)
 		{
 			minDistance = distance;
@@ -214,3 +249,4 @@ void Scene::CheckCollision()
 		}
 	}
 }
+

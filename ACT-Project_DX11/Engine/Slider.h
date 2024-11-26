@@ -9,6 +9,8 @@ public:
 	Slider();
 	virtual ~Slider();
 
+	virtual void Update() override;
+
 	bool Picked(POINT screenPos);
 
 	void Create(Vec2 screenPos, Vec2 size, shared_ptr<class Material> material);
@@ -17,6 +19,7 @@ public:
 
 private:
 	std::function<void(void)> _onClicked;
+	float _uvRatio = 100.0f;
 	RECT _rect;
 };
 

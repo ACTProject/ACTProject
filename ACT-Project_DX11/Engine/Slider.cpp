@@ -15,6 +15,13 @@ Slider::~Slider()
 {
 }
 
+void Slider::Update()
+{
+
+	ImGui::SliderFloat("SliderTest", &_uvRatio,0.0f, 100.0f);
+
+}
+
 bool Slider::Picked(POINT screenPos)
 {
 	return ::PtInRect(&_rect, screenPos);

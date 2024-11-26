@@ -29,7 +29,7 @@
 #include "Button.h"
 #include "Billboard.h"
 #include "RangoonScript.h"
-//#include "Rigidbody.h"
+#include "Rigidbody.h"
 #include "Slider.h"
 
 void Client::Init()
@@ -96,7 +96,7 @@ void Client::Init()
 		{
 			shared_ptr<Material> material = make_shared<Material>();
 			material->SetShader(renderShader);
-			auto texture = RESOURCES->Load<Texture>(L"RedBar", L"..\\Resources\\Textures\\UI\\FrontBprder_HPBar.png");
+			auto texture = RESOURCES->Load<Texture>(L"RedBar", L"..\\Resources\\Textures\\UI\\Front_HPBar2.png");
 			material->SetDiffuseMap(texture);
 			MaterialDesc& desc = material->GetMaterialDesc();
 			desc.ambient = Vec4(1.f);

@@ -31,6 +31,10 @@ void PlayerScript::Start()
 
 void PlayerScript::Update()
 {
+	if (DEBUG->IsDebugEnabled())
+		return;
+
+
 	_FPS = static_cast<float>(TIME->GetFps());
 	float dt = TIME->GetDeltaTime();
 	for (int i = 0; i < 4; ++i) {

@@ -11,9 +11,11 @@ public:
 	virtual bool Intersects(Ray& ray, OUT float& distance) override;
 	virtual bool Intersects(shared_ptr<BaseCollider>& other) override;
 
-	BoundingOrientedBox& GetBoundingBox() { return _boundingBox; }
+	virtual void RenderCollider(shared_ptr<class Shader> shader) override;
+
+	BoundingOrientedBox& GetBoundingBox() { return _boundingOrientedBox; }
 
 private:	
-	BoundingOrientedBox _boundingBox;
+	BoundingOrientedBox _boundingOrientedBox;
 };
 

@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "Material.h"
 #include "Light.h"
+#include "BaseCollider.h"
 
 MeshRenderer::MeshRenderer() : Super(ComponentType::MeshRenderer)
 {

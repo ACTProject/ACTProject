@@ -2,7 +2,10 @@
 #include "00. Light.fx"
 #include "00. Render.fx"
 
-
+float4 PS_Collision() : SV_TARGET
+{
+    return float4(1.0f, 1.0f, 1.0f, 1.0f);
+}
 
 float4 PS(MeshOutput input) : SV_TARGET
 {
@@ -13,14 +16,14 @@ float4 PS(MeshOutput input) : SV_TARGET
 	return color;
 }
 
-technique11 T0 // ÀÎ½ºÅÏ½Ì ·»´õ¸µ
+technique11 T0 // ì¸ìŠ¤í„´ì‹± ë Œë”ë§
 {
 	PASS_VP(P0, VS_InstancingMesh, PS)
 	PASS_VP(P1, VS_InstancingModel, PS)
 	PASS_VP(P2, VS_InstancingAnimation, PS)
 };
 
-technique11 T1 // ½Ì±Û ·»´õ¸µ
+technique11 T1 // ì‹±ê¸€ ë Œë”ë§
 {
 	PASS_VP(P0, VS_Mesh, PS)
 	PASS_VP(P1, VS_Model, PS)
@@ -28,14 +31,14 @@ technique11 T1 // ½Ì±Û ·»´õ¸µ
 	//PASS_VP(P3, VS_MeshColor, PS)
 };
 
-technique11 T2 // ¿ÍÀÌ¾îÇÁ·¹ÀÓ ÀÎ½ºÅÏ½Ì
+technique11 T2 // ì™€ì´ì–´í”„ë ˆì„ ì¸ìŠ¤í„´ì‹±
 {
 	PASS_RS_VP(P0, FillModeWireFrame, VS_InstancingMesh, PS)
 	PASS_RS_VP(P1, FillModeWireFrame, VS_InstancingModel, PS)
 	PASS_RS_VP(P2, FillModeWireFrame, VS_InstancingAnimation, PS)
 };
 
-technique11 T3 // ¿ÍÀÌ¾îÇÁ·¹ÀÓ ½Ì±Û
+technique11 T3 // ì™€ì´ì–´í”„ë ˆì„ ì‹±ê¸€
 {
 	PASS_RS_VP(P0, FillModeWireFrame, VS_Mesh, PS)
 	PASS_RS_VP(P1, FillModeWireFrame, VS_Model, PS)
@@ -43,10 +46,15 @@ technique11 T3 // ¿ÍÀÌ¾îÇÁ·¹ÀÓ ½Ì±Û
 	//PASS_RS_VP(P3, FillModeWireFrame, VS_MeshColor, PS)
 };
 
-technique11 T4 // ¸Å½¬ ¾ËÆÄºí·»µù
+technique11 T4 // ë§¤ì‰¬ ì•ŒíŒŒë¸”ë Œë”©
 {
-	PASS_BS_VP(P0, AlphaBlend, VS_Mesh, PS) // ±âº»ÀûÀÎ ¾ËÆÄ ºí·»µù
-	PASS_BS_VP(P1, AlphaBlendAlphaToCoverageEnable, VS_Mesh, PS) // ¸ÖÆ¼»ùÇÃ¸µ È¯°æ ¾ËÆÄºí·»µù
-	PASS_BS_VP(P2, AdditiveBlend, VS_Mesh, PS) // ¾Öµåºí·»µù
-	PASS_BS_VP(P3, AdditiveBlendAlphaToCoverageEnable, VS_Mesh, PS) // ¸ÖÆ¼»ùÇÃ¸µ È¯°æ ¾Öµåºí·»µù
+	PASS_BS_VP(P0, AlphaBlend, VS_Mesh, PS) // ê¸°ë³¸ì ì¸ ì•ŒíŒŒ ë¸”ë Œë”©
+	PASS_BS_VP(P1, AlphaBlendAlphaToCoverageEnable, VS_Mesh, PS) // ë©€í‹°ìƒ˜í”Œë§ í™˜ê²½ ì•ŒíŒŒë¸”ë Œë”©
+	PASS_BS_VP(P2, AdditiveBlend, VS_Mesh, PS) // ì• ë“œë¸”ë Œë”©
+	PASS_BS_VP(P3, AdditiveBlendAlphaToCoverageEnable, VS_Mesh, PS) // ë©€í‹°ìƒ˜í”Œë§ í™˜ê²½ ì• ë“œë¸”ë Œë”©
+};
+
+technique11 T5 // Debug Collider Rendering
+{
+	PASS_VP(P0, VS_Collision, PS_Collision)
 };

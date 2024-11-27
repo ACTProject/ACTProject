@@ -1,6 +1,6 @@
 #pragma once
 
-struct VertexData
+struct VertexPosData
 {
 	Vec3 position = { 0, 0, 0 };
 };

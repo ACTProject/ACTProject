@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "Camera.h"
 #include "Light.h"
+#include "BaseCollider.h"
 
 ModelRenderer::ModelRenderer(shared_ptr<Shader> shader)
 	: Super(ComponentType::ModelRenderer), _shader(shader)

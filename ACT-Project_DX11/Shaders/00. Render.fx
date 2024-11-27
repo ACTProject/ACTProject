@@ -7,6 +7,14 @@
 #define MAX_MODEL_KEYFRAMES 500
 #define MAX_MODEL_INSTANCE 500
 
+// ************** CollisionRender **************
+VSOutput VS_Collision(Vertex input)
+{
+    VSOutput output;
+    output.position = mul(input.position, VP);
+    return output;
+}
+
 // ************** InstancingMeshRender ****************
 
 struct InstancingVertexMesh

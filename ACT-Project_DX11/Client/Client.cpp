@@ -44,7 +44,7 @@ void Client::Init()
 		{
 			camera->GetCamera()->SetCameraOffset(Vec3(0.f, 7.f, -14.f));
 		}
-		//camera->AddComponent(make_shared<CameraScript>());
+		camera->AddComponent(make_shared<CameraScript>());
 		camera->GetCamera()->SetCullingMaskLayerOnOff(Layer_UI, true);
 
 		CUR_SCENE->Add(camera);
@@ -257,7 +257,9 @@ void Client::Init()
 		// Collider
 		auto collider = make_shared<SphereCollider>();
 		collider->SetRadius(5.0f);
+		collider->SetOffset(Vec3(0.f, 1.f, 0.f));
 		player->AddComponent(collider);
+
 		// Rigidbody
 		shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
 		rigidBody->SetUseGravity(true);
@@ -357,7 +359,7 @@ void Client::Init()
 
 		const DirectX::ScratchImage& info = heightMap->GetInfo();
     
-		//size_t pixelDataSize = info.GetPixelsSize();
+		// size_t pixelDataSize = info.GetPixelsSize();
 		// Replace the old heightmap with the filtered one.
 		uint8* pixelBuffer = info.GetPixels();
 		std::vector<uint8> expandedPixelBuffer((width+1)* (height+1));
@@ -367,20 +369,18 @@ void Client::Init()
 				int idxExpanded = z * (width + 1) + x;
 
 				if (x < width && z < height) {
-					// ���� �����͸� ����
 					int idxOriginal = z * width + x;
 					expandedPixelBuffer[idxExpanded] = pixelBuffer[idxOriginal];
 				}
 				else {
-					// ��谪 ó��
 					if (x == width && z != height) {
-						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[z * (width + 1) + x - 1]; // ���� ������ ����
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[z * (width + 1) + x - 1]; 
 					}
 					else if (z == height && x != width) {
-						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x]; // ���� ������ ����
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x]; 
 					}
 					else if (x == width && z == height) {
-						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x - 1]; // ����-�� ������ ����
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x - 1];
 					}
 				}
 			}

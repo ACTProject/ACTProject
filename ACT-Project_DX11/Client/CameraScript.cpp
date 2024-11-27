@@ -15,13 +15,9 @@ void CameraScript::Update()
 
 void CameraScript::ProcessInput()
 {
-	if (INPUT->GetButtonDown(KEY_TYPE::KEY_F1)) // F1 Ű�� ����� ��� ON/OFF
+	if (INPUT->GetButton(KEY_TYPE::KEY_F1)) // F1 디버그 모드 ON/OFF
 	{
-		Camera::S_IsWireFrame = false;
-	}
-
-	if (INPUT->GetButton(KEY_TYPE::KEY_2))
-	{
-		Camera::S_IsWireFrame = true;
+		bool currentState = DEBUG->IsDebugEnabled();
+		DEBUG->EnableDebug(!currentState);
 	}
 }

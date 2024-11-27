@@ -205,6 +205,12 @@
     <ClCompile Include="MapManager.cpp">
       <Filter>02. Manager</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>02. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugManager.cpp">
+      <Filter>02. Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModelMesh.h">
@@ -421,6 +427,12 @@
       <Filter>98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="MapManager.h">
+      <Filter>02. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>02. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugManager.h">
       <Filter>02. Manager</Filter>
     </ClInclude>
   </ItemGroup>

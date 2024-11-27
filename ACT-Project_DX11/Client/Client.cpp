@@ -263,7 +263,11 @@ void Client::Init()
 		// Rigidbody
 		shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
 		rigidBody->SetUseGravity(true);
+		rigidBody->SetMass(5.0f);
 		player->AddComponent(rigidBody);
+
+		COLLISION->AddCollider(collider);
+		COLLISION->AddRigidbody(rigidBody);
 
 		// Player::PlayerScript
 		shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();
@@ -308,10 +312,20 @@ void Client::Init()
 
 		enemy->AddComponent(rangoon);	
 
+		// Collider
+		auto collider = make_shared<AABBBoxCollider>();
+		collider->GetBoundingBox().Extents = Vec3(1.2f);
+		collider->SetOffset(Vec3(0.f, 1.f, 0.f));
+		enemy->AddComponent(collider);
+
 		// Rigidbody
 		shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
 		rigidBody->SetUseGravity(true);
+		rigidBody->SetMass(2.0f);
 		enemy->AddComponent(rigidBody);
+
+		COLLISION->AddCollider(collider);
+		COLLISION->AddRigidbody(rigidBody);
 
 		CUR_SCENE->Add(enemy);
 	}

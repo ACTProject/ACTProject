@@ -73,6 +73,7 @@ using namespace Microsoft::WRL;
 #include "SceneManager.h"
 #include "DebugManager.h"
 #include "MapManager.h"
+#include "CollisionManager.h"
 
 // Engine
 #include "VertexData.h"

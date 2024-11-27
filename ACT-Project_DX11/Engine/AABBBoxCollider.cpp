@@ -16,7 +16,7 @@ AABBBoxCollider::~AABBBoxCollider()
 
 void AABBBoxCollider::Update()
 {
-    _boundingBox.Center = GetGameObject()->GetTransform()->GetPosition() + _offset;
+	_boundingBox.Center = GetColliderCenter();
 }
 
 bool AABBBoxCollider::Intersects(Ray& ray, OUT float& distance)

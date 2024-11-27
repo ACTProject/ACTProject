@@ -26,6 +26,7 @@ public:										\
 #define SCENE		GET_SINGLE(SceneManager)
 #define DEBUG		GET_SINGLE(DebugManager)
 #define MAP			GET_SINGLE(MapManager)
+#define COLLISION	GET_SINGLE(CollisionManager)
 #define CUR_SCENE	SCENE->GetCurrentScene()
 
 enum LayerMask

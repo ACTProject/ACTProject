@@ -28,7 +28,10 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 		return;
 
 	// GlobalData
-	_shader->PushGlobalData(Camera::S_MatView, Camera::S_MatProjection);
+	if (GetGameObject()->GetLayerIndex() == LayerMask::Layer_UI)
+		_shader->PushGlobalData(Camera::S_UIMatView, Camera::S_UIMatProjection);
+	else
+		_shader->PushGlobalData(Camera::S_MatView, Camera::S_MatProjection);
 
 	// Light
 	auto lightObj = SCENE->GetCurrentScene()->GetLight();

@@ -16,7 +16,7 @@ SphereCollider::~SphereCollider()
 
 void SphereCollider::Update()
 {
-	_boundingSphere.Center = GetGameObject()->GetTransform()->GetPosition() + _offset;
+	_boundingSphere.Center = GetColliderCenter();
 }
 
 bool SphereCollider::Intersects(Ray& ray, OUT float& distance)

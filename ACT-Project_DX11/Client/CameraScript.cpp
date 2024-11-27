@@ -15,7 +15,7 @@ void CameraScript::Update()
 
 void CameraScript::ProcessInput()
 {
-	if (INPUT->GetButton(KEY_TYPE::KEY_F1)) // F1 디버그 모드 ON/OFF
+	if (INPUT->GetButtonDown(KEY_TYPE::KEY_F1)) // F1 디버그 모드 ON/OFF
 	{
 		bool currentState = DEBUG->IsDebugEnabled();
 		DEBUG->EnableDebug(!currentState);

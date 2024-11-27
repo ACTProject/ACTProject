@@ -170,8 +170,10 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ConstantBuffer.h" />
+    <ClInclude Include="DebugManager.h" />
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="MyCoroutine.h" />
     <ClInclude Include="Define.h" />
@@ -243,8 +245,10 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
+    <ClCompile Include="DebugManager.cpp" />
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="MyCoroutine.cpp" />
     <ClCompile Include="FileUtils.cpp" />

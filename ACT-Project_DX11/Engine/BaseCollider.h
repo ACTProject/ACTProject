@@ -23,8 +23,15 @@ public:
 	void SetOffset(const Vec3& offset) { _offset = offset; }
 	Vec3 GetOffset() const { return _offset; }
 
+	Vec3 GetColliderCenter() { return GetGameObject()->GetTransform()->GetPosition() + _offset; }
+
+	bool IsColliding() const { return _isColliding; }
+	void SetColliding(bool isColliding) { _isColliding = isColliding; }
 protected:
 	ColliderType _colliderType;
 	Vec3 _offset = Vec3(0.0f); // Collider 중심의 offset
+
+private:
+	bool _isColliding = false; // 충돌 상태 추적
 };
 

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "RangoonScript.h"
+#include "BaseCollider.h"
 
 void RangoonScript::Aggro(Vec3& s, Vec3& t)
 {
@@ -10,9 +11,11 @@ void RangoonScript::Move(const Vec3 targetPos)
 {
     //y축 회전이다.
     _transform = GetTransform();
-    direction = targetPos - _transform->GetPosition();  // 목표 위치 방향 계산
+    Vec3 currentPosition = _transform->GetPosition();
+
+    direction = targetPos - currentPosition;  // 목표 위치 방향 계산
     distance = direction.Length();    // 목표와의 거리
-    if (distance < 5.f) {
+    if (distance < 7.f) {
         onTarget = true;
         return; // 목표에 도달
     }
@@ -21,7 +24,7 @@ void RangoonScript::Move(const Vec3 targetPos)
 
     direction.Normalize();  // 방향 벡터를 단위 벡터로 정규화
 
-    _transform->SetPosition(_transform->GetPosition() + direction * _speed * _deltaTime);  // 일정 거리만큼 이동
+    _transform->SetPosition(currentPosition + direction * _speed * _deltaTime);  // 일정 거리만큼 이동
 }
 
 void RangoonScript::Rota(const Vec3 targetPos)

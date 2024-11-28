@@ -10,6 +10,7 @@ public:
 	virtual void FixedUpdate() override;
 
 	void Addforce(const Vec3& force);
+	void ApplyFriction();
 	void HandleCollisionWithTerrain(Vec3& objectPosition);
 	const Vec3 GetVelocity() { return _velocity; }
 	void SetVelocity(Vec3 velocity) { _velocity = velocity; }

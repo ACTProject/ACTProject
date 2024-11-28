@@ -41,32 +41,58 @@ void CollisionManager::AddRigidbody(shared_ptr<Rigidbody> rigidbody)
 
 void CollisionManager::HandleCollision(shared_ptr<BaseCollider> colliderA, shared_ptr<BaseCollider> colliderB)
 {
+	// Rigidbody 가져오기
 	auto rigidbodyA = colliderA->GetGameObject()->GetRigidbody();
 	auto rigidbodyB = colliderB->GetGameObject()->GetRigidbody();
 
+	// Rigidbody가 없으면 처리하지 않음
 	if (!rigidbodyA || !rigidbodyB)
 		return;
 
-	// 두 Collider가 충돌 중인지 확인
-	if (!colliderA->IsColliding() && )
-	// 질량 비교에 따라 충돌 처리
-	if (rigidbodyA->GetMass() > rigidbodyB->GetMass())
+	// Penetration Depth 계산
+	Vec3 penetrationDepth;
+	if (!colliderA->CalculatePenetraionDepth(colliderB, penetrationDepth))
 	{
-		ApplyForce(rigidbodyB, colliderB->GetColliderCenter(), colliderA->GetColliderCenter()
-			, rigidbodyA->GetMass() - rigidbodyB->GetMass());
+		return; // 충돌이 발생하지 않음
 	}
-	else if (rigidbodyA->GetMass() < rigidbodyB->GetMass())
+
+	// 충돌 방향 계산
+	penetrationDepth.Normalize();
+	Vec3 collisionNormal = penetrationDepth;
+
+	// 간격 유지 설정
+	float minimumSeparation = 0.1f; // 오브젝트 간 최소 간격
+	float penetrationLength = penetrationDepth.Length();
+
+	if (penetrationLength <= minimumSeparation)
 	{
-		ApplyForce(rigidbodyA, colliderA->GetColliderCenter(), colliderB->GetColliderCenter()
-			, rigidbodyB->GetMass() - rigidbodyA->GetMass());
+		// 이미 충분한 거리가 유지되면 더 이상 밀어내지 않음
+		return;
 	}
+
+	// 질량 확인
+	float massA = rigidbodyA->GetMass();
+	float massB = rigidbodyB->GetMass();
+
+	if (massA > massB)
+	{
+		ApplyForce(rigidbodyB, colliderB->GetColliderCenter(), colliderA->GetColliderCenter(), rigidbodyA->GetMass() - rigidbodyB->GetMass());
+	}
+	else
+	{
+		ApplyForce(rigidbodyA, colliderA->GetColliderCenter(), colliderB->GetColliderCenter(), rigidbodyB->GetMass() - rigidbodyA->GetMass());
+	}
+
+	// 충돌 상태 설정
+	colliderA->SetColliding(true);
+	colliderB->SetColliding(true);
 }
 
 void CollisionManager::ApplyForce(shared_ptr<Rigidbody> rigidbody, const Vec3& target, const Vec3& source, float massDifference)
 {
-	Vec3 collisionNormal = target - source;
+	Vec3 collisionNormal = (target - source);
 	collisionNormal.Normalize();
-
 	Vec3 force = collisionNormal * massDifference * 10.0f; // 밀림 강도
 	rigidbody->Addforce(force);
 }
+

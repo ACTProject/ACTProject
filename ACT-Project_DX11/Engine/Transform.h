@@ -31,6 +31,9 @@ public:
 	Vec3 GetPosition() { return _position; }
 	void SetPosition(const Vec3& position);
 
+	// 현재 위치에 offset 벡터를 더함
+	void Translate(const Vec3& offset) { SetPosition(_position + offset); }
+
 	Vec3 GetRight();
 	Vec3 GetUp(); 
 	Vec3 GetLook();

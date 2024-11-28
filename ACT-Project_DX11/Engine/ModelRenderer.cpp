@@ -139,7 +139,7 @@ void ModelRenderer::RenderSingle()
 
 void ModelRenderer::RenderCollider()
 {
-	if (DEBUG->IsDebugEnabled())
+	if (DEBUG->IsDebugEnabled() || INPUT->GetButton(KEY_TYPE::CAPSLOCK))
 	{
 		shared_ptr<BaseCollider> collider = GetGameObject()->GetCollider();
 		if (collider)

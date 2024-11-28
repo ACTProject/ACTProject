@@ -32,11 +32,9 @@ void Rigidbody::FixedUpdate()
 	// 속도 계산 (v = v0 + at)
 	_velocity += acceleration * _fixedDeltaTime;
 
-	// 위치 계산 (s = s0 + vt)
-	//shared_ptr<Transform> transform = GetTransform();
+	Vec3 position = transform->GetPosition();
 	if (transform != nullptr)
 	{
-		Vec3 position = transform->GetPosition();
 		HandleCollisionWithTerrain(position);
 		position += _velocity * _fixedDeltaTime;
 		transform->SetPosition(position);
@@ -44,12 +42,31 @@ void Rigidbody::FixedUpdate()
 
 	// 외부 힘 초기화
 	_force = Vec3(0.f);
+
+	// 마찰력 적용 (속도 감속)
+	ApplyFriction();
 }
 
 void Rigidbody::Addforce(const Vec3& force)
 {
 	_force += force;
 }
+
+void Rigidbody::ApplyFriction()
+{
+	// 마찰 계수
+	float friction = 0.97f; // 0.0 (완전 정지) ~ 1.0 (마찰 없음)
+
+	// 속도 감속
+	_velocity *= friction;
+
+	// 최소 속도 임계값
+	if (_velocity.LengthSquared() < 0.001f)
+	{
+		_velocity = Vec3(0.f); // 정지 상태로 설정
+	}
+}
+
 
 void Rigidbody::HandleCollisionWithTerrain(Vec3& objectPosition)
 {

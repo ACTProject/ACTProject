@@ -8,6 +8,7 @@ enum class KEY_TYPE
 	RIGHT = VK_RIGHT,
 
 	SHIFT = VK_SHIFT,
+	CAPSLOCK = VK_CAPITAL,
 
 	W = 'W',
 	A = 'A',

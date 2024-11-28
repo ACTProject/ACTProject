@@ -70,3 +70,22 @@ void AABBBoxCollider::RenderCollider(shared_ptr<class Shader> shader)
     DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
     shader->Draw(5, 0, static_cast<UINT>(vertices.size()), 0);
 }
+
+bool AABBBoxCollider::CalculatePenetraionDepth(shared_ptr<BaseCollider> other, Vec3& penetrationDepth)
+{
+	switch (other->GetColliderType())
+	{
+	case ColliderType::AABB:
+		return CalculateAABBAABBCollision(this->_boundingBox, dynamic_pointer_cast<AABBBoxCollider>(other)->GetBoundingBox(), penetrationDepth);
+
+	case ColliderType::Sphere:
+		return CalculateAABBSphereCollision(this->_boundingBox, dynamic_pointer_cast<SphereCollider>(other)->GetBoundingSphere(), penetrationDepth);
+
+	//case ColliderType::OBB:
+		//return CalculateAABBOBBCollision(this->_boundingBox, dynamic_pointer_cast<OBBBoxCollider>(other)->GetBoundingBox(), penetrationDepth);
+
+	default:
+		return false;
+	}
+}
+

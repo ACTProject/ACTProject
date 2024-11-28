@@ -67,3 +67,10 @@ void OBBBoxCollider::RenderCollider(shared_ptr<class Shader> shader)
 	DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	shader->Draw(5, 0, static_cast<UINT>(vertices.size()), 0);
 }
+
+bool OBBBoxCollider::CalculatePenetraionDepth(shared_ptr<BaseCollider> other, Vec3& penetrationDepth)
+{
+	// TODO
+
+	return false;
+}

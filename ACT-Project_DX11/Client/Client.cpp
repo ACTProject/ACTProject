@@ -284,7 +284,7 @@ void Client::Init()
 	// Enemy
 	auto enemy = make_shared<GameObject>();
 	{
-		enemy->GetOrAddTransform()->SetPosition(Vec3(10, 0, 10));
+		enemy->GetOrAddTransform()->SetPosition(Vec3(20, 0, 20));
 		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 		enemy->GetOrAddTransform()->SetScale(Vec3(0.0001f));
 

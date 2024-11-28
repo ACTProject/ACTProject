@@ -243,7 +243,7 @@ void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 
 void ModelAnimator::RenderCollider()
 {
-	if (DEBUG->IsDebugEnabled())
+	if (DEBUG->IsDebugEnabled() || INPUT->GetButton(KEY_TYPE::CAPSLOCK))
 	{
 		shared_ptr<BaseCollider> collider = GetGameObject()->GetCollider();
 		if (collider)

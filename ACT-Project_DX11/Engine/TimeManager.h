@@ -21,5 +21,6 @@ private:
 	float	_frameTime = 0.f;
 	uint32	_frameCount = 0;
 	float	_fps = 0;
+	float _targetFrameTime = 0.f;
 };
 

@@ -56,11 +56,16 @@ void PlayerScript::Update()
 		moveDir += Vec3(1.0f, 0.0f, 0.0f);
 	// 공격 입력 처리
 	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON)) {
+		if (_attackStage > 0)
+			_currentDuration = _attackDurations[_attackStage - 1] / _FPS;	// 현재 애니메이션 지속 시간
+
 		_isPlayeringAttackAnimation = true;
+
 		if (!_isAttacking) {
 			StartAttack();
 		}
-		else if (_attackTimer < _attackCooldown) {
+		else if (_attackTimer >= (_currentDuration / 2.5f) && _attackTimer <= _currentDuration) 
+		{
 			ContinueAttack();
 		}
 	}
@@ -69,9 +74,8 @@ void PlayerScript::Update()
 	if (_isAttacking) {
 		_attackTimer += dt;
 
-		float a = ((_attackDurations[_attackStage - 1]) / _FPS);
 		// 공격 단계 시간 초과 시 Idle로 복귀
-		if (_attackTimer >= ((_attackDurations[_attackStage - 1]) / _FPS) - 0.1f) {
+		if (_attackTimer >= (_attackDurations[_attackStage - 1] / _FPS)) {
 			_attackStage = 0;  // 마지막 공격이 아니면 초기화
 			_isAttacking = false;
 			ResetToIdleState();
@@ -148,9 +152,10 @@ void PlayerScript::StartAttack()
 	_attackStage = 1;
 	_attackTimer = 0.0f;
 
+	float duration = _attackDurations[_attackStage - 1] / _FPS;
 	// 1타 공격 애니메이션 재생
 	PlayAttackAnimation(_attackStage);
-	MyCoroutine attackCoroutine = PlayAttackCoroutine(this, _attackDurations[_attackStage - 1] / _FPS);
+	MyCoroutine attackCoroutine = PlayAttackCoroutine(this, duration);
 	currentCoroutine = attackCoroutine.GetHandler();
 	currentCoroutine.resume();
 }

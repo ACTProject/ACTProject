@@ -22,9 +22,12 @@ public:
 
 	void RenderInstancing(shared_ptr<class InstancingBuffer>& buffer);
 	void RenderSingle();
+	void RenderCollider();
+
 	InstanceID GetInstanceID();
 
 private:
+	shared_ptr<Shader>	_shader;
 	shared_ptr<Mesh> _mesh;
 	shared_ptr<Material> _material;
 	uint8 _technique = 0;

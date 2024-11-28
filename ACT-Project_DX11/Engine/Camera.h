@@ -14,9 +14,17 @@ public:
 	Camera();
 	virtual ~Camera();
 	
+public:
+	static bool S_IsWireFrame;
+	static Matrix S_MatView;
+	static Matrix S_MatProjection;
+	static Matrix S_UIMatView;
+	static Matrix S_UIMatProjection;
+
 	virtual void Update() override;
 	void UpdateCameraWithMouseInput();
 	void UpdateMatrix();
+	void FreeCameraMovement(); // 디버그 모드시 카메라 이동
 
 	void SetProjectionType(ProjectionType type) { _type = type; }
 	ProjectionType GetProjectionType() { return _type; }
@@ -38,35 +46,6 @@ public:
 
 	Vec3 GetCameraOffset() { return _cameraOffset; }
 
-private:
-	ProjectionType _type = ProjectionType::Perspective;
-	Matrix _matView = Matrix::Identity;
-	Matrix _matProjection = Matrix::Identity;
-
-	float _near = 1.f;
-	float _far = 1000.f;
-	float _fov = XM_PI / 4.f;
-	float _width = 0.f;
-	float _height = 0.f;
-
-	//카메라가 플레이어를 중심으로 어느 정도 떨어진 위치에 있을지 정하는 위치 벡터
-	Vec3 _cameraOffset = Vec3(0.f);
-
-	float _yaw = 0.0f;				// 좌우 회전 각도
-	float _pitch = 0.0f;			// 상하 회전 각도
-	float _cameraDistance = 5.0f;	// 플레이어와 카메라 간의 거리
-	float _sensitivity = 0.005f;	// 마우스 감도
-
-	// 카메라 위치
-	Vec3 _cameraPosition = Vec3(0.f);
-	// 초점 위치
-	Vec3 _focusPosition = Vec3(0.f);
-
-public:
-	static bool S_IsWireFrame;
-	static Matrix S_MatView;
-	static Matrix S_MatProjection;
-
 public:
 	void SortGameObject();
 	void Render_Forward();
@@ -87,4 +66,34 @@ private:
 	uint32 _cullingMask = 0;
 	vector<shared_ptr<GameObject>> _vecForward;
 	shared_ptr<GameObject> _player = nullptr;
+
+private:
+	ProjectionType _type = ProjectionType::Perspective;
+	Matrix _matView = Matrix::Identity;
+	Matrix _matProjection = Matrix::Identity;
+
+	float _near = 1.f;
+	float _far = 1000.f;
+	float _fov = XM_PI / 4.f;
+	float _width = 0.f;
+	float _height = 0.f;
+
+	//카메라가 플레이어를 중심으로 어느 정도 떨어진 위치에 있을지 정하는 위치 벡터
+	Vec3 _cameraOffset = Vec3(0.f);
+
+	float _yaw = 0.0f;				// 좌우 회전 각도
+	float _pitch = 0.0f;			// 상하 회전 각도
+	float _cameraDistance = 5.0f;	// 플레이어와 카메라 간의 거리
+	float _sensitivity = 0.005f;	// 마우스 감도
+
+	float _normalSpeed = 15.0f;  // 일반 이동 속도
+	float _fastSpeed = 30.0f;   // 빠른 이동 속도 (Shift 키)
+
+	// 디버깅 모드 이전 상태 저장
+	bool _debugInitialized = false;			// 디버깅 모드 초기화 여부
+
+	// 카메라 위치
+	Vec3 _cameraPosition = Vec3(0.f);
+	// 초점 위치
+	Vec3 _focusPosition = Vec3(0.f);
 };

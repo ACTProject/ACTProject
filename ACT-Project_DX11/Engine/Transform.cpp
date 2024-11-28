@@ -70,7 +70,10 @@ void Transform::UpdateTransform()
 	matRotation *= Matrix::CreateRotationZ(_localRotation.z);
 	Matrix matTranslation = Matrix::CreateTranslation(_localPosition);
 
-	_matLocal = matScale * matRotation * matTranslation;
+	Matrix matCenter = Matrix::CreateTranslation(_localCenter);
+
+
+	_matLocal = matCenter * matScale * matRotation * matTranslation;
 
 	if (HasParent())
 	{

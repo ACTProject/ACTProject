@@ -30,6 +30,7 @@
 #include "Billboard.h"
 #include "RangoonScript.h"
 #include "Rigidbody.h"
+#include "Slider.h"
 
 void Client::Init()
 {
@@ -95,7 +96,7 @@ void Client::Init()
 		{
 			shared_ptr<Material> material = make_shared<Material>();
 			material->SetShader(renderShader);
-			auto texture = RESOURCES->Load<Texture>(L"RedBar", L"..\\Resources\\Textures\\UI\\FrontBprder_HPBar.png");
+			auto texture = RESOURCES->Load<Texture>(L"RedBar", L"..\\Resources\\Textures\\UI\\Front_HPBar2.png");
 			material->SetDiffuseMap(texture);
 			MaterialDesc& desc = material->GetMaterialDesc();
 			desc.ambient = Vec4(1.f);
@@ -108,7 +109,7 @@ void Client::Init()
 		// MeshHealBar
 		{
 			auto obj = make_shared<GameObject>();
-			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-230.f, -260.f, 0.0f));
+			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-230.f, -260.f, 0.1f));
 			obj->GetOrAddTransform()->SetScale(Vec3(180, 30, 100));
 			obj->AddComponent(make_shared<MeshRenderer>());
 
@@ -129,7 +130,7 @@ void Client::Init()
 		// MeshArmorBar
 		{
 			auto obj = make_shared<GameObject>();
-			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-210.f, -230.f, -0.1f));
+			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-210.f, -230.f, 0.1f));
 			obj->GetOrAddTransform()->SetScale(Vec3(200, 30, 100));
 			obj->AddComponent(make_shared<MeshRenderer>());
 
@@ -149,47 +150,20 @@ void Client::Init()
 		}
 		// RedBar HPMesh
 		{
+			// 슬라이더 컴포넌트 추가.
 			auto obj = make_shared<GameObject>();
-			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-228.f, -261.f, -0.2f));
-			//obj->GetOrAddTransform()->SetScale(Vec3(150, 10, 100));
-			obj->GetOrAddTransform()->SetScale(Vec3(126, 8, 100));
-
-			obj->AddComponent(make_shared<MeshRenderer>());
-
-			obj->SetLayerIndex(Layer_UI);
-			{
-				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"RedBar"));
-
-			}
-			{
-				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
-				obj->GetMeshRenderer()->SetMesh(mesh);
-				obj->GetMeshRenderer()->SetAlphaBlend(true);
-				obj->GetMeshRenderer()->SetPass(0);
-			}
+			obj->AddComponent(make_shared<Slider>());
+			obj->GetSlider()->Create(Vec2(-290.f, -261.f), Vec2(126, 8), RESOURCES->Get<Material>(L"RedBar"));
 
 			CUR_SCENE->Add(obj);
 		}
 
 		// RedBar ARmor Mesh
 		{
+			// 슬라이더 컴포넌트 추가.
 			auto obj = make_shared<GameObject>();
-			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-207.f, -234.f, -0.2f));
-			obj->GetOrAddTransform()->SetScale(Vec3(164, 7, 100));
-
-			obj->AddComponent(make_shared<MeshRenderer>());
-
-			obj->SetLayerIndex(Layer_UI);
-			{
-				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"RedBar"));
-
-			}
-			{
-				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
-				obj->GetMeshRenderer()->SetMesh(mesh);
-				//obj->GetMeshRenderer()->SetAlphaBlend(true);
-				obj->GetMeshRenderer()->SetPass(0);
-			}
+			obj->AddComponent(make_shared<Slider>());
+			obj->GetSlider()->Create(Vec2(-290.f, -234.f), Vec2(164, 7), RESOURCES->Get<Material>(L"RedBar"));
 
 			CUR_SCENE->Add(obj);
 		}

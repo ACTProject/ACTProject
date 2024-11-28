@@ -23,6 +23,8 @@ public:
 	Vec3 GetLocalPosition() { return _localPosition; }
 	void SetLocalPosition(const Vec3& localPosition) { _localPosition = localPosition; UpdateTransform(); }
 
+	void SetLocalCenter(const Vec3& localCenter) { _localCenter = localCenter; }
+
 	// World
 	Vec3 GetScale() { return _scale; }
 	void SetScale(const Vec3& scale);
@@ -51,6 +53,10 @@ private:
 	Vec3 _localScale = { 1.f, 1.f, 1.f }; 
 	Vec3 _localRotation = { 0.f, 0.f, 0.f };
 	Vec3 _localPosition = { 0.f, 0.f, 0.f };
+	
+	// 오브젝트 로컬 중심좌표 옮기는 변수
+	Vec3 _localCenter = { 0.f, 0.f, 0.f };
+	//Matrix _matCenter = Matrix::Identity;
 
 	// Cache
 	Matrix _matLocal = Matrix::Identity;

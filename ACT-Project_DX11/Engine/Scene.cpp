@@ -36,7 +36,7 @@ void Scene::Update()
 		object->Update();
 	}
 
-	PickUI();
+	UpdateUI();
 
 	MAP->Update();
 }
@@ -118,19 +118,28 @@ std::shared_ptr<GameObject> Scene::GetUICamera()
 	return nullptr;
 }
 
-void Scene::PickUI()
+void Scene::UpdateUI()
 {
-	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false)
+	if (GetUICamera() == nullptr)
 		return;
 
-	if (GetUICamera() == nullptr)
+	// Slider
+	const auto gameObjects = GetObjects();
+
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->GetSlider() == nullptr)
+			continue;
+	}
+
+
+	// PickUI
+	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false)
 		return;
 
 	POINT screenPt = INPUT->GetMousePos();
 
 	shared_ptr<Camera> camera = GetUICamera()->GetCamera();
-
-	const auto gameObjects = GetObjects();
 
 	for (auto& gameObject : gameObjects)
 	{
@@ -169,16 +178,16 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 		if (gameObject->GetCollider() == nullptr)
 			continue;
 
-		// ViewSpace¿¡¼­ÀÇ Ray Á¤ÀÇ
+		// ViewSpaceï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ray ï¿½ï¿½ï¿½ï¿½
 		Vec4 rayOrigin = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		Vec4 rayDir = Vec4(viewX, viewY, 1.0f, 0.0f);
 
-		// WorldSpace¿¡¼­ÀÇ Ray Á¤ÀÇ
+		// WorldSpaceï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ray ï¿½ï¿½ï¿½ï¿½
 		Vec3 worldRayOrigin = XMVector3TransformCoord(rayOrigin, viewMatrixInv);
 		Vec3 worldRayDir = XMVector3TransformNormal(rayDir, viewMatrixInv);
 		worldRayDir.Normalize();
 
-		// WorldSpace¿¡¼­ ¿¬»ê
+		// WorldSpaceï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		Ray ray = Ray(worldRayOrigin, worldRayDir);
 
 		float distance = 0.f;
@@ -202,12 +211,9 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 		if (gameObject->GetTerrain()->Pick(screenX, screenY, OUT pickPos, OUT distance) == false)
 			continue;
 
-		// ¾À¿¡´Ù°¡ °ÔÀÓ¿ÉÁ§ ÀúÀå½ÃÄÑ³õ°í, µü ÂïÀ¸¸é pickPosÀ§Ä¡¿¡´Ù°¡ Ãß°¡µÇ°Ô²û ¸¸µé¸é µÉ µí
-		// Scene¿¡´Ù°¡ 
 		{
 			if (MAP->ChekMapObjSelect())
 			{
-				// °¡²û y°ªÀÌ ÀÌ»óÇØÁú ¶§°¡ ÀÖ´Ù.
 				shared_ptr<GameObject> obj = MAP->Create(pickPos);
 
 				Add(obj);

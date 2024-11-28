@@ -9,107 +9,6 @@
     </ClCompile>
     <ClCompile Include="ModelMesh.cpp">
       <Filter>00. Engine\Resource\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelAnimator.h">
-      <Filter>04. Component</Filter>
-    </ClInclude>
-    <ClInclude Include="InstancingManager.h">
-      <Filter>02. Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="InstancingBuffer.h">
-      <Filter>01. Graphics\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>04. Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>02. Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>02. Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="RawBuffer.h">
-      <Filter>05. ComputeShader\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureBuffer.h">
-      <Filter>05. ComputeShader\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="StructuredBuffer.h">
-      <Filter>05. ComputeShader\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="BindShaderDesc.h">
-      <Filter>98. Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Viewport.h">
-      <Filter>01. Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseCollider.h">
-      <Filter>04. Component\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="SphereCollider.h">
-      <Filter>04. Component\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="AABBBoxCollider.h">
-      <Filter>04. Component\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="OBBBoxCollider.h">
-      <Filter>04. Component\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Primitive3D.h">
-      <Filter>99. Headers\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Terrain.h">
-      <Filter>04. Component</Filter>
-    </ClInclude>
-    <ClInclude Include="MathUtils.h">
-      <Filter>99. Headers\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Button.h">
-      <Filter>06. UI &amp; Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="Billboard.h">
-      <Filter>06. UI &amp; Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="SnowBillboard.h">
-      <Filter>06. UI &amp; Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="MyCoroutine.h">
-      <Filter>98. Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Rigidbody.h">
-      <Filter>04. Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Slider.h">
-      <Filter>04. Component</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>99. Headers</Filter>
-    </ClCompile>
-    <ClCompile Include="SimpleMath.cpp">
-      <Filter>98. Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="tinyxml2.cpp">
-      <Filter>98. Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils.cpp">
-      <Filter>98. Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>02. Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeManager.cpp">
-      <Filter>02. Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics.cpp">
-      <Filter>02. Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>02. Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="IExecute.cpp">
       <Filter>00. Engine</Filter>
@@ -293,8 +192,6 @@
     </ClCompile>
     <ClCompile Include="Rigidbody.cpp">
       <Filter>04. Component</Filter>
-    <ClCompile Include="Slider.cpp">
-      <Filter>04. Component</Filter>
     </ClCompile>
     <ClCompile Include="MapManager.cpp">
       <Filter>02. Manager</Filter>
@@ -308,11 +205,8 @@
     <ClCompile Include="MapManager.cpp">
       <Filter>02. Manager</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionManager.cpp">
-      <Filter>02. Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugManager.cpp">
-      <Filter>02. Manager</Filter>
+        <ClCompile Include="Slider.cpp">
+      <Filter>04. Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -532,11 +426,8 @@
     <ClInclude Include="MapManager.h">
       <Filter>02. Manager</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionManager.h">
-      <Filter>02. Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugManager.h">
-      <Filter>02. Manager</Filter>
+    <ClInclude Include="Slider.h">
+      <Filter>04. Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -588,9 +479,6 @@
     <Filter Include="99. Headers\Math">
       <UniqueIdentifier>{79c6e3d6-232d-4de6-8eac-7870fb7cb259}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="Slider.cpp">
-      <Filter>04. Component</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">

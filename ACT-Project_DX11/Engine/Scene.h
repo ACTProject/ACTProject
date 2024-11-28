@@ -25,7 +25,7 @@ public:
 	shared_ptr<GameObject> GetPlayer() { return _player; }
 	shared_ptr<GameObject> GetCurrentTerrain() { return _terrain; }
 
-	void PickUI();
+	void UpdateUI();
 	shared_ptr<class GameObject> Pick(int32 screenX, int32 screenY);
 
 	void CheckCollision();

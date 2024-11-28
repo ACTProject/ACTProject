@@ -36,7 +36,7 @@ void Scene::Update()
 		object->Update();
 	}
 
-	PickUI();
+	UpdateUI();
 }
 
 void Scene::FixedUpdate()
@@ -116,19 +116,28 @@ std::shared_ptr<GameObject> Scene::GetUICamera()
 	return nullptr;
 }
 
-void Scene::PickUI()
+void Scene::UpdateUI()
 {
-	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false)
+	if (GetUICamera() == nullptr)
 		return;
 
-	if (GetUICamera() == nullptr)
+	// Slider
+	const auto gameObjects = GetObjects();
+
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->GetSlider() == nullptr)
+			continue;
+	}
+
+
+	// PickUI
+	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false)
 		return;
 
 	POINT screenPt = INPUT->GetMousePos();
 
 	shared_ptr<Camera> camera = GetUICamera()->GetCamera();
-
-	const auto gameObjects = GetObjects();
 
 	for (auto& gameObject : gameObjects)
 	{

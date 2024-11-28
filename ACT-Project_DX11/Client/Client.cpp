@@ -290,10 +290,15 @@ void Client::Init()
 			enemyModel->ReadModel(L"Enemy/Rangoon");
 			enemyModel->ReadMaterial(L"Enemy/Rangoon");
 
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_Taunt", AnimationState::Run);
+			enemyModel->ReadAnimation(L"Enemy/Rangoon_run", AnimationState::Run);
 			enemyModel->ReadAnimation(L"Enemy/Rangoon_idle", AnimationState::Idle);
+			enemyModel->ReadAnimation(L"Enemy/Rangoon_aggro", AnimationState::Hit);
+			enemyModel->ReadAnimation(L"Enemy/Rangoon_atkBigSnippy", AnimationState::Attack1);
+			enemyModel->ReadAnimation(L"Enemy/Rangoon_atkSmallSnippy", AnimationState::Attack2);
+			enemyModel->ReadAnimation(L"Enemy/Rangoon_atkSmash", AnimationState::Attack3);
+			enemyModel->ReadAnimation(L"Enemy/Rangoon_die", AnimationState::Die);
 			enemyModel->ReadAnimation(L"Enemy/Rangoon_hit", AnimationState::Hit);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_atk", AnimationState::Atk);
+			enemyModel->ReadAnimation(L"Enemy/Rangoon_roar", AnimationState::Roar);
 		}
 		shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
 		enemy->AddComponent(ma2);

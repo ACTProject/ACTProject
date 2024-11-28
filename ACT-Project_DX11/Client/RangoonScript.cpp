@@ -107,7 +107,7 @@ void RangoonScript::Update()
         Rota(playerPosition);
         if (onTarget == true)
         {
-            SetAnimationState(AnimationState::Atk);
+            SetAnimationState(AnimationState::Attack1);
         }
         else
         {

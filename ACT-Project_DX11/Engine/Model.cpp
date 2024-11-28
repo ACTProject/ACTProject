@@ -353,7 +353,8 @@ string Model::AnimationStateToString(AnimationState state)
 	case AnimationState::Attack4: return "Attack4";
 	case AnimationState::Jump:   return "Jump";
 	case AnimationState::Hit:   return "Hit";
-	case AnimationState::Atk:   return "Atk";
+	case AnimationState::Die:   return "Die";
+	case AnimationState::Roar:   return "Roar";
 		// 다른 상태 추가 가능
 	default: return "Unknown";
 	}

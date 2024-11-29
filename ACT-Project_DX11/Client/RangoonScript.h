@@ -4,7 +4,6 @@
 #include "A_Star.h"
 #include "Model.h"
 #include "ModelAnimator.h"
-#include "PlayerScript.h"
 
 class Model;
 class ModelAnimator;
@@ -20,23 +19,39 @@ public:
 	void SetEnemy(shared_ptr<Model> enemy) { _rangoon = enemy; }
 	shared_ptr<ModelAnimator> GetModelAnimator() { return _modelAnimator; }
 	void SetModelAnimator(shared_ptr<ModelAnimator> modelAnimator) { _modelAnimator = modelAnimator; }
-	void SetAnimationState(AnimationState state); 
+	void SetAnimationState(AnimationState state);
 
-	void Aggro(Vec3& s, Vec3& t);
+	void Aggro();
 	void Move(const Vec3 targetPos);
 	void Rota(const Vec3 targetPos);
-	void Attack();
+	void Attack(int type);
 	void Tracking(Vec3 pos, const std::vector<Node3D>& path);
+	void SetNextType(int type);
 
 	//float angle; 
 	float distance;
 	Vec3 direction;
 	Vec3 CurForward;
-	bool onTarget = false;
+	int atkType = 0;
+	bool _isAnimating = false;
 
 private:
 	float _speed = 0.1f;
 	float _deltaTime = 1.f;
+	float _hp = 100.0f;
+	float _atk = 30.0f;
+	bool onTarget = false;
+	bool onRange = true;
+	bool BackToStart = false;
+	Vec3 StartPos;
+	float rangeDis;
+	bool isAnimating;
+	bool onAttack = false;
+	float _FPS;
+	float _attackDuration[3];
+	float _aggroDuration;
+	bool previousOnTarget = false;
+
 	shared_ptr<Model> _rangoon;
 	shared_ptr<ModelAnimator> _modelAnimator;
 	shared_ptr<Transform> _transform;

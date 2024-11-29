@@ -1,124 +1,204 @@
 #include "pch.h"
 #include "RangoonScript.h"
-#include "BaseCollider.h"
+#include "MyCoroutine.h"
+#include <coroutine>
 
-void RangoonScript::Aggro(Vec3& s, Vec3& t)
+// Coroutine
+std::coroutine_handle<MyCoroutine::promise_type> currentRangoonCoroutine;
+
+void RangoonEndCoroutine() {
+	if (currentRangoonCoroutine) {
+		currentRangoonCoroutine.destroy();
+		currentRangoonCoroutine = nullptr;
+	}
+}
+
+// 플레이어공격 코루틴 함수 정의
+MyCoroutine RangoonCoroutine(RangoonScript* rangoonScript, float animationDuration)
 {
+	// 애니메이션 재생 시간 대기
+	co_await AwaitableSleep(chrono::milliseconds(static_cast<int>(animationDuration * 1000)));		// 공격 전 `atkType`을 랜덤으로 설정
+	RangoonEndCoroutine();
+}
 
+void RangoonScript::SetNextType(int type)
+{
+	atkType = type;
+}
+
+void RangoonScript::Aggro()
+{
+	SetAnimationState(AnimationState::Aggro);
 }
 
 void RangoonScript::Move(const Vec3 targetPos)
 {
-    //y축 회전이다.
-    _transform = GetTransform();
-    Vec3 currentPosition = _transform->GetPosition();
+	direction = targetPos - _transform->GetPosition();
+	direction.Normalize();  // 방향 벡터를 단위 벡터로 정규화
 
-    direction = targetPos - currentPosition;  // 목표 위치 방향 계산
-    distance = direction.Length();    // 목표와의 거리
-    if (distance < 7.f) {
-        onTarget = true;
-        return; // 목표에 도달
-    }
-    
-    onTarget = false;
-
-    direction.Normalize();  // 방향 벡터를 단위 벡터로 정규화
-
-    _transform->SetPosition(currentPosition + direction * _speed * _deltaTime);  // 일정 거리만큼 이동
+	_transform->SetPosition(_transform->GetPosition() + direction * _speed * _deltaTime);  // 일정 거리만큼 이동
 }
 
 void RangoonScript::Rota(const Vec3 targetPos)
 {
-    CurForward = _transform->GetLook();
-    direction = targetPos - _transform->GetPosition();
-    direction.Normalize();
+	CurForward = _transform->GetLook();
+	direction = targetPos - _transform->GetPosition();
+	direction.Normalize();
 
-    // 외적을 이용한 회전 축 계산
-    Vec3 rotationAxis = CurForward.Cross(direction);
+	// 외적을 이용한 회전 축 계산
+	Vec3 rotationAxis = CurForward.Cross(direction);
 
-    // 외적 결과가 매우 작으면 방향 차이가 거의 없으므로 회전 필요 없음
-    if (rotationAxis.LengthSquared() < 1e-6f)
-    {
-        return;
-    }
+	// 외적 결과가 매우 작으면 방향 차이가 거의 없으므로 회전 필요 없음
+	if (rotationAxis.LengthSquared() < 1e-6f)
+	{
+		return;
+	}
 
-    rotationAxis.Normalize();
+	rotationAxis.Normalize();
 
-    // 각도 계산
-    float angle = std::acos(CurForward.Dot(direction));
+	// 각도 계산
+	float angle = std::acos(CurForward.Dot(direction));
 
-    // 작은 각도는 무시
-    if (abs(angle) < 0.001f) // 0.01 라디안(약 0.57도) 이하 회전 무시
-    {
-        return;
-    }
-    // 방향에 따라 각도 조정 (y축 중심 회전)
-    if (rotationAxis.y < 0) {
-        angle = -angle;  // 왼쪽 회전
-    }
+	// 작은 각도는 무시
+	if (abs(angle) < 0.001f) // 0.01 라디안(약 0.57도) 이하 회전 무시
+	{
+		return;
+	}
+	// 방향에 따라 각도 조정 (y축 중심 회전)
+	if (rotationAxis.y < 0) {
+		angle = -angle;  // 왼쪽 회전
+	}
 
-    // 현재 회전값 업데이트
-    Vec3 currentRotation = _transform->GetLocalRotation();
-    Vec3 newRotation = Vec3::Lerp(currentRotation, currentRotation + Vec3(0, angle, 0), 0.1f); // 0.1f는 보간 속도
-    _transform->SetRotation(newRotation);
-   
+	// 현재 회전값 업데이트
+	Vec3 currentRotation = _transform->GetLocalRotation();
+	Vec3 newRotation = Vec3::Lerp(currentRotation, currentRotation + Vec3(0, angle, 0), 0.1f); // 0.1f는 보간 속도
+	_transform->SetRotation(newRotation);
+
 }
 
 void RangoonScript::Tracking(Vec3 pos, const std::vector<Node3D>& path)
 {
-    if (path.empty()) {
-        return;
-    }
+	if (path.empty()) {
+		return;
+	}
 
-    // 경로 상의 각 노드를 따라 이동
-    for (size_t i = 0; i < path.size(); ++i) {
-        // 현재 위치가 목표 노드에 도달했다면 다음 노드로 이동
-        if (i + 1 < path.size()) {
-            Move(path[i + 1].pos);
-        }
-    }
+	// 경로 상의 각 노드를 따라 이동
+	for (size_t i = 0; i < path.size(); ++i) {
+		// 현재 위치가 목표 노드에 도달했다면 다음 노드로 이동
+		if (i + 1 < path.size()) {
+			//Move(path[i + 1].pos);
+		}
+	}
 }
 
-void RangoonScript::Attack()
+void RangoonScript::Attack(int type)
 {
-
+	switch (type)
+	{
+	case 0:
+		SetAnimationState(AnimationState::Attack1);
+		break;
+	case 1:
+		SetAnimationState(AnimationState::Attack2);
+		break;
+	case 2:
+		SetAnimationState(AnimationState::Attack3);
+		break;
+	}
 }
 
 void RangoonScript::Start()
 {
-
+	_transform = GetTransform();
+	StartPos = _transform->GetPosition();
+	for (int i = 0; i < 3; ++i)
+	{
+		_attackDuration[i] = _rangoon->GetAnimationDuration(static_cast<AnimationState>((int)AnimationState::Attack1 + i));
+	}
+	_aggroDuration = _rangoon->GetAnimationDuration(static_cast<AnimationState>((int)AnimationState::Aggro));
 }
 
 void RangoonScript::Update()
 {
-    _transform = GetTransform();
-    _player = SCENE->GetCurrentScene()->GetPlayer();
-    Vec3 playerPosition = _player->GetTransform()->GetPosition();
+	_FPS = static_cast<float>(TIME->GetFps());
+	float dt = TIME->GetDeltaTime();
 
-    //Node3D start = { _transform->GetPosition(), 0, 0, nullptr };
-    //Node3D goal = { {0,0,0},0,0,nullptr };
-    
-    //std::vector<Node3D> path = astar.findPath(start, goal);
+	_player = SCENE->GetCurrentScene()->GetPlayer();
+	Vec3 playerPosition = _player->GetTransform()->GetPosition();
 
-    //Tracking(_transform->GetPosition(), path);
-    //if (INPUT->GetButton(KEY_TYPE::KEY_4))
-    {
-        Move(playerPosition);
-        Rota(playerPosition);
-        if (onTarget == true)
-        {
-            SetAnimationState(AnimationState::Attack1);
-        }
-        else
-        {
-            SetAnimationState(AnimationState::Run);
-        }
-    }
-    
+	direction = playerPosition - _transform->GetPosition();
+	distance = direction.Length();
+	rangeDis = (_transform->GetPosition() - StartPos).Length();
+
+	if (rangeDis > 8.f)
+	{
+		BackToStart = true;
+		onTarget = false;
+		onAttack = false;
+	}
+	if (rangeDis < 3.f)
+	{
+		BackToStart = false;
+	}
+
+	if (!BackToStart && distance < 15.f) { onTarget = true; }
+	else { onTarget = false; }
+
+	if (!BackToStart && distance < 5.f) { onAttack = true; }
+	else { onAttack = false; }
+
+	 // 이전 상태를 저장
+	if (!previousOnTarget && onTarget)
+	{
+		Aggro();
+		MyCoroutine aggroCoroutine = RangoonCoroutine(this, _aggroDuration / _FPS);
+		currentRangoonCoroutine = aggroCoroutine.GetHandler();
+		currentRangoonCoroutine.resume();
+	}
+	previousOnTarget = onTarget;
+
+	if (BackToStart)
+	{
+		SetAnimationState(AnimationState::Run);
+		Move(StartPos);
+		Rota(StartPos);
+	}
+	else if (onAttack)
+	{
+		if (!_isAnimating)
+		{
+			Attack(atkType);
+			_isAnimating = false;
+			// 코루틴 실행
+			MyCoroutine attackCoroutine = RangoonCoroutine(this, _attackDuration[atkType] / _FPS);
+			currentRangoonCoroutine = attackCoroutine.GetHandler();
+			currentRangoonCoroutine.resume();
+		}
+	}
+	else if (onTarget)
+	{
+		SetAnimationState(AnimationState::Run);
+		Move(direction);
+		Rota(playerPosition);
+	}
+	else
+	{
+		SetAnimationState(AnimationState::Idle);
+	}
+
+	if (INPUT->GetButton(KEY_TYPE::KEY_4))
+	{
+		int a = 0;
+	}
+	/*Node3D start = {_transform->GetPosition(), 0, 0, nullptr};
+	Node3D goal = { {0,0,0},0,0,nullptr };
+	std::vector<Node3D> path = astar.findPath(start, goal);
+	Tracking(_transform->GetPosition(), path);*/
 }
+
 
 void RangoonScript::SetAnimationState(AnimationState state)
 {
-    _modelAnimator->ChangeAnimation(state);
-    _currentAnimationState = state;
+	_modelAnimator->ChangeAnimation(state);
+	_currentAnimationState = state;
 }

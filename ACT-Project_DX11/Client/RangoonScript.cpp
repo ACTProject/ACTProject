@@ -28,7 +28,13 @@ void RangoonScript::SetNextType(int type)
 
 void RangoonScript::Aggro()
 {
+	_isAnimating = true;
+
 	SetAnimationState(AnimationState::Aggro);
+
+	MyCoroutine aggroCoroutine = RangoonCoroutine(this, _aggroDuration / _FPS);
+	currentRangoonCoroutine = aggroCoroutine.GetHandler();
+	currentRangoonCoroutine.resume();
 }
 
 void RangoonScript::Move(const Vec3 targetPos)
@@ -93,6 +99,10 @@ void RangoonScript::Tracking(Vec3 pos, const std::vector<Node3D>& path)
 
 void RangoonScript::Attack(int type)
 {
+	_isAnimating = true;
+
+	float atkDuration = _attackDuration[atkType] / _FPS;
+
 	switch (type)
 	{
 	case 0:
@@ -105,6 +115,11 @@ void RangoonScript::Attack(int type)
 		SetAnimationState(AnimationState::Attack3);
 		break;
 	}
+	// 코루틴 실행
+	MyCoroutine attackCoroutine = RangoonCoroutine(this, atkDuration);
+	currentRangoonCoroutine = attackCoroutine.GetHandler();
+	currentRangoonCoroutine.resume();
+
 }
 
 void RangoonScript::Start()
@@ -120,80 +135,120 @@ void RangoonScript::Start()
 
 void RangoonScript::Update()
 {
-	_FPS = static_cast<float>(TIME->GetFps());
-	float dt = TIME->GetDeltaTime();
+	UpdateTimers(); // 타이머 업데이트
 
+	UpdatePlayerInfo(); // 위치 업데이트
+
+	CheckRanges(); // 범위 확인 및 상태 갱신
+
+	if (_isAnimating) // 애니메이션 실행 중이면 해당 상태 처리
+	{
+		HandleAnimationState();
+		return;
+	}
+
+	// 상태별 동작 처리
+	if (BackToStart)
+	{
+		HandleBackToStart();
+	}
+	else if (onTarget && !onAttack)
+	{
+		HandleChasePlayer();
+	}
+	else if (onAttack)
+	{
+		HandleAttack();
+	}
+	else
+	{
+		SetAnimationState(AnimationState::Idle);
+	}
+}
+void RangoonScript::UpdateTimers()
+{
+	_FPS = static_cast<float>(TIME->GetFps());
+	_deltaTime = TIME->GetDeltaTime();
+	if (_isAnimating)
+	{
+		animPlayingTime += _deltaTime; // 애니메이션 실행 시간 갱신
+	}
+}
+void RangoonScript::UpdatePlayerInfo()
+{
 	_player = SCENE->GetCurrentScene()->GetPlayer();
 	Vec3 playerPosition = _player->GetTransform()->GetPosition();
 
 	direction = playerPosition - _transform->GetPosition();
 	distance = direction.Length();
 	rangeDis = (_transform->GetPosition() - StartPos).Length();
-
-	if (rangeDis > 8.f)
+}
+void RangoonScript::CheckRanges()
+{
+	// 초기 위치에서 너무 멀리 떨어지면 복귀
+	if (rangeDis > 15.f)
 	{
 		BackToStart = true;
 		onTarget = false;
 		onAttack = false;
 	}
-	if (rangeDis < 3.f)
+	else if(distance < 15.f && !BackToStart)
+	{
+		onTarget = true;
+		if (distance < 5.f)
+		{
+			onAttack = true;
+		}
+		else
+		{
+			onAttack = false;
+		}
+	}
+}
+void RangoonScript::HandleAnimationState()
+{
+	if (!isAggro) // Aggro 애니메이션 실행 중
+	{
+		if (animPlayingTime > _aggroDuration)
+		{
+			isAggro = true; // Aggro 상태 완료
+			ResetToIdleState();
+		}
+	}
+	else if (onAttack) // 공격 애니메이션 실행 중
+	{
+		float atkDuration = _attackDuration[atkType] / _FPS;
+		if (animPlayingTime > atkDuration)
+		{
+			atkType = rand() % 3; // 다음 공격 타입 결정
+			ResetToIdleState();
+		}
+	}
+}
+void RangoonScript::HandleBackToStart()
+{
+	SetAnimationState(AnimationState::Run);
+	Move(StartPos);   // 시작 위치로 이동
+	Rota(StartPos);   // 시작 위치를 향하도록 회전
+
+	if (rangeDis < 1.f) // 시작 위치 근처에 도달하면 멈춤
 	{
 		BackToStart = false;
 	}
-
-	if (!BackToStart && distance < 15.f) { onTarget = true; }
-	else { onTarget = false; }
-
-	if (!BackToStart && distance < 5.f) { onAttack = true; }
-	else { onAttack = false; }
-
-	 // 이전 상태를 저장
-	if (!previousOnTarget && onTarget)
+}
+void RangoonScript::HandleChasePlayer()
+{
+	SetAnimationState(AnimationState::Run);
+	Move(direction);  // 플레이어를 향해 이동
+	Rota(_player->GetTransform()->GetPosition()); // 플레이어를 바라보도록 회전
+}
+void RangoonScript::HandleAttack()
+{
+	if (!_isAnimating) // 애니메이션이 실행 중이 아니면
 	{
-		Aggro();
-		MyCoroutine aggroCoroutine = RangoonCoroutine(this, _aggroDuration / _FPS);
-		currentRangoonCoroutine = aggroCoroutine.GetHandler();
-		currentRangoonCoroutine.resume();
+		Attack(atkType); // 공격 실행
+		Rota(_player->GetTransform()->GetPosition()); // 플레이어를 바라보도록 회전
 	}
-	previousOnTarget = onTarget;
-
-	if (BackToStart)
-	{
-		SetAnimationState(AnimationState::Run);
-		Move(StartPos);
-		Rota(StartPos);
-	}
-	else if (onAttack)
-	{
-		if (!_isAnimating)
-		{
-			Attack(atkType);
-			_isAnimating = false;
-			// 코루틴 실행
-			MyCoroutine attackCoroutine = RangoonCoroutine(this, _attackDuration[atkType] / _FPS);
-			currentRangoonCoroutine = attackCoroutine.GetHandler();
-			currentRangoonCoroutine.resume();
-		}
-	}
-	else if (onTarget)
-	{
-		SetAnimationState(AnimationState::Run);
-		Move(direction);
-		Rota(playerPosition);
-	}
-	else
-	{
-		SetAnimationState(AnimationState::Idle);
-	}
-
-	if (INPUT->GetButton(KEY_TYPE::KEY_4))
-	{
-		int a = 0;
-	}
-	/*Node3D start = {_transform->GetPosition(), 0, 0, nullptr};
-	Node3D goal = { {0,0,0},0,0,nullptr };
-	std::vector<Node3D> path = astar.findPath(start, goal);
-	Tracking(_transform->GetPosition(), path);*/
 }
 
 
@@ -201,4 +256,11 @@ void RangoonScript::SetAnimationState(AnimationState state)
 {
 	_modelAnimator->ChangeAnimation(state);
 	_currentAnimationState = state;
+}
+
+void RangoonScript::ResetToIdleState() {
+	_isAnimating = false;
+	animPlayingTime = 0.0f;
+	RangoonEndCoroutine();
+	SetAnimationState(AnimationState::Idle);
 }

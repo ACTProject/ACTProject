@@ -27,12 +27,21 @@ public:
 	void Attack(int type);
 	void Tracking(Vec3 pos, const std::vector<Node3D>& path);
 	void SetNextType(int type);
+	void ResetToIdleState();
+
+	void UpdateTimers();
+	void UpdatePlayerInfo();
+	void CheckRanges();
+	void HandleAnimationState();
+	void HandleBackToStart();
+	void HandleChasePlayer();
+	void HandleAttack();
 
 	//float angle; 
 	float distance;
 	Vec3 direction;
 	Vec3 CurForward;
-	int atkType = 0;
+	int atkType = 1;
 	bool _isAnimating = false;
 
 private:
@@ -43,14 +52,14 @@ private:
 	bool onTarget = false;
 	bool onRange = true;
 	bool BackToStart = false;
+	float _FPS;
 	Vec3 StartPos;
 	float rangeDis;
-	bool isAnimating;
 	bool onAttack = false;
-	float _FPS;
 	float _attackDuration[3];
 	float _aggroDuration;
-	bool previousOnTarget = false;
+	bool isAggro = false;
+	float animPlayingTime = 0.0f;
 
 	shared_ptr<Model> _rangoon;
 	shared_ptr<ModelAnimator> _modelAnimator;

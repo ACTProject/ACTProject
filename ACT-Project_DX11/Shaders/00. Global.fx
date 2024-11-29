@@ -70,7 +70,7 @@ struct VertexTextureNormalTangentBlend
 
 struct VSOutput
 {
-    float4 position : SV_POSITION; // ȭ�� ��ǥ ���
+    float4 position : SV_POSITION;
 };
 
 struct VertexOutput

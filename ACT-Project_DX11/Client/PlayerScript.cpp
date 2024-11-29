@@ -19,7 +19,6 @@ void EndAttackCoroutine() {
 // 플레이어공격 코루틴 함수 정의
 MyCoroutine PlayAttackCoroutine(PlayerScript* playerScript, float animationDuration)
 {
-	// 애니메이션 재생 시간 대기
 	co_await AwaitableSleep(chrono::milliseconds(static_cast<int>(animationDuration * 1000)));
 	EndAttackCoroutine();
 }
@@ -60,23 +59,23 @@ void PlayerScript::Update()
 			_currentDuration = _attackDurations[_attackStage - 1] / _FPS;	// 현재 애니메이션 지속 시간
 
 		_isPlayeringAttackAnimation = true;
-
 		if (!_isAttacking) {
 			StartAttack();
 		}
-		else if (_attackTimer >= (_currentDuration / 2.5f) && _attackTimer <= _currentDuration) 
+		else if (_attackTimer >= (_currentDuration / 2.5f) && _attackTimer <= _currentDuration)
 		{
 			ContinueAttack();
 		}
 	}
 
 	// 공격 타이머 갱신
-	if (_isAttacking) {
+	if (_isAttacking) 
+	{
 		_attackTimer += dt;
 
 		// 공격 단계 시간 초과 시 Idle로 복귀
 		if (_attackTimer >= (_attackDurations[_attackStage - 1] / _FPS)) {
-			_attackStage = 0;  // 마지막 공격이 아니면 초기화
+			_attackStage = 0;
 			_isAttacking = false;
 			ResetToIdleState();
 		}
@@ -139,7 +138,6 @@ void PlayerScript::Update()
 	}
 }
 
-// 공격 애니메이션 상태 관리
 void PlayerScript::SetAnimationState(AnimationState state)
 {
 	_modelAnimator->ChangeAnimation(state);
@@ -153,6 +151,7 @@ void PlayerScript::StartAttack()
 	_attackTimer = 0.0f;
 
 	float duration = _attackDurations[_attackStage - 1] / _FPS;
+
 	// 1타 공격 애니메이션 재생
 	PlayAttackAnimation(_attackStage);
 	MyCoroutine attackCoroutine = PlayAttackCoroutine(this, duration);
@@ -167,17 +166,19 @@ void PlayerScript::ContinueAttack()
 		_attackTimer = 0.0f;
 		EndAttackCoroutine();
 
+		float duration = _attackDurations[_attackStage - 1] / _FPS;
+
 		// 다음 공격 애니메이션 재생
 		PlayAttackAnimation(_attackStage);
-		MyCoroutine attackCoroutine = PlayAttackCoroutine(this, _attackDurations[_attackStage - 1] / _FPS);
+		MyCoroutine attackCoroutine = PlayAttackCoroutine(this, duration);
 		currentCoroutine = attackCoroutine.GetHandler();
 		currentCoroutine.resume();
 	}
 }
 
-void PlayerScript::PlayAttackAnimation(int stage) 
+void PlayerScript::PlayAttackAnimation(int stage)
 {
-	switch (stage) 
+	switch (stage)
 	{
 	case 1:
 		SetAnimationState(AnimationState::Attack1);

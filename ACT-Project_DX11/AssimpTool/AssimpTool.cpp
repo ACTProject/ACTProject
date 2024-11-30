@@ -57,6 +57,44 @@ void AssimpTool::Init()
 			converter->ReadAssetFile(L"Enemy/Rangoon_run.fbx");
 			converter->ExportAnimationData(L"Enemy/Rangoon_run");
 		}
+
+		// MapObject
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Obj/recyclingBox01.fbx");
+			converter->ExportMaterialData(L"Obj/recyclingBox01");
+			converter->ExportModelData(L"Obj/recyclingBox01");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Obj/WallLeft.fbx");
+			converter->ExportMaterialData(L"Obj/WallLeft");
+			converter->ExportModelData(L"Obj/WallLeft");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Obj/flagpole.fbx");
+			converter->ExportMaterialData(L"Obj/flagpole");
+			converter->ExportModelData(L"Obj/flagpole");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Obj/pigeon.fbx");
+			converter->ExportMaterialData(L"Obj/pigeon");
+			converter->ExportModelData(L"Obj/pigeon");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Obj/StarFish.fbx");
+			converter->ExportMaterialData(L"Obj/StarFish");
+			converter->ExportModelData(L"Obj/StarFish");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"Obj/PencilHedgehog.fbx");
+			converter->ExportMaterialData(L"Obj/PencilHedgehog");
+			converter->ExportModelData(L"Obj/PencilHedgehog");
+		}
 	}
 }
 

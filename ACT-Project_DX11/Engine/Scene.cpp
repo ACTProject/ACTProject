@@ -194,6 +194,11 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 		if (gameObject->GetCollider()->Intersects(ray, OUT distance) == false)
 			continue;
 
+
+		// 여기에서 맵오브젝트 포인터 들면 될 듯.
+		MAP->ChekMapObjectSelect(gameObject);
+
+
 		if (distance < minDistance)
 		{
 			minDistance = distance;
@@ -206,22 +211,16 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 		if (gameObject->GetTerrain() == nullptr)
 			continue;
 
+		if (MAP->ChekMapDescSelect())
+			continue;
+
 		Vec3 pickPos;
 		float distance = 0.f;
 		if (gameObject->GetTerrain()->Pick(screenX, screenY, OUT pickPos, OUT distance) == false)
 			continue;
 
-		// 씬에다가 게임옵젝 저장시켜놓고, 딱 찍으면 pickPos위치에다가 추가되게끔 만들면 될 듯
-		// Scene에다가 
-		{
-			if (MAP->ChekMapObjSelect())
-			{
-				// 가끔 y값이 이상해질 때가 있다.
-				shared_ptr<GameObject> obj = MAP->Create(pickPos);
-
-				Add(obj);
-			}
-		}
+		shared_ptr<GameObject> obj = MAP->Create(pickPos);
+		Add(obj);
 
 		if (distance < minDistance)
 		{

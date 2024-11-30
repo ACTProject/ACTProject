@@ -185,75 +185,75 @@ void Client::Init()
 	// Player
 	auto player = make_shared<GameObject>();
 
-	
-		// Player
-		player->GetOrAddTransform()->SetPosition(Vec3(1, 0, 1));
-		player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
-		player->GetOrAddTransform()->SetScale(Vec3(0.01f));
 
-		shared_ptr<Model> playerModel = make_shared<Model>();
-		// Player::Model
+	// Player
+	player->GetOrAddTransform()->SetPosition(Vec3(1, 0, 1));
+	player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
+	player->GetOrAddTransform()->SetScale(Vec3(0.01f));
+
+	shared_ptr<Model> playerModel = make_shared<Model>();
+	// Player::Model
+	{
+		playerModel->ReadModel(L"Player/Player");
+		playerModel->ReadMaterial(L"Player/Player");
+
+		playerModel->ReadAnimation(L"Player/Idle", AnimationState::Idle);
+		playerModel->ReadAnimation(L"Player/Walk", AnimationState::Walk);
+		playerModel->ReadAnimation(L"Player/Run", AnimationState::Run);
+		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo1", AnimationState::Attack1);
+		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo2", AnimationState::Attack2);
+		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo3", AnimationState::Attack3);
+		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo4", AnimationState::Attack4);
+
+		//playerModel->ReadAnimation(L"Player/Crab_Death");
+		//playerModel->ReadAnimation(L"Player/Crab_GetUp");
+
+		// Weapon
+		shared_ptr<Model> weaponModel = make_shared<Model>();
 		{
-			playerModel->ReadModel(L"Player/Player");
-			playerModel->ReadMaterial(L"Player/Player");
-
-			playerModel->ReadAnimation(L"Player/Idle", AnimationState::Idle);
-			playerModel->ReadAnimation(L"Player/Walk", AnimationState::Walk);
-			playerModel->ReadAnimation(L"Player/Run", AnimationState::Run);
-			playerModel->ReadAnimation(L"Player/Crab_Atk_Combo1", AnimationState::Attack1);
-			playerModel->ReadAnimation(L"Player/Crab_Atk_Combo2", AnimationState::Attack2);
-			playerModel->ReadAnimation(L"Player/Crab_Atk_Combo3", AnimationState::Attack3);
-			playerModel->ReadAnimation(L"Player/Crab_Atk_Combo4", AnimationState::Attack4);
-
-			//playerModel->ReadAnimation(L"Player/Crab_Death");
-			//playerModel->ReadAnimation(L"Player/Crab_GetUp");
-
-			// Weapon
-			shared_ptr<Model> weaponModel = make_shared<Model>();
-			{
-				// CustomData -> Memory
-				weaponModel->ReadModel(L"Fork/Fork");
-				weaponModel->ReadMaterial(L"Fork/Fork");
-			}
-
-			ModelMesh& weaponMesh = *weaponModel->GetMeshes()[0];
-			playerModel->AddDummyBoneAndAttach(weaponMesh, L"Hand_Grip_L", L"WeaponDummy");
+			// CustomData -> Memory
+			weaponModel->ReadModel(L"Fork/Fork");
+			weaponModel->ReadMaterial(L"Fork/Fork");
 		}
 
-		// Player::ModelAnimator
-		shared_ptr<ModelAnimator> ma1 = make_shared<ModelAnimator>(renderShader);
-		player->AddComponent(ma1);
-		{
-			player->GetModelAnimator()->SetModel(playerModel);
-			player->GetModelAnimator()->SetPass(2);
-		}
+		ModelMesh& weaponMesh = *weaponModel->GetMeshes()[0];
+		playerModel->AddDummyBoneAndAttach(weaponMesh, L"Hand_Grip_L", L"WeaponDummy");
+	}
 
-		// Collider
-		auto collider = make_shared<SphereCollider>();
-		collider->SetRadius(5.0f);
-		collider->SetOffset(Vec3(0.f, 1.f, 0.f));
-		player->AddComponent(collider);
+	// Player::ModelAnimator
+	shared_ptr<ModelAnimator> ma1 = make_shared<ModelAnimator>(renderShader);
+	player->AddComponent(ma1);
+	{
+		player->GetModelAnimator()->SetModel(playerModel);
+		player->GetModelAnimator()->SetPass(2);
+	}
 
-		// Rigidbody
-		shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
-		rigidBody->SetUseGravity(true);
-		rigidBody->SetMass(5.0f);
-		player->AddComponent(rigidBody);
+	// Collider
+	auto collider = make_shared<SphereCollider>();
+	collider->SetRadius(5.0f);
+	collider->SetOffset(Vec3(0.f, 1.f, 0.f));
+	player->AddComponent(collider);
 
-		COLLISION->AddCollider(collider);
-		COLLISION->AddRigidbody(rigidBody);
+	// Rigidbody
+	shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
+	rigidBody->SetUseGravity(true);
+	rigidBody->SetMass(5.0f);
+	player->AddComponent(rigidBody);
 
-		// Player::PlayerScript
-		shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();
+	COLLISION->AddCollider(collider);
+	COLLISION->AddRigidbody(rigidBody);
 
-		playerScript->SetPlayer(playerModel);
-		playerScript->SetModelAnimator(ma1);
+	// Player::PlayerScript
+	shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();
 
-		player->AddComponent(playerScript);
+	playerScript->SetPlayer(playerModel);
+	playerScript->SetModelAnimator(ma1);
 
-		CUR_SCENE->Add(player);
-		CUR_SCENE->SetPlayer(player);
-	
+	player->AddComponent(playerScript);
+
+	CUR_SCENE->Add(player);
+	CUR_SCENE->SetPlayer(player);
+
 
 	// Enemy
 	auto enemy = make_shared<GameObject>();
@@ -289,7 +289,7 @@ void Client::Init()
 		rangoon->SetEnemy(enemyModel);
 		rangoon->SetModelAnimator(ma2);
 
-		enemy->AddComponent(rangoon);	
+		enemy->AddComponent(rangoon);
 
 		// Collider
 		auto collider = make_shared<AABBBoxCollider>();
@@ -346,16 +346,16 @@ void Client::Init()
 		auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height4.png");
 		auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
 		//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
-    
+
 		const int32 width = heightMap->GetSize().x;
 		const int32 height = heightMap->GetSize().y;
 
 		const DirectX::ScratchImage& info = heightMap->GetInfo();
-    
+
 		// size_t pixelDataSize = info.GetPixelsSize();
 		// Replace the old heightmap with the filtered one.
 		uint8* pixelBuffer = info.GetPixels();
-		std::vector<uint8> expandedPixelBuffer((width+1)* (height+1));
+		std::vector<uint8> expandedPixelBuffer((width + 1) * (height + 1));
 
 		for (int z = 0; z <= height; ++z) {
 			for (int x = 0; x <= width; ++x) {
@@ -367,10 +367,10 @@ void Client::Init()
 				}
 				else {
 					if (x == width && z != height) {
-						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[z * (width + 1) + x - 1]; 
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[z * (width + 1) + x - 1];
 					}
 					else if (z == height && x != width) {
-						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x]; 
+						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x];
 					}
 					else if (x == width && z == height) {
 						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x - 1];
@@ -395,14 +395,14 @@ void Client::Init()
 
 
 			vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
-			assert(v.size() == (width+1) * (height+1));
+			assert(v.size() == (width + 1) * (height + 1));
 			for (int32 z = 0; z <= height; z++)
 			{
 				for (int32 x = 0; x <= width; x++)
 				{
 					int32 idx = (width + 1) * z + x;
-						uint8 height = expandedPixelBuffer[idx] / 255.f * 25.f;
-						v[idx].position.y = height - 8.f;
+					uint8 height = expandedPixelBuffer[idx] / 255.f * 25.f;
+					v[idx].position.y = height - 8.f;
 				}
 			}
 
@@ -428,7 +428,7 @@ void Client::Init()
 								num += 1.0f;
 							}
 						}
-				}
+					}
 					v[z * height + x].position.y = avg / num;
 				}
 			}
@@ -442,16 +442,35 @@ void Client::Init()
 	}
 
 	////MapObj
-	shared_ptr<MapObjDesc> src = make_shared<MapObjDesc>(L"Obj/recyclingBox", L"23. RenderDemo.fx");
-	MAP->AddMapObj(src);
+	shared_ptr<MapObjDesc> src;
+	{
+		src = make_shared<MapObjDesc>(L"Obj/recyclingBox01", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
 
-	shared_ptr<MapObjDesc> src1 = make_shared<MapObjDesc>(L"Obj/TutorialWallsLeft", L"23. RenderDemo.fx");
-	MAP->AddMapObj(src1);
+		src = make_shared<MapObjDesc>(L"Obj/PencilHedgehog", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"Obj/StarFish", L"23. RenderDemo.fx", false);
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"Obj/pigeon", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"Obj/flagpole", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"Obj/WallLeft", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		// ImGui¿ë ÇÔ¼ö.
+		MAP->InitMapText();
+	}
+
 }
 
 void Client::Update()
 {
-	
+
 }
 
 void Client::Render()

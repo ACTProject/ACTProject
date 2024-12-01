@@ -31,6 +31,7 @@
 #include "RangoonScript.h"
 #include "Rigidbody.h"
 #include "Slider.h"
+#include "Skybox.h"
 
 void Client::Init()
 {
@@ -335,6 +336,56 @@ void Client::Init()
 	//	CUR_SCENE->Add(enemy2);
 	//}
 
+	// Skybox
+	{
+		// Material
+		{
+			auto createMaterial = [&](const wstring& texturePath, const wstring& materialName)
+			{
+				shared_ptr<Material> material = make_shared<Material>();
+				material->SetShader(renderShader);
+				auto texture = RESOURCES->Load<Texture>(materialName, texturePath);
+				material->SetDiffuseMap(texture);
+
+				MaterialDesc& desc = material->GetMaterialDesc();
+				desc.ambient = Vec4(1.f);
+				desc.diffuse = Vec4(1.f);
+				desc.specular = Vec4(1.f);
+
+				RESOURCES->Add(materialName, material);
+			};
+			createMaterial(L"..\\Resources\\Textures\\SkyBox\\Cubemap_Front.png", L"Cubemap_Front");
+			createMaterial(L"..\\Resources\\Textures\\SkyBox\\Cubemap_Back.png", L"Cubemap_Back");
+			createMaterial(L"..\\Resources\\Textures\\SkyBox\\Cubemap_Left.png", L"Cubemap_Left");
+			createMaterial(L"..\\Resources\\Textures\\SkyBox\\Cubemap_Right.png", L"Cubemap_Right");
+			createMaterial(L"..\\Resources\\Textures\\SkyBox\\Cubemap_Top.png", L"Cubemap_Top");
+			createMaterial(L"..\\Resources\\Textures\\SkyBox\\Cubemap_Bottom.png", L"Cubemap_Bottom");
+		}
+
+		// Mesh
+		{
+			auto createFace = [&](int32 i, const wstring& materialName)
+			{
+				auto obj = make_shared<GameObject>();
+				obj->GetOrAddTransform()->SetLocalPosition(Vec3(256.f,0.f,256.f));
+				obj->GetOrAddTransform()->SetScale(Vec3(550.f));
+				obj->AddComponent(make_shared<Skybox>());
+
+				obj->GetSkybox()->Create(i, RESOURCES->Get<Material>(materialName));
+				//obj->GetMeshRenderer()->SetMesh(RESOURCES->Get<Mesh>); // Quad mesh for each face
+				obj->GetMeshRenderer()->SetPass(0);
+
+				CUR_SCENE->Add(obj);
+			};
+			//앞 뒤 위 아래 왼쪽 오른쪽
+			createFace(1, L"Cubemap_Front");   // Front
+			createFace(2, L"Cubemap_Back");   // Back
+			createFace(3, L"Cubemap_Top");    // Top
+			createFace(4, L"Cubemap_Bottom");// Bottom
+			createFace(5, L"Cubemap_Left");   // Left
+			createFace(6, L"Cubemap_Right");  // Right
+		}
+	}
 	// Terrain
 	{
 		// Material

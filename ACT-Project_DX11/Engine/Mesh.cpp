@@ -26,6 +26,13 @@ void Mesh::CreateCube()
 	CreateBuffers();
 }
 
+void Mesh::CreateCubeMap(int32 i)
+{
+	_geometry = make_shared<Geometry<VertexTextureNormalTangentData>>();
+	GeometryHelper::CreateCubeMap(_geometry, i);
+	CreateBuffers();
+}
+
 void Mesh::CreateGrid(int32 sizeX, int32 sizeZ)
 {
 	_geometry = make_shared<Geometry<VertexTextureNormalTangentData>>();

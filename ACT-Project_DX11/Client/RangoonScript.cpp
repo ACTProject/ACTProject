@@ -3,6 +3,7 @@
 #include "MyCoroutine.h"
 #include <coroutine>
 
+constexpr float EPSILON = 0.01f;
 // Coroutine
 std::coroutine_handle<MyCoroutine::promise_type> currentRangoonCoroutine;
 
@@ -21,25 +22,15 @@ MyCoroutine RangoonCoroutine(RangoonScript* rangoonScript, float animationDurati
 	RangoonEndCoroutine();
 }
 
-void RangoonScript::SetNextType(int type)
-{
-	atkType = type;
-}
-
-void RangoonScript::Aggro()
-{
-	_isAnimating = true;
-
-	SetAnimationState(AnimationState::Aggro);
-
-	MyCoroutine aggroCoroutine = RangoonCoroutine(this, _aggroDuration / _FPS);
-	currentRangoonCoroutine = aggroCoroutine.GetHandler();
-	currentRangoonCoroutine.resume();
-}
-
 void RangoonScript::Move(const Vec3 targetPos)
 {
 	direction = targetPos - _transform->GetPosition();
+	
+	if (direction.LengthSquared() < EPSILON) // EPSILON 사용
+	{
+		return;
+	}
+	
 	direction.Normalize();  // 방향 벡터를 단위 벡터로 정규화
 
 	_transform->SetPosition(_transform->GetPosition() + direction * _speed * _deltaTime);  // 일정 거리만큼 이동
@@ -55,7 +46,7 @@ void RangoonScript::Rota(const Vec3 targetPos)
 	Vec3 rotationAxis = CurForward.Cross(direction);
 
 	// 외적 결과가 매우 작으면 방향 차이가 거의 없으므로 회전 필요 없음
-	if (rotationAxis.LengthSquared() < 1e-6f)
+	if (rotationAxis.LengthSquared() < EPSILON)
 	{
 		return;
 	}
@@ -66,7 +57,7 @@ void RangoonScript::Rota(const Vec3 targetPos)
 	float angle = std::acos(CurForward.Dot(direction));
 
 	// 작은 각도는 무시
-	if (abs(angle) < 0.001f) // 0.01 라디안(약 0.57도) 이하 회전 무시
+	if (abs(angle) < EPSILON) // 0.01 라디안(약 0.57도) 이하 회전 무시
 	{
 		return;
 	}
@@ -122,6 +113,17 @@ void RangoonScript::Attack(int type)
 
 }
 
+void RangoonScript::Aggro()
+{
+	_isAnimating = true;
+
+	float duration = _aggroDuration / _FPS;
+	SetAnimationState(AnimationState::Aggro);
+	MyCoroutine aggroCoroutine = RangoonCoroutine(this, duration);
+	currentRangoonCoroutine = aggroCoroutine.GetHandler();
+	currentRangoonCoroutine.resume();
+}
+
 void RangoonScript::Start()
 {
 	_transform = GetTransform();
@@ -135,120 +137,95 @@ void RangoonScript::Start()
 
 void RangoonScript::Update()
 {
-	UpdateTimers(); // 타이머 업데이트
-
-	UpdatePlayerInfo(); // 위치 업데이트
-
-	CheckRanges(); // 범위 확인 및 상태 갱신
-
-	if (_isAnimating) // 애니메이션 실행 중이면 해당 상태 처리
+	if (INPUT->GetButton(KEY_TYPE::KEY_4))
 	{
-		HandleAnimationState();
-		return;
+		int a = 0;
 	}
 
-	// 상태별 동작 처리
-	if (BackToStart)
-	{
-		HandleBackToStart();
-	}
-	else if (onTarget && !onAttack)
-	{
-		HandleChasePlayer();
-	}
-	else if (onAttack)
-	{
-		HandleAttack();
-	}
-	else
-	{
-		SetAnimationState(AnimationState::Idle);
-	}
-}
-void RangoonScript::UpdateTimers()
-{
 	_FPS = static_cast<float>(TIME->GetFps());
-	_deltaTime = TIME->GetDeltaTime();
-	if (_isAnimating)
-	{
-		animPlayingTime += _deltaTime; // 애니메이션 실행 시간 갱신
-	}
-}
-void RangoonScript::UpdatePlayerInfo()
-{
+	float dt = TIME->GetDeltaTime();
+
+	// 플레이어 위치 계산
 	_player = SCENE->GetCurrentScene()->GetPlayer();
 	Vec3 playerPosition = _player->GetTransform()->GetPosition();
 
 	direction = playerPosition - _transform->GetPosition();
 	distance = direction.Length();
 	rangeDis = (_transform->GetPosition() - StartPos).Length();
-}
-void RangoonScript::CheckRanges()
-{
-	// 초기 위치에서 너무 멀리 떨어지면 복귀
-	if (rangeDis > 15.f)
+
+	// 범위 검사
+	if (rangeDis > 30.f) // 초기 위치에서 너무 멀리 떨어지면 복귀
 	{
 		BackToStart = true;
 		onTarget = false;
 		onAttack = false;
+		isFirstAggro = true;
 	}
-	else if(distance < 15.f && !BackToStart)
+	else if (distance < 15.f) { onTarget = true; } // 탐지 범위 안에 있을 때
+	else
 	{
-		onTarget = true;
-		if (distance < 5.f)
-		{
-			onAttack = true;
-		}
-		else
-		{
-			onAttack = false;
-		}
+		onTarget = false;
 	}
-}
-void RangoonScript::HandleAnimationState()
-{
-	if (!isAggro) // Aggro 애니메이션 실행 중
-	{
-		if (animPlayingTime > _aggroDuration)
-		{
-			isAggro = true; // Aggro 상태 완료
-			ResetToIdleState();
-		}
-	}
-	else if (onAttack) // 공격 애니메이션 실행 중
-	{
-		float atkDuration = _attackDuration[atkType] / _FPS;
-		if (animPlayingTime > atkDuration)
-		{
-			atkType = rand() % 3; // 다음 공격 타입 결정
-			ResetToIdleState();
-		}
-	}
-}
-void RangoonScript::HandleBackToStart()
-{
-	SetAnimationState(AnimationState::Run);
-	Move(StartPos);   // 시작 위치로 이동
-	Rota(StartPos);   // 시작 위치를 향하도록 회전
 
-	if (rangeDis < 1.f) // 시작 위치 근처에 도달하면 멈춤
+	if (distance < 5.f) { onAttack = true; } // 공격 범위 안에 있을 때
+	else { onAttack = false; }
+
+
+	// 상태별 애니메이션 실행
+	if (isFirstAggro && onTarget)
 	{
-		BackToStart = false;
+		_isAnimating = true;
+		Aggro();
+		if (_isAnimating)
+		{
+			animPlayingTime += dt;
+			if (animPlayingTime > _aggroDuration / _FPS)
+			{
+				isFirstAggro = false; // Aggro 상태 완료
+				ResetToIdleState();
+			}
+			return;
+		}
 	}
-}
-void RangoonScript::HandleChasePlayer()
-{
-	SetAnimationState(AnimationState::Run);
-	Move(direction);  // 플레이어를 향해 이동
-	Rota(_player->GetTransform()->GetPosition()); // 플레이어를 바라보도록 회전
-}
-void RangoonScript::HandleAttack()
-{
-	if (!_isAnimating) // 애니메이션이 실행 중이 아니면
+	else if (onAttack)
 	{
-		Attack(atkType); // 공격 실행
-		Rota(_player->GetTransform()->GetPosition()); // 플레이어를 바라보도록 회전
+		_isAnimating = true;
+		Attack(atkType);
+		if (_isAnimating)
+		{
+			animPlayingTime += dt;
+			float atkDuration = _attackDuration[atkType] / _FPS;
+			if (animPlayingTime >= atkDuration)
+			{
+				atkType = rand() % 3; // 다음 공격 타입 결정
+				ResetToIdleState();  // Idle로 복귀
+			}
+			return;
+		}
+
 	}
+	else if (BackToStart)
+	{
+		SetAnimationState(AnimationState::Run);
+		Move(StartPos);
+		Rota(StartPos);
+		if (abs(rangeDis - 1.f) < EPSILON)
+		{
+			BackToStart = false;
+		}
+	}
+	else if (onTarget && !onAttack)
+	{
+		SetAnimationState(AnimationState::Run);
+		Move(direction);
+		Rota(playerPosition);
+	}
+	
+	else
+	{
+		SetAnimationState(AnimationState::Idle);
+	}
+
 }
 
 

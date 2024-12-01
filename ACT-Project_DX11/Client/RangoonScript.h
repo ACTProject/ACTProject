@@ -26,16 +26,7 @@ public:
 	void Rota(const Vec3 targetPos);
 	void Attack(int type);
 	void Tracking(Vec3 pos, const std::vector<Node3D>& path);
-	void SetNextType(int type);
 	void ResetToIdleState();
-
-	void UpdateTimers();
-	void UpdatePlayerInfo();
-	void CheckRanges();
-	void HandleAnimationState();
-	void HandleBackToStart();
-	void HandleChasePlayer();
-	void HandleAttack();
 
 	//float angle; 
 	float distance;
@@ -58,7 +49,7 @@ private:
 	bool onAttack = false;
 	float _attackDuration[3];
 	float _aggroDuration;
-	bool isAggro = false;
+	bool isFirstAggro = false;
 	float animPlayingTime = 0.0f;
 
 	shared_ptr<Model> _rangoon;

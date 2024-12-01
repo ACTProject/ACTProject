@@ -232,6 +232,23 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 	return picked;
 }
 
+Vec3 Scene::Picking(int32 screenX, int32 screenY)
+{
+	Vec3 pickPos;
+	const auto& gameObjects = GetObjects();
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->GetTerrain() == nullptr)
+			continue;
+
+
+		float distance = 0.f;
+		if (gameObject->GetTerrain()->Pick(screenX, screenY, OUT pickPos, OUT distance) == false)
+			continue;
+	}
+	return pickPos;
+}
+
 void Scene::CheckCollision()
 {
 	COLLISION->Update();

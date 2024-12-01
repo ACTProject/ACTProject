@@ -444,22 +444,22 @@ void Client::Init()
 	////MapObj
 	shared_ptr<MapObjDesc> src;
 	{
-		src = make_shared<MapObjDesc>(L"Obj/recyclingBox01", L"23. RenderDemo.fx");
+		src = make_shared<MapObjDesc>(L"MapObject/recyclingBox01", L"23. RenderDemo.fx");
 		MAP->AddMapObj(src);
 
-		src = make_shared<MapObjDesc>(L"Obj/PencilHedgehog", L"23. RenderDemo.fx");
+		src = make_shared<MapObjDesc>(L"MapObject/PencilHedgehog", L"23. RenderDemo.fx");
 		MAP->AddMapObj(src);
 
-		src = make_shared<MapObjDesc>(L"Obj/StarFish", L"23. RenderDemo.fx", false);
+		src = make_shared<MapObjDesc>(L"MapObject/StarFish", L"23. RenderDemo.fx", false);
 		MAP->AddMapObj(src);
 
-		src = make_shared<MapObjDesc>(L"Obj/pigeon", L"23. RenderDemo.fx");
+		src = make_shared<MapObjDesc>(L"MapObject/pigeon", L"23. RenderDemo.fx");
 		MAP->AddMapObj(src);
 
-		src = make_shared<MapObjDesc>(L"Obj/flagpole", L"23. RenderDemo.fx");
+		src = make_shared<MapObjDesc>(L"MapObject/flagpole", L"23. RenderDemo.fx");
 		MAP->AddMapObj(src);
 
-		src = make_shared<MapObjDesc>(L"Obj/WallLeft", L"23. RenderDemo.fx");
+		src = make_shared<MapObjDesc>(L"MapObject/WallLeft", L"23. RenderDemo.fx");
 		MAP->AddMapObj(src);
 
 		// ImGui¿ë ÇÔ¼ö.

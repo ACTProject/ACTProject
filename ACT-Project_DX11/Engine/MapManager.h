@@ -36,6 +36,7 @@ public:
 	// 이 함수는 클릭했을 때 추가하는 함수.
 	shared_ptr<GameObject> Create(Vec3& pos);
 
+
 	// 초기 init
 	void AddMapObj(shared_ptr<MapObjDesc>  obj);
 	void InitMapText();
@@ -45,10 +46,13 @@ public:
 	// 파일을 읽어 들이는 함수
 	bool ImportMapObj();
 private:
+	// 클릭하지 않고도 맵오브젝트 설치 전에 보이게끔 하는 함수.
+	void PreViewMapObject();
+	shared_ptr<GameObject> CreatePreViewObj(Vec3 pickPos);
+
 	void UpdateMapDescTransform();
 	void UpdateMapObjTransform();
-	void UpdateMapObjCollider();
-	void RemoveMapObj();
+	void RemoveMapObj(shared_ptr<GameObject> obj);
 
 	void ChangeMapObjPosition();
 	void ChangeMapObjRotation();
@@ -69,10 +73,12 @@ private:
 	vector<shared_ptr<MapObjDesc>> _mapInitInfoList;
 	shared_ptr<MapObjDesc> _mapSelectDesc;
 	shared_ptr<GameObject> _mapSelectObj;
+	shared_ptr<GameObject> _mapPreviewObj;
 
-
+	Vec3 _pickPos;
 	vector<string> _fileTextList;
 	int _selectedObjIdx = -1;
 	int _transformSelect = 0;
 	bool _isZState = false;
+	bool _isSelect = false;
 };

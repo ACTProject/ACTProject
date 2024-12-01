@@ -34,10 +34,11 @@ void MapManager::Update()
 		// 오브젝트 삭제 함수.
 		if (_mapSelectObj != nullptr && InputManager::GetInstance()->GetButtonDown(KEY_TYPE::DELETEKEY))
 		{
-			RemoveMapObj();
+			RemoveMapObj(_mapSelectObj);
 		}
 
 		ImGuiSelectMapObject();
+
 		
 		ImGui::RadioButton("Position", &_transformSelect, 0); ImGui::SameLine();
 		ImGui::RadioButton("Rotation", &_transformSelect, 1); ImGui::SameLine();
@@ -47,11 +48,14 @@ void MapManager::Update()
 		if (_mapSelectDesc != nullptr)
 		{
 			UpdateMapDescTransform();
+			PreViewMapObject();
 		}
 		if (_mapSelectObj != nullptr)
 		{
 			UpdateMapObjTransform();
 		}
+
+
 
 		// 실시간 클릭 시 해당 위치에 오브젝트 배치 하는 코드.
 		if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
@@ -170,20 +174,39 @@ void MapManager::ImGuiSelectMapObject()
 		{
 			const bool is_selected = (_selectedObjIdx == i);
 			if (ImGui::Selectable(_fileTextList[i].c_str(), is_selected))
+			{
 				if (i != _selectedObjIdx)
+				{
 					_selectedObjIdx = i;
+					_isSelect = true;
+				}
 				else
+				{
 					_selectedObjIdx = -1;
+					_isSelect = true;
+				}
 
+			}
 
-			if (is_selected)
+			if (_isSelect && is_selected == true)
 			{
 				if (_selectedObjIdx >= 0)
+				{
 					_mapSelectDesc = _mapInitInfoList[_selectedObjIdx];
+					RemoveMapObj(_mapPreviewObj);
+					PreViewMapObject();
+					_mapPreviewObj = CreatePreViewObj(_pickPos);
+					_isSelect = false;
+				}
 				else
+				{
+					RemoveMapObj(_mapPreviewObj);
+					_isSelect = false;
 					_mapSelectDesc = nullptr;
+				}
+
+					
 			}
-			
 		}
 		ImGui::EndListBox();
 	}
@@ -263,7 +286,8 @@ bool MapManager::ExportMapObj()
 		dec.isCollision = (_mapObjList[i]->GetCollider() == nullptr) ? false : true;
 		fwrite(&dec.isCollision, sizeof(bool), 1, fp);
 
-		AABBBoxCollider* collider = dynamic_cast<AABBBoxCollider*>(_mapObjList[i]->GetCollider().get());
+		//AABBBoxCollider* collider = dynamic_cast<AABBBoxCollider*>(_mapObjList[i]->GetCollider().get());
+		shared_ptr<AABBBoxCollider> collider = dynamic_pointer_cast<AABBBoxCollider>(_mapObjList[i]->GetCollider());
 		Vec3 extents = collider->GetBoundingBox().Extents;
 		dec.extent = extents;
 		fwrite(&dec.extent, sizeof(Vec3), 1, fp);
@@ -339,6 +363,44 @@ bool MapManager::ImportMapObj()
 		SCENE->GetCurrentScene()->Add(gameObj);
 	}
 	return true;
+}
+
+
+void MapManager::PreViewMapObject()
+{
+	POINT screenPt = INPUT->GetMousePos();
+	_pickPos = SCENE->GetCurrentScene()->Picking(screenPt.x, screenPt.y);
+
+	if (_mapPreviewObj != nullptr)
+	{
+		_mapPreviewObj->GetTransform()->SetLocalPosition(_pickPos);
+		_mapPreviewObj->GetTransform()->SetLocalRotation(_mapInitInfoList[_selectedObjIdx]->rotation);
+		_mapPreviewObj->GetTransform()->SetLocalScale(_mapInitInfoList[_selectedObjIdx]->scale);
+	}
+
+}
+
+shared_ptr<GameObject> MapManager::CreatePreViewObj(Vec3 pickPos)
+{
+	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	{
+		obj->GetOrAddTransform()->SetPosition(pickPos);
+		obj->GetOrAddTransform()->SetLocalRotation(_mapSelectDesc->rotation); // XMConvertToRadians()
+		obj->GetOrAddTransform()->SetScale(_mapSelectDesc->scale);
+
+		shared_ptr<Model> model = make_shared<Model>();
+		{
+			model->ReadModel(_mapSelectDesc->filename);
+			model->ReadMaterial(_mapSelectDesc->filename);
+		}
+		shared_ptr<Shader> shader = make_shared<Shader>(_mapSelectDesc->shadername);
+		auto modelrender = make_shared<ModelRenderer>(shader);
+		obj->AddComponent(modelrender);
+		obj->GetModelRenderer()->SetModel(model);
+		obj->GetModelRenderer()->SetPass(1);
+	}
+	SCENE->GetCurrentScene()->Add(obj);
+	return obj;
 }
 
 void MapManager::UpdateMapDescTransform()
@@ -447,25 +509,19 @@ void MapManager::UpdateMapObjTransform()
 	ImGui::End();
 }
 
-void MapManager::UpdateMapObjCollider()
-{
-	// 콜라이더를... 어떻게... 할까
-
-}
 
 
 // TODO : 맵 오브젝트가 단 한개도 없으면 파일에 저장되지 않음.
-void MapManager::RemoveMapObj()
+void MapManager::RemoveMapObj(shared_ptr<GameObject> obj)
 {
-	auto it = std::find(_mapObjList.begin(), _mapObjList.end(), _mapSelectObj);
-
+	auto it = std::find(_mapObjList.begin(), _mapObjList.end(), obj);
 	if (it != _mapObjList.end())
 	{
 		_mapObjList.erase(it);
 	}
 
-	SCENE->GetCurrentScene()->Remove(_mapSelectObj);
+	SCENE->GetCurrentScene()->Remove(obj);
 
-
-	_mapSelectObj.reset();
+	// 여기서 리셋하기전에 컴포넌트들 전부 지워야 될 수도.
+	obj.reset();
 }

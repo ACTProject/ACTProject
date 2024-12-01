@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Materials>
+    <Material>
+        <Name>Pencil_Atlas.003</Name>
+        <DiffuseFile>pencil_low_PencilNew_AlbedoTransparency.png</DiffuseFile>
+        <SpecularFile>pencil_low_PencilNew_AlbedoTransparency.png</SpecularFile>
+        <NormalFile>pencil_low_PencilNew_AlbedoTransparency.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.60377359" G="0.60377359" B="0.60377359" A="1"/>
+        <Specular R="0.60377359" G="0.60377359" B="0.60377359" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+</Materials>

@@ -27,6 +27,7 @@ public:
 
 	void UpdateUI();
 	shared_ptr<class GameObject> Pick(int32 screenX, int32 screenY);
+	Vec3 Picking(int32 screenX, int32 screenY);
 
 	void CheckCollision();
 

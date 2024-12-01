@@ -61,39 +61,39 @@ void AssimpTool::Init()
 		// MapObject
 		{
 			shared_ptr<Converter> converter = make_shared<Converter>();
-			converter->ReadAssetFile(L"Obj/recyclingBox01.fbx");
-			converter->ExportMaterialData(L"Obj/recyclingBox01");
-			converter->ExportModelData(L"Obj/recyclingBox01");
+			converter->ReadAssetFile(L"MapObject/recyclingBox01.fbx");
+			converter->ExportMaterialData(L"MapObject/recyclingBox01");
+			converter->ExportModelData(L"MapObject/recyclingBox01");
 		}
 		{
 			shared_ptr<Converter> converter = make_shared<Converter>();
-			converter->ReadAssetFile(L"Obj/WallLeft.fbx");
-			converter->ExportMaterialData(L"Obj/WallLeft");
-			converter->ExportModelData(L"Obj/WallLeft");
+			converter->ReadAssetFile(L"MapObject/WallLeft.fbx");
+			converter->ExportMaterialData(L"MapObject/WallLeft");
+			converter->ExportModelData(L"MapObject/WallLeft");
 		}
 		{
 			shared_ptr<Converter> converter = make_shared<Converter>();
-			converter->ReadAssetFile(L"Obj/flagpole.fbx");
-			converter->ExportMaterialData(L"Obj/flagpole");
-			converter->ExportModelData(L"Obj/flagpole");
+			converter->ReadAssetFile(L"MapObject/flagpole.fbx");
+			converter->ExportMaterialData(L"MapObject/flagpole");
+			converter->ExportModelData(L"MapObject/flagpole");
 		}
 		{
 			shared_ptr<Converter> converter = make_shared<Converter>();
-			converter->ReadAssetFile(L"Obj/pigeon.fbx");
-			converter->ExportMaterialData(L"Obj/pigeon");
-			converter->ExportModelData(L"Obj/pigeon");
+			converter->ReadAssetFile(L"MapObject/pigeon.fbx");
+			converter->ExportMaterialData(L"MapObject/pigeon");
+			converter->ExportModelData(L"MapObject/pigeon");
 		}
 		{
 			shared_ptr<Converter> converter = make_shared<Converter>();
-			converter->ReadAssetFile(L"Obj/StarFish.fbx");
-			converter->ExportMaterialData(L"Obj/StarFish");
-			converter->ExportModelData(L"Obj/StarFish");
+			converter->ReadAssetFile(L"MapObject/StarFish.fbx");
+			converter->ExportMaterialData(L"MapObject/StarFish");
+			converter->ExportModelData(L"MapObject/StarFish");
 		}
 		{
 			shared_ptr<Converter> converter = make_shared<Converter>();
-			converter->ReadAssetFile(L"Obj/PencilHedgehog.fbx");
-			converter->ExportMaterialData(L"Obj/PencilHedgehog");
-			converter->ExportModelData(L"Obj/PencilHedgehog");
+			converter->ReadAssetFile(L"MapObject/PencilHedgehog.fbx");
+			converter->ExportMaterialData(L"MapObject/PencilHedgehog");
+			converter->ExportModelData(L"MapObject/PencilHedgehog");
 		}
 	}
 }

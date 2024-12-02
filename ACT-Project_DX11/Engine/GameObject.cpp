@@ -15,6 +15,7 @@
 #include "Rigidbody.h"
 #include "Slider.h"
 #include "Skybox.h"
+#include "HitBox.h"
 
 GameObject::GameObject()
 {

@@ -8,9 +8,6 @@ public:
 	HitBox();
 	virtual ~HitBox();
 
-	void Craete(shared_ptr<class GameObject> player);
-
-private:
-
+	void Craete(shared_ptr<GameObject> target, Vec3 size, Vec3 offset);
 };
 

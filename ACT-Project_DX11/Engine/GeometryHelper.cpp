@@ -573,6 +573,70 @@ void GeometryHelper::CreateCube(shared_ptr<Geometry<VertexTextureNormalTangentDa
 	geometry->SetIndices(idx);
 }
 
+void GeometryHelper::CreateCubeMap(shared_ptr<Geometry<VertexTextureNormalTangentData>> geometry, int32 i)
+{
+	vector<VertexTextureNormalTangentData> vtx;
+	vtx.resize(4);
+	vector<uint32> idx(6);
+
+	float w2 = 0.5f;
+	float h2 = 0.5f;
+	float d2 = 0.5f;
+
+	switch (i)
+	{
+	case 1://앞
+		vtx[0] = VertexTextureNormalTangentData(Vec3(-w2, -h2, -d2), Vec2(0.0f, 1.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(1.0f, 0.0f, 0.0f));
+		vtx[1] = VertexTextureNormalTangentData(Vec3(-w2, +h2, -d2), Vec2(0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(1.0f, 0.0f, 0.0f));
+		vtx[2] = VertexTextureNormalTangentData(Vec3(+w2, +h2, -d2), Vec2(1.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(1.0f, 0.0f, 0.0f));
+		vtx[3] = VertexTextureNormalTangentData(Vec3(+w2, -h2, -d2), Vec2(1.0f, 1.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(1.0f, 0.0f, 0.0f));
+
+		break;
+	case 2://뒤
+		vtx[0] = VertexTextureNormalTangentData(Vec3(-w2, -h2, +d2), Vec2(1.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(-1.0f, 0.0f, 0.0f));
+		vtx[1] = VertexTextureNormalTangentData(Vec3(+w2, -h2, +d2), Vec2(0.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(-1.0f, 0.0f, 0.0f));
+		vtx[2] = VertexTextureNormalTangentData(Vec3(+w2, +h2, +d2), Vec2(0.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(-1.0f, 0.0f, 0.0f));
+		vtx[3] = VertexTextureNormalTangentData(Vec3(-w2, +h2, +d2), Vec2(1.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(-1.0f, 0.0f, 0.0f));
+
+		break;
+	case 3://위
+		vtx[0] = VertexTextureNormalTangentData(Vec3(-w2, +h2, -d2), Vec2(0.0f, 1.0f), Vec3(0.0f, -1.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f));
+		vtx[1] = VertexTextureNormalTangentData(Vec3(-w2, +h2, +d2), Vec2(0.0f, 0.0f), Vec3(0.0f, -1.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f));
+		vtx[2] = VertexTextureNormalTangentData(Vec3(+w2, +h2, +d2), Vec2(1.0f, 0.0f), Vec3(0.0f, -1.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f));
+		vtx[3] = VertexTextureNormalTangentData(Vec3(+w2, +h2, -d2), Vec2(1.0f, 1.0f), Vec3(0.0f, -1.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f));
+
+		break;
+	case 4://아래
+		vtx[0] = VertexTextureNormalTangentData(Vec3(-w2, -h2, -d2), Vec2(1.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), Vec3(-1.0f, 0.0f, 0.0f));
+		vtx[1] = VertexTextureNormalTangentData(Vec3(+w2, -h2, -d2), Vec2(0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), Vec3(-1.0f, 0.0f, 0.0f));
+		vtx[2] = VertexTextureNormalTangentData(Vec3(+w2, -h2, +d2), Vec2(0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f), Vec3(-1.0f, 0.0f, 0.0f));
+		vtx[3] = VertexTextureNormalTangentData(Vec3(-w2, -h2, +d2), Vec2(1.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f), Vec3(-1.0f, 0.0f, 0.0f));
+
+		break;
+	case 5://왼
+		vtx[0] = VertexTextureNormalTangentData(Vec3(-w2, -h2, +d2), Vec2(0.0f, 1.0f), Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f));
+		vtx[1] = VertexTextureNormalTangentData(Vec3(-w2, +h2, +d2), Vec2(0.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f));
+		vtx[2] = VertexTextureNormalTangentData(Vec3(-w2, +h2, -d2), Vec2(1.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f));
+		vtx[3] = VertexTextureNormalTangentData(Vec3(-w2, -h2, -d2), Vec2(1.0f, 1.0f), Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f));
+
+		break;
+	case 6://오
+		vtx[0] = VertexTextureNormalTangentData(Vec3(+w2, -h2, -d2), Vec2(0.0f, 1.0f), Vec3(+1.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f));
+		vtx[1] = VertexTextureNormalTangentData(Vec3(+w2, +h2, -d2), Vec2(0.0f, 0.0f), Vec3(+1.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f));
+		vtx[2] = VertexTextureNormalTangentData(Vec3(+w2, +h2, +d2), Vec2(1.0f, 0.0f), Vec3(+1.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f));
+		vtx[3] = VertexTextureNormalTangentData(Vec3(+w2, -h2, +d2), Vec2(1.0f, 1.0f), Vec3(+1.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f));
+
+		break;
+	}
+
+
+	geometry->SetVertices(vtx);
+	idx[0] = 0; idx[1] = 2; idx[2] = 1;
+	idx[3] = 0; idx[4] = 3; idx[5] = 2;
+	
+	geometry->SetIndices(idx);
+}
+
 void GeometryHelper::CreateGrid(shared_ptr<Geometry<VertexTextureNormalTangentData>> geometry, int32 sizeX, int32 sizeZ)
 {
 	vector<VertexTextureNormalTangentData> vtx;

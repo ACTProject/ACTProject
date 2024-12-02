@@ -12,6 +12,7 @@ public:
 
 	void CreateQuad();
 	void CreateCube();
+	void CreateCubeMap(int32 i);
 	void CreateGrid(int32 sizeX, int32 sizeZ);
 	void CreateSphere();
 

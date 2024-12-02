@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Materials>
+    <Material>
+        <Name>Aluminum_Rusty_2</Name>
+        <DiffuseFile>Aluminum_Rusty_basecolor.png</DiffuseFile>
+        <SpecularFile>Aluminum_Rusty_basecolor.png</SpecularFile>
+        <NormalFile>Aluminum_Rusty_basecolor.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.92867148" G="1" B="0.22169811" A="1"/>
+        <Specular R="0.92867148" G="1" B="0.22169811" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+</Materials>

@@ -1,10 +1,6 @@
 ﻿#pragma once
-
-enum MapObjSelect
-{
-	START = 0
-};
-
+#include "Model.h"
+#include "Shader.h"
 
 struct MapObjDesc
 {
@@ -21,6 +17,12 @@ public:
 	wstring shadername;
 	MapObjDesc() = default;
 	MapObjDesc(wstring file, wstring sha, bool isColl = true) : filename(file), shadername(sha), isCollision(isColl) {};
+};
+
+struct MapModel
+{
+	shared_ptr<Model> _model ;
+	shared_ptr<Shader> _shader;
 };
 
 class MapManager
@@ -68,9 +70,10 @@ private:
 	// 파일로 저장시킬 오브젝트들 리스트
 	vector<shared_ptr<GameObject>> _mapObjList;
 	// 맵정보 구조체 배열
-	vector<shared_ptr<MapObjDesc>> _mapInfoList;
+	map<wstring, shared_ptr<MapModel>> _mapInfoList;
 	// 초기 맵 정보 구조체 배열.
 	vector<shared_ptr<MapObjDesc>> _mapInitInfoList;
+
 	shared_ptr<MapObjDesc> _mapSelectDesc;
 	shared_ptr<GameObject> _mapSelectObj;
 	shared_ptr<GameObject> _mapPreviewObj;

@@ -18,6 +18,7 @@ enum class ComponentType : uint8
 	SnowBillBoard,
 	Rigidbody,
 	Slider,
+	Skybox,
 	// ...
 	Script,
 

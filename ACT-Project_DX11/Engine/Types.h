@@ -37,5 +37,6 @@ enum class AnimationState
 	Hit, //피격
 	Die, //죽음
 	Roar, //울음,포효
+	Aggro,
 	// 다른 상태 추가 가능
 };

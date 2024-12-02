@@ -355,6 +355,7 @@ string Model::AnimationStateToString(AnimationState state)
 	case AnimationState::Hit:   return "Hit";
 	case AnimationState::Die:   return "Die";
 	case AnimationState::Roar:   return "Roar";
+	case AnimationState::Aggro:   return "Aggro";
 		// 다른 상태 추가 가능
 	default: return "Unknown";
 	}

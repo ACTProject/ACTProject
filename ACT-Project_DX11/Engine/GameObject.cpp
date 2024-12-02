@@ -14,6 +14,7 @@
 #include "SnowBillboard.h"
 #include "Rigidbody.h"
 #include "Slider.h"
+#include "Skybox.h"
 
 GameObject::GameObject()
 {
@@ -178,6 +179,12 @@ std::shared_ptr<Slider> GameObject::GetSlider()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::Slider);
 	return static_pointer_cast<Slider>(component);
+}
+
+std::shared_ptr<Skybox> GameObject::GetSkybox()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::Skybox);
+	return static_pointer_cast<Skybox>(component);
 }
 
 std::shared_ptr<Transform> GameObject::GetOrAddTransform()

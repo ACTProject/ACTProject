@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Materials>
+    <Material>
+        <Name>Buddies</Name>
+        <DiffuseFile>PolyBrushPals_AlbedoTransparency.png</DiffuseFile>
+        <SpecularFile>PolyBrushPals_AlbedoTransparency.png</SpecularFile>
+        <NormalFile>PolyBrushPals_AlbedoTransparency.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.83962262" G="0.83962262" B="0.83962262" A="1"/>
+        <Specular R="0.83962262" G="0.83962262" B="0.83962262" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+</Materials>

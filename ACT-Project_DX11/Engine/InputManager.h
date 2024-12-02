@@ -10,6 +10,8 @@ enum class KEY_TYPE
 	SHIFT = VK_SHIFT,
 	CAPSLOCK = VK_CAPITAL,
 
+	DELETEKEY = VK_DELETE,
+
 	W = 'W',
 	A = 'A',
 	S = 'S',
@@ -20,6 +22,11 @@ enum class KEY_TYPE
 	Z = 'Z',
 	C = 'C',
 
+	R = 'R',
+	T = 'T',
+	Y = 'Y',
+	U = 'U',
+
 	KEY_1 = '1',
 	KEY_2 = '2',
 	KEY_3 = '3',
@@ -29,6 +36,7 @@ enum class KEY_TYPE
 
 	LBUTTON = VK_LBUTTON,
 	RBUTTON = VK_RBUTTON,
+
 };
 
 enum class KEY_STATE

@@ -23,6 +23,9 @@ public:
 	Vec3 GetLocalPosition() { return _localPosition; }
 	void SetLocalPosition(const Vec3& localPosition) { _localPosition = localPosition; UpdateTransform(); }
 
+	void AddLocalScale(const Vec3& localScale) { _localScale += localScale; UpdateTransform(); }
+	void AddLocalRotation(const Vec3& localRotation) { _localRotation += localRotation; UpdateTransform(); }
+	void AddLocalPosition(const Vec3& localPosition) { _localPosition += localPosition; UpdateTransform(); }
 	void SetLocalCenter(const Vec3& localCenter) { _localCenter = localCenter; }
 
 	// World

@@ -21,6 +21,8 @@ void TimeManager::Update()
 
     // 이전 프레임과 현재 프레임 사이의 시간(초 단위)을 계산합니다.
     _deltaTime = (currentCount - _prevCount) / static_cast<float>(_frequency);
+    // GameTime 계산
+    _gameTime += _deltaTime;
 
     // 목표 프레임 시간보다 빠를 경우 대기
     while (_deltaTime < _targetFrameTime)
@@ -36,7 +38,8 @@ void TimeManager::Update()
     // FPS 계산
     _frameCount++;
     _frameTime += _deltaTime;
-
+    
+   
     if (_frameTime >= 1.0f)
     {
         _fps = static_cast<uint32>(_frameCount);

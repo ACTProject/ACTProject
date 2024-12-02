@@ -106,6 +106,7 @@ void RangoonScript::Attack(int type)
 		SetAnimationState(AnimationState::Attack3);
 		break;
 	}
+
 	// 코루틴 실행
 	MyCoroutine attackCoroutine = RangoonCoroutine(this, atkDuration);
 	currentRangoonCoroutine = attackCoroutine.GetHandler();
@@ -118,6 +119,7 @@ void RangoonScript::Aggro()
 	_isAnimating = true;
 
 	float duration = _aggroDuration / _FPS;
+
 	SetAnimationState(AnimationState::Aggro);
 	MyCoroutine aggroCoroutine = RangoonCoroutine(this, duration);
 	currentRangoonCoroutine = aggroCoroutine.GetHandler();
@@ -145,7 +147,37 @@ void RangoonScript::Update()
 	_FPS = static_cast<float>(TIME->GetFps());
 	float dt = TIME->GetDeltaTime();
 
-	// 플레이어 위치 계산
+	if (_isAnimating)
+	{
+		animPlayingTime += dt;
+
+		if (_currentAnimationState == AnimationState::Attack1 ||
+			_currentAnimationState == AnimationState::Attack2 ||
+			_currentAnimationState == AnimationState::Attack3)
+		{
+			float atkDuration = _attackDuration[atkType] / _FPS;
+
+			if (animPlayingTime >= atkDuration)
+			{
+				atkType = rand() % 3; // 다음 공격 타입 결정
+				ResetToIdleState();
+			}
+			return;
+		}
+
+		// Aggro 애니메이션이 완료되었는지 확인
+		if (_currentAnimationState == AnimationState::Aggro)
+		{
+			if (animPlayingTime >= _aggroDuration / _FPS)
+			{
+				isFirstAggro = false;
+				ResetToIdleState();
+			}
+			return;
+		}
+	}
+
+	// 플레이어 위치 계산4
 	_player = SCENE->GetCurrentScene()->GetPlayer();
 	Vec3 playerPosition = _player->GetTransform()->GetPosition();
 
@@ -174,35 +206,11 @@ void RangoonScript::Update()
 	// 상태별 애니메이션 실행
 	if (isFirstAggro && onTarget)
 	{
-		_isAnimating = true;
 		Aggro();
-		if (_isAnimating)
-		{
-			animPlayingTime += dt;
-			if (animPlayingTime > _aggroDuration / _FPS)
-			{
-				isFirstAggro = false; // Aggro 상태 완료
-				ResetToIdleState();
-			}
-			return;
-		}
 	}
 	else if (onAttack)
 	{
-		_isAnimating = true;
 		Attack(atkType);
-		if (_isAnimating)
-		{
-			animPlayingTime += dt;
-			float atkDuration = _attackDuration[atkType] / _FPS;
-			if (animPlayingTime >= atkDuration)
-			{
-				atkType = rand() % 3; // 다음 공격 타입 결정
-				ResetToIdleState();  // Idle로 복귀
-			}
-			return;
-		}
-
 	}
 	else if (BackToStart)
 	{
@@ -214,7 +222,7 @@ void RangoonScript::Update()
 			BackToStart = false;
 		}
 	}
-	else if (onTarget && !onAttack)
+	else if (onTarget)
 	{
 		SetAnimationState(AnimationState::Run);
 		Move(direction);

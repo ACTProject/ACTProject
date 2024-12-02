@@ -49,7 +49,7 @@ private:
 	bool onAttack = false;
 	float _attackDuration[3];
 	float _aggroDuration;
-	bool isFirstAggro = false;
+	bool isFirstAggro = true;
 	float animPlayingTime = 0.0f;
 
 	shared_ptr<Model> _rangoon;

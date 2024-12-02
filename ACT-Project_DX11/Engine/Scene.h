@@ -1,14 +1,14 @@
-#pragma once
+ï»¿#pragma once
 
 
 class Scene
 {
 public:
-	virtual void Awake();		// ´Ù¸¥ ¿ÀºêÁ§Æ®³ª ÄÄÆ÷³ÍÆ®¸¦ ÂüÁ¶ÇÏ±â Àü¿¡ ½ÇÇà
-	virtual void Start();		// ¿ÀºêÁ§Æ® È°¼ºÈ­µÈ ÀÌÈÄ ÃÊ±âÈ­ ¼öÇà
-	virtual void Update();		// ¸Å ÇÁ·¹ÀÓ¸¶´Ù È£Ãâ
-	virtual void FixedUpdate(); // °íÁ¤µÈ ½Ã°£ °£°İ¸¶´Ù È£Ãâ (¹°¸® ¿¬»ê) 
-	virtual void LateUpdate();	// ´Ù¸¥ ¿ÀºêÁ§Æ®°¡ Update()¿¡¼­ º¯°æÇÑ µ¥ÀÌÅÍ¸¦ ±â¹İÀ¸·Î ÀÛ¾÷ÇÒ ¶§ È£Ãâ
+	virtual void Awake();		// ë‹¤ë¥¸ ì˜¤ë¸Œì íŠ¸ë‚˜ ì»´í¬ë„ŒíŠ¸ë¥¼ ì°¸ì¡°í•˜ê¸° ì „ì— ì‹¤í–‰
+	virtual void Start();		// ì˜¤ë¸Œì íŠ¸ í™œì„±í™”ëœ ì´í›„ ì´ˆê¸°í™” ìˆ˜í–‰
+	virtual void Update();		// ë§¤ í”„ë ˆì„ë§ˆë‹¤ í˜¸ì¶œ
+	virtual void FixedUpdate(); // ê³ ì •ëœ ì‹œê°„ ê°„ê²©ë§ˆë‹¤ í˜¸ì¶œ (ë¬¼ë¦¬ ì—°ì‚°) 
+	virtual void LateUpdate();	// ë‹¤ë¥¸ ì˜¤ë¸Œì íŠ¸ê°€ Update()ì—ì„œ ë³€ê²½í•œ ë°ì´í„°ë¥¼ ê¸°ë°˜ìœ¼ë¡œ ì‘ì—…í•  ë•Œ í˜¸ì¶œ
 
 	virtual void Render();
 

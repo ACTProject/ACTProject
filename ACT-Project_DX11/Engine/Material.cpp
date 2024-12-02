@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Material.h"
 
 Material::Material() : Super(ResourceType::Material)

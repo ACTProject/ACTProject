@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 class BaseCollider;
 class Rigidbody;
@@ -11,7 +11,7 @@ public:
 	void Init();
 	void Update();
 
-	// Collider & Rigidbody µÓ∑œ
+	// Collider & Rigidbody Îì±Î°ù
 	void AddCollider(shared_ptr<BaseCollider> collider);
 	void AddRigidbody(shared_ptr<Rigidbody> rigidbody);
 	void ApplyForce(shared_ptr<Rigidbody> rigidbody, const Vec3& target, const Vec3& source, float massDifference);

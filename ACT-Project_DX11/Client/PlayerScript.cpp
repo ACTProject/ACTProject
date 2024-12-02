@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "PlayerScript.h"
 #include "Model.h"
 #include "Camera.h"
@@ -16,7 +16,7 @@ void EndAttackCoroutine() {
 	}
 }
 
-// 플레이어공격 코루틴 함수 정의
+// ?뚮젅?댁뼱怨듦꺽 肄붾（???⑥닔 ?뺤쓽
 MyCoroutine PlayAttackCoroutine(PlayerScript* playerScript, float animationDuration)
 {
 	co_await AwaitableSleep(chrono::milliseconds(static_cast<int>(animationDuration * 1000)));
@@ -42,9 +42,9 @@ void PlayerScript::Update()
 	_transform = GetTransform();
 
 	Vec3 moveDir = Vec3(0.0f);
-	bool isRunning = INPUT->GetButton(KEY_TYPE::SHIFT);  // Shift 키로 달리기 모드 여부 확인
+	bool isRunning = INPUT->GetButton(KEY_TYPE::SHIFT);  // Shift ?ㅻ줈 ?щ━湲?紐⑤뱶 ?щ? ?뺤씤
 
-	// 이동 입력 처리
+	// ?대룞 ?낅젰 泥섎━
 	if (INPUT->GetButton(KEY_TYPE::W))
 		moveDir += Vec3(0.0f, 0.0f, 1.0f);
 	if (INPUT->GetButton(KEY_TYPE::S))
@@ -53,10 +53,10 @@ void PlayerScript::Update()
 		moveDir += Vec3(-1.0f, 0.0f, 0.0f);
 	if (INPUT->GetButton(KEY_TYPE::D))
 		moveDir += Vec3(1.0f, 0.0f, 0.0f);
-	// 공격 입력 처리
+	// 怨듦꺽 ?낅젰 泥섎━
 	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON)) {
 		if (_attackStage > 0)
-			_currentDuration = _attackDurations[_attackStage - 1] / _FPS;	// 현재 애니메이션 지속 시간
+			_currentDuration = _attackDurations[_attackStage - 1] / _FPS;	// ?꾩옱 ?좊땲硫붿씠??吏???쒓컙
 
 		_isPlayeringAttackAnimation = true;
 		if (!_isAttacking) {
@@ -68,12 +68,12 @@ void PlayerScript::Update()
 		}
 	}
 
-	// 공격 타이머 갱신
+	// 怨듦꺽 ??대㉧ 媛깆떊
 	if (_isAttacking) 
 	{
 		_attackTimer += dt;
 
-		// 공격 단계 시간 초과 시 Idle로 복귀
+		// 怨듦꺽 ?④퀎 ?쒓컙 珥덇낵 ??Idle濡?蹂듦?
 		if (_attackTimer >= (_attackDurations[_attackStage - 1] / _FPS)) {
 			_attackStage = 0;
 			_isAttacking = false;
@@ -81,14 +81,14 @@ void PlayerScript::Update()
 		}
 	}
 
-	// 공격 애니메이션이 재생 중이면 다른 애니메이션 상태로 전환되지 않음
+	// 怨듦꺽 ?좊땲硫붿씠?섏씠 ?ъ깮 以묒씠硫??ㅻⅨ ?좊땲硫붿씠???곹깭濡??꾪솚?섏? ?딆쓬
 	if (_isPlayeringAttackAnimation)
 		return;
 
-	// 이동 방향의 크기를 기준으로 애니메이션 상태 결정
+	// ?대룞 諛⑺뼢???ш린瑜?湲곗??쇰줈 ?좊땲硫붿씠???곹깭 寃곗젙
 	AnimationState targetAnimationState;
 
-	if (moveDir.LengthSquared() > 0.0f)  // 이동 벡터가 0이 아니라면 이동 중으로 간주
+	if (moveDir.LengthSquared() > 0.0f)  // ?대룞 踰≫꽣媛 0???꾨땲?쇰㈃ ?대룞 以묒쑝濡?媛꾩＜
 	{
 		moveDir.Normalize();
 		float speed = isRunning ? _speed * 2 : _speed;
@@ -97,20 +97,20 @@ void PlayerScript::Update()
 		targetAnimationState = isRunning ? AnimationState::Run : AnimationState::Walk;
 
 
-		// 이동 방향에 따라 회전 설정
-		Vec3 targetForward = moveDir;					// 캐릭터가 이동하려는 방향
-		Vec3 currentForward = _transform->GetLook();	// 캐릭터가 현재 바라보는 방향
+		// ?대룞 諛⑺뼢???곕씪 ?뚯쟾 ?ㅼ젙
+		Vec3 targetForward = moveDir;					// 罹먮┃?곌? ?대룞?섎젮??諛⑺뼢
+		Vec3 currentForward = _transform->GetLook();	// 罹먮┃?곌? ?꾩옱 諛붾씪蹂대뒗 諛⑺뼢
 
-		// 두 벡터 사이의 각도를 계산하여 회전
-		float angle = std::acos(currentForward.Dot(targetForward));	// 두 벡터 사이의 각도
+		// ??踰≫꽣 ?ъ씠??媛곷룄瑜?怨꾩궛?섏뿬 ?뚯쟾
+		float angle = std::acos(currentForward.Dot(targetForward));	// ??踰≫꽣 ?ъ씠??媛곷룄
 		if (angle != 0.f)
 		{
-			Vec3 rotationAxis = currentForward.Cross(targetForward);	// 두 벡터가 이루는 평면의 법선벡터
+			Vec3 rotationAxis = currentForward.Cross(targetForward);	// ??踰≫꽣媛 ?대（???됰㈃??踰뺤꽑踰≫꽣
 			rotationAxis.Normalize();
 
-			// 회전 축의 y 값으로 좌우 방향을 구분
+			// ?뚯쟾 異뺤쓽 y 媛믪쑝濡?醫뚯슦 諛⑺뼢??援щ텇
 			if (rotationAxis.y < 0) {
-				angle = -angle;  // 왼쪽으로 회전
+				angle = -angle;  // ?쇱そ?쇰줈 ?뚯쟾
 			}
 			_transform->SetRotation(_transform->GetRotation() + Vec3(0, angle, 0));
 
@@ -121,7 +121,7 @@ void PlayerScript::Update()
 		targetAnimationState = AnimationState::Idle;
 	}
 
-	// 애니메이션 상태가 변경되었을 때만 상태 전환
+	// ?좊땲硫붿씠???곹깭媛 蹂寃쎈릺?덉쓣 ?뚮쭔 ?곹깭 ?꾪솚
 	if (_currentAnimationState != targetAnimationState)
 	{
 		SetAnimationState(targetAnimationState);
@@ -152,7 +152,7 @@ void PlayerScript::StartAttack()
 
 	float duration = _attackDurations[_attackStage - 1] / _FPS;
 
-	// 1타 공격 애니메이션 재생
+	// 1? 怨듦꺽 ?좊땲硫붿씠???ъ깮
 	PlayAttackAnimation(_attackStage);
 	MyCoroutine attackCoroutine = PlayAttackCoroutine(this, duration);
 	currentCoroutine = attackCoroutine.GetHandler();
@@ -168,7 +168,7 @@ void PlayerScript::ContinueAttack()
 
 		float duration = _attackDurations[_attackStage - 1] / _FPS;
 
-		// 다음 공격 애니메이션 재생
+		// ?ㅼ쓬 怨듦꺽 ?좊땲硫붿씠???ъ깮
 		PlayAttackAnimation(_attackStage);
 		MyCoroutine attackCoroutine = PlayAttackCoroutine(this, duration);
 		currentCoroutine = attackCoroutine.GetHandler();

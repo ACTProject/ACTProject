@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Component.h"
 
 #define MAX_BILLBOARD_COUNT 500

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "AsTypes.h"
 
 class Converter

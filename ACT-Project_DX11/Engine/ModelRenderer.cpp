@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ModelRenderer.h"
 #include "Material.h"
 #include "ModelMesh.h"
@@ -145,7 +145,7 @@ void ModelRenderer::RenderCollider()
 		if (collider)
 		{
 			collider->RenderCollider(_shader);
-			// ±âº» ÅäÆú·ÎÁö º¹±¸
+			// ê¸°ë³¸ í† í´ë¡œì§€ ë³µêµ¬
 			DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		}
 	}

@@ -1,10 +1,10 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ImGuiManager.h"
 
 
 void ImGuiManager::Init()
 {
-	// Imgui ÃÊ±âÈ­
+	// Imgui ì´ˆê¸°í™”
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -22,7 +22,7 @@ void ImGuiManager::Init()
 
 void ImGuiManager::Update()
 {
-	// »õ·Î¿î ÇÁ·¹ÀÓ ½ÃÀÛ
+	// ìƒˆë¡œìš´ í”„ë ˆìž„ ì‹œìž‘
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();

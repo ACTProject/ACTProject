@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "AnimationDemo.h"
 #include "GeometryHelper.h"
 #include "Camera.h"

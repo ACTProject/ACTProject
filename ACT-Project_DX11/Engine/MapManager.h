@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 enum MapObjSelect
 {
@@ -33,20 +33,20 @@ public:
 	bool ChekMapObj() { return _mapSelectObj != nullptr; };
 	bool ChekMapObjectSelect(shared_ptr<GameObject> obj);
 
-	// ÀÌ ÇÔ¼ö´Â Å¬¸¯ÇßÀ» ¶§ Ãß°¡ÇÏ´Â ÇÔ¼ö.
+	// ì´ í•¨ìˆ˜ëŠ” í´ë¦­í–ˆì„ ë•Œ ì¶”ê°€í•˜ëŠ” í•¨ìˆ˜.
 	shared_ptr<GameObject> Create(Vec3& pos);
 
 
-	// ÃÊ±â init
+	// ì´ˆê¸° init
 	void AddMapObj(shared_ptr<MapObjDesc>  obj);
 	void InitMapText();
 
-	// ÆÄÀÏ¿¡ ¸Ê ¿ÀºêÁ§Æ® Á¤º¸ Ãß°¡ÇÏ´Â ÇÔ¼ö
+	// íŒŒì¼ì— ë§µ ì˜¤ë¸Œì íŠ¸ ì •ë³´ ì¶”ê°€í•˜ëŠ” í•¨ìˆ˜
 	bool ExportMapObj();
-	// ÆÄÀÏÀ» ÀĞ¾î µéÀÌ´Â ÇÔ¼ö
+	// íŒŒì¼ì„ ì½ì–´ ë“¤ì´ëŠ” í•¨ìˆ˜
 	bool ImportMapObj();
 private:
-	// Å¬¸¯ÇÏÁö ¾Ê°íµµ ¸Ê¿ÀºêÁ§Æ® ¼³Ä¡ Àü¿¡ º¸ÀÌ°Ô²û ÇÏ´Â ÇÔ¼ö.
+	// í´ë¦­í•˜ì§€ ì•Šê³ ë„ ë§µì˜¤ë¸Œì íŠ¸ ì„¤ì¹˜ ì „ì— ë³´ì´ê²Œë” í•˜ëŠ” í•¨ìˆ˜.
 	void PreViewMapObject();
 	shared_ptr<GameObject> CreatePreViewObj(Vec3 pickPos);
 
@@ -58,18 +58,18 @@ private:
 	void ChangeMapObjRotation();
 	void ChangeMapObjScale();
 
-	// ÀÌ ÇÔ¼ö´Â ÆÄÀÏ¿¡¼­ ºÒ·¯¿Ã ¶§ »ç¿ëÇÏ´Â ÇÔ¼ö
+	// ì´ í•¨ìˆ˜ëŠ” íŒŒì¼ì—ì„œ ë¶ˆëŸ¬ì˜¬ ë•Œ ì‚¬ìš©í•˜ëŠ” í•¨ìˆ˜
 	shared_ptr<GameObject> Create(MapObjDesc& obj);
-	// ImGui¿¡¼­ ¸Ê¿ÀºêÁ§Æ® °í¸£´Â ÇÔ¼ö.
+	// ImGuiì—ì„œ ë§µì˜¤ë¸Œì íŠ¸ ê³ ë¥´ëŠ” í•¨ìˆ˜.
 	void ImGuiSelectMapObject();
 private:
-	// Á¤º¸ ÀúÀåµÈ ÆÄÀÏÀÌ¸§.
+	// ì •ë³´ ì €ì¥ëœ íŒŒì¼ì´ë¦„.
 	wstring _fileName = L"../Resources/MapObj/MapObjectLists.txt";
-	// ÆÄÀÏ·Î ÀúÀå½ÃÅ³ ¿ÀºêÁ§Æ®µé ¸®½ºÆ®
+	// íŒŒì¼ë¡œ ì €ì¥ì‹œí‚¬ ì˜¤ë¸Œì íŠ¸ë“¤ ë¦¬ìŠ¤íŠ¸
 	vector<shared_ptr<GameObject>> _mapObjList;
-	// ¸ÊÁ¤º¸ ±¸Á¶Ã¼ ¹è¿­
+	// ë§µì •ë³´ êµ¬ì¡°ì²´ ë°°ì—´
 	vector<shared_ptr<MapObjDesc>> _mapInfoList;
-	// ÃÊ±â ¸Ê Á¤º¸ ±¸Á¶Ã¼ ¹è¿­.
+	// ì´ˆê¸° ë§µ ì •ë³´ êµ¬ì¡°ì²´ ë°°ì—´.
 	vector<shared_ptr<MapObjDesc>> _mapInitInfoList;
 	shared_ptr<MapObjDesc> _mapSelectDesc;
 	shared_ptr<GameObject> _mapSelectObj;

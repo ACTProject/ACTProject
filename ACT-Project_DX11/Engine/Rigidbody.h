@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Component.h"
 class Rigidbody : public Component
 {
@@ -20,10 +20,10 @@ public:
 	bool GetUseGravity() { return _useGravity; }
 	void SetUseGravity(bool useGravity) { _useGravity = useGravity; }
 private:
-	Vec3 _velocity = Vec3(0.f);		// ¼Óµµ
-	Vec3 _force = Vec3(0.f);		// ¿ÜºÎ Èû
-	float _mass = 1.0f;				// Áú·®
-	bool _useGravity = false;		// Áß·Â »ç¿ë ¿©ºÎ
+	Vec3 _velocity = Vec3(0.f);		// ì†ë„
+	Vec3 _force = Vec3(0.f);		// ì™¸ë¶€ í˜
+	float _mass = 1.0f;				// ì§ˆëŸ‰
+	bool _useGravity = false;		// ì¤‘ë ¥ ì‚¬ìš© ì—¬ë¶€
 
 	float _fixedDeltaTime = 0.f;
 };

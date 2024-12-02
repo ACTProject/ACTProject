@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Scene.h"
 
 class SceneManager
@@ -6,10 +6,10 @@ class SceneManager
 	DECLARE_SINGLE(SceneManager);
 
 public:
-	void Awake();		// ´Ù¸¥ ¿ÀºêÁ§Æ®³ª ÄÄÆ÷³ÍÆ®¸¦ ÂüÁ¶ÇÏ±â Àü¿¡ ½ÇÇà
-	void Start();		// ¿ÀºêÁ§Æ® È°¼ºÈ­µÈ ÀÌÈÄ ÃÊ±âÈ­ ¼öÇà
-	void FixedUpdate();		// ¸Å ÇÁ·¹ÀÓ¸¶´Ù È£Ãâ
-	void Update();		// ¸Å ÇÁ·¹ÀÓ¸¶´Ù È£Ãâ
+	void Awake();		// ë‹¤ë¥¸ ì˜¤ë¸Œì íŠ¸ë‚˜ ì»´í¬ë„ŒíŠ¸ë¥¼ ì°¸ì¡°í•˜ê¸° ì „ì— ì‹¤í–‰
+	void Start();		// ì˜¤ë¸Œì íŠ¸ í™œì„±í™”ëœ ì´í›„ ì´ˆê¸°í™” ìˆ˜í–‰
+	void FixedUpdate();		// ë§¤ í”„ë ˆì„ë§ˆë‹¤ í˜¸ì¶œ
+	void Update();		// ë§¤ í”„ë ˆì„ë§ˆë‹¤ í˜¸ì¶œ
 
 	void AddScene(const std::string& name, std::shared_ptr<Scene> scene);
 	void ChangeScene(const string& name);
@@ -22,7 +22,7 @@ private:
 	unordered_map<string, shared_ptr<Scene>> _scenes;
 
 	const float _fixedDeltaTime = 0.02f; // Fixed timestep (20ms)
-	float _accumulatedTime = 0.0f;			// ´©ÀûµÈ ½Ã°£
-	float _deltaTime = 0.0f;				// ÇöÀç ÇÁ·¹ÀÓÀÇ °æ°ú ½Ã°£
+	float _accumulatedTime = 0.0f;			// ëˆ„ì ëœ ì‹œê°„
+	float _deltaTime = 0.0f;				// í˜„ì¬ í”„ë ˆì„ì˜ ê²½ê³¼ ì‹œê°„
 };
 

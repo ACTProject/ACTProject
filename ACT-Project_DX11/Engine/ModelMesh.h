@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 struct ModelBone : public std::enable_shared_from_this<ModelBone>
 {
@@ -16,7 +16,7 @@ struct ModelBone : public std::enable_shared_from_this<ModelBone>
 
 struct ModelMesh
 {
-	// ´õ¹Ì º» ¿¬°á ÇÔ¼ö
+	// ë”ë¯¸ ë³¸ ì—°ê²° í•¨ìˆ˜
 	void AttachToDummyBone(shared_ptr<ModelBone> dummyBone);
 
 	void CreateBuffers();

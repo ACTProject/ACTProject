@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "TextureBuffer.h"
 
 TextureBuffer::TextureBuffer(ComPtr<ID3D11Texture2D> src)

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Camera.h"
 #include "Scene.h"
 
@@ -23,7 +23,7 @@ void Camera::SortGameObject()
 
 	_vecForward.clear();
 
-	// ¸ðµç °ÔÀÓ¿ÀºêÁ§Æ®¸¦ ´ë»óÀ¸·Î ³»°¡ ±×·ÁÁà¾ßÇÒ ´ë»óÀÎÁö Ã¼Å©
+	// ëª¨ë“  ê²Œìž„ì˜¤ë¸Œì íŠ¸ë¥¼ ëŒ€ìƒìœ¼ë¡œ ë‚´ê°€ ê·¸ë ¤ì¤˜ì•¼í•  ëŒ€ìƒì¸ì§€ ì²´í¬
 	for (auto& gameObject : gameObjects)
 	{
 		if (IsCulled(gameObject->GetLayerIndex()))
@@ -34,14 +34,14 @@ void Camera::SortGameObject()
 			&& gameObject->GetModelAnimator() == nullptr)
 			continue;
 
-		// ³»°¡ ±×·ÁÁà¾ßÇÒ ´ë»óÀÎ gameObject
+		// ë‚´ê°€ ê·¸ë ¤ì¤˜ì•¼í•  ëŒ€ìƒì¸ gameObject
 		_vecForward.push_back(gameObject);		
 	}
 }
 
 void Camera::Render_Forward()
 {
-	// ³»°¡ ÀÌÁ¦ ±×¸± Ä«¸Þ¶ó´Ï±î ³ªÀÇ Á¤º¸µé·Î °»½Å 
+	// ë‚´ê°€ ì´ì œ ê·¸ë¦´ ì¹´ë©”ë¼ë‹ˆê¹Œ ë‚˜ì˜ ì •ë³´ë“¤ë¡œ ê°±ì‹  
 	S_MatView = _matView;
 	S_MatProjection = _matProjection;
 
@@ -63,15 +63,15 @@ void Camera::Update()
 {
 	if (DEBUG->IsDebugEnabled())
 	{
-		if (!_debugInitialized) // µð¹ö±ë ¸ðµå ÃÖÃÊ ÁøÀÔ
+		if (!_debugInitialized) // ë””ë²„ê¹… ëª¨ë“œ ìµœì´ˆ ì§„ìž…
 		{
 			_debugInitialized = true;
 
-			// µð¹ö±ë ¸ðµå ÃÊ±â À§Ä¡¿Í ¹æÇâ ¼³Á¤
-			_cameraPosition = Vec3(0.0f, 20.0f, -5.0f); // À§¿¡¼­ ¾Æ·¡¸¦ ¹Ù¶óº¸´Â À§Ä¡
-			_focusPosition = Vec3(0.0f, 0.0f, 0.0f);     // ÃÊÁ¡Àº ¿øÁ¡
-			_yaw = XM_PIDIV4;                           // 45µµ È¸Àü
-			_pitch = -XM_PIDIV4;                        // ¾Æ·¡¸¦ 45µµ ¹Ù¶óº½
+			// ë””ë²„ê¹… ëª¨ë“œ ì´ˆê¸° ìœ„ì¹˜ì™€ ë°©í–¥ ì„¤ì •
+			_cameraPosition = Vec3(0.0f, 20.0f, -5.0f); // ìœ„ì—ì„œ ì•„ëž˜ë¥¼ ë°”ë¼ë³´ëŠ” ìœ„ì¹˜
+			_focusPosition = Vec3(0.0f, 0.0f, 0.0f);     // ì´ˆì ì€ ì›ì 
+			_yaw = XM_PIDIV4;                           // 45ë„ íšŒì „
+			_pitch = -XM_PIDIV4;                        // ì•„ëž˜ë¥¼ 45ë„ ë°”ë¼ë´„
 
 			UpdateMatrix();
 
@@ -81,7 +81,7 @@ void Camera::Update()
 	}
 	else
 	{
-		if (_debugInitialized) // µð¹ö±ë ¸ðµå Á¾·á
+		if (_debugInitialized) // ë””ë²„ê¹… ëª¨ë“œ ì¢…ë£Œ
 		{
 			_debugInitialized = false;
 		}
@@ -89,15 +89,15 @@ void Camera::Update()
 		UpdateCameraWithMouseInput();
 	}
 
-	// Ä«¸Þ¶ó ¸ÅÆ®¸¯½º ¾÷µ¥ÀÌÆ®
+	// ì¹´ë©”ë¼ ë§¤íŠ¸ë¦­ìŠ¤ ì—…ë°ì´íŠ¸
 	UpdateMatrix();
 }
 
-void Camera::FreeCameraMovement()	// WASD Å°·Î ÀÌµ¿, ¸¶¿ì½º·Î È¸Àü
+void Camera::FreeCameraMovement()	// WASD í‚¤ë¡œ ì´ë™, ë§ˆìš°ìŠ¤ë¡œ íšŒì „
 {
-	// WASD ÀÌµ¿
+	// WASD ì´ë™
 	Vec3 movement(0.0f);
-	// ¹æÇâ º¤ÅÍ °è»ê
+	// ë°©í–¥ ë²¡í„° ê³„ì‚°
 	Vec3 forward(
 		cosf(_pitch) * sinf(_yaw),
 		sinf(_pitch),
@@ -111,31 +111,31 @@ void Camera::FreeCameraMovement()	// WASD Å°·Î ÀÌµ¿, ¸¶¿ì½º·Î È¸Àü
 	Vec3 up = right.Cross(forward);
 	up.Normalize();
 
-	if (INPUT->GetButton(KEY_TYPE::W)) movement += forward;    // ¾ÕÀ¸·Î
-	if (INPUT->GetButton(KEY_TYPE::S)) movement -= forward;    // µÚ·Î
-	if (INPUT->GetButton(KEY_TYPE::A)) movement += right;      // ¿ÞÂÊ
-	if (INPUT->GetButton(KEY_TYPE::D)) movement -= right;      // ¿À¸¥ÂÊ
-	if (INPUT->GetButton(KEY_TYPE::Q)) movement -= up;         // ¾Æ·¡·Î
-	if (INPUT->GetButton(KEY_TYPE::E)) movement += up;         // À§·Î
+	if (INPUT->GetButton(KEY_TYPE::W)) movement += forward;    // ì•žìœ¼ë¡œ
+	if (INPUT->GetButton(KEY_TYPE::S)) movement -= forward;    // ë’¤ë¡œ
+	if (INPUT->GetButton(KEY_TYPE::A)) movement += right;      // ì™¼ìª½
+	if (INPUT->GetButton(KEY_TYPE::D)) movement -= right;      // ì˜¤ë¥¸ìª½
+	if (INPUT->GetButton(KEY_TYPE::Q)) movement -= up;         // ì•„ëž˜ë¡œ
+	if (INPUT->GetButton(KEY_TYPE::E)) movement += up;         // ìœ„ë¡œ
 
-	// ÀÌµ¿ ¼Óµµ (Shift Å°·Î ¼Óµµ º¯°æ)
+	// ì´ë™ ì†ë„ (Shift í‚¤ë¡œ ì†ë„ ë³€ê²½)
 	float speed = (INPUT->GetButton(KEY_TYPE::SHIFT)) ? _fastSpeed : _normalSpeed;
 	_cameraPosition += movement * speed * TIME->GetDeltaTime();
 
-	if (INPUT->GetButton(KEY_TYPE::LBUTTON)) // µå·¡±× »óÅÂ È®ÀÎ
+	if (INPUT->GetButton(KEY_TYPE::LBUTTON)) // ë“œëž˜ê·¸ ìƒíƒœ í™•ì¸
 	{
-		// ¸¶¿ì½º ÀÔ·Â
+		// ë§ˆìš°ìŠ¤ ìž…ë ¥
 		float dx = INPUT->GetMouseDeltaX();
 		float dy = INPUT->GetMouseDeltaY();
 
-		// yaw¿Í pitch °¢µµ¸¦ ¸¶¿ì½º ÀÌµ¿¿¡ µû¶ó Á¶Àý
+		// yawì™€ pitch ê°ë„ë¥¼ ë§ˆìš°ìŠ¤ ì´ë™ì— ë”°ë¼ ì¡°ì ˆ
 		_yaw += dx * _sensitivity;
 		_pitch -= dy * _sensitivity;
 
-		// pitch °ªÀÇ ¹üÀ§¸¦ Á¦ÇÑÇÏ¿© Ä«¸Þ¶ó°¡ µÚÁýÈ÷Áö ¾Êµµ·Ï Á¶Á¤ (-90µµ ~ 90µµ »çÀÌ)
+		// pitch ê°’ì˜ ë²”ìœ„ë¥¼ ì œí•œí•˜ì—¬ ì¹´ë©”ë¼ê°€ ë’¤ì§‘ížˆì§€ ì•Šë„ë¡ ì¡°ì • (-90ë„ ~ 90ë„ ì‚¬ì´)
 		_pitch = std::clamp(_pitch, -XM_PIDIV2 + 0.1f, XM_PIDIV2 - 0.1f);
 	}	
-	// Ä«¸Þ¶ó ÃÊÁ¡ °»½Å
+	// ì¹´ë©”ë¼ ì´ˆì  ê°±ì‹ 
 	forward = Vec3(
 		cosf(_pitch) * sinf(_yaw),
 		sinf(_pitch),
@@ -149,22 +149,22 @@ void Camera::UpdateCameraWithMouseInput()
 {
 	_player = CUR_SCENE->GetPlayer();
 
-	float dx = INPUT->GetMouseDeltaX(); // xÃà ¸¶¿ì½º ÀÌµ¿·®
-	float dy = INPUT->GetMouseDeltaY(); // yÃà ¸¶¿ì½º ÀÌµ¿·®
+	float dx = INPUT->GetMouseDeltaX(); // xì¶• ë§ˆìš°ìŠ¤ ì´ë™ëŸ‰
+	float dy = INPUT->GetMouseDeltaY(); // yì¶• ë§ˆìš°ìŠ¤ ì´ë™ëŸ‰
 
-	// yaw¿Í pitch °¢µµ¸¦ ¸¶¿ì½º ÀÌµ¿¿¡ µû¶ó Á¶Àý
+	// yawì™€ pitch ê°ë„ë¥¼ ë§ˆìš°ìŠ¤ ì´ë™ì— ë”°ë¼ ì¡°ì ˆ
 	_yaw += dx * _sensitivity;
 	_pitch += dy * _sensitivity;
 
-	// pitch °ªÀÇ ¹üÀ§¸¦ Á¦ÇÑÇÏ¿© Ä«¸Þ¶ó°¡ µÚÁýÈ÷Áö ¾Êµµ·Ï Á¶Á¤ (-90µµ ~ 90µµ »çÀÌ)
+	// pitch ê°’ì˜ ë²”ìœ„ë¥¼ ì œí•œí•˜ì—¬ ì¹´ë©”ë¼ê°€ ë’¤ì§‘ížˆì§€ ì•Šë„ë¡ ì¡°ì • (-90ë„ ~ 90ë„ ì‚¬ì´)
 	_pitch = std::clamp(_pitch, -XM_PIDIV2 + 0.1f, XM_PIDIV2 - 0.1f);
 
-	// Ä«¸Þ¶ó À§Ä¡ °è»ê
+	// ì¹´ë©”ë¼ ìœ„ì¹˜ ê³„ì‚°
 	float x = _cameraDistance * cosf(_pitch) * sinf(_yaw);
 	float y = _cameraDistance * sinf(_pitch);
 	float z = _cameraDistance * cosf(_pitch) * cosf(_yaw);
 
-	// Ä«¸Þ¶ó À§Ä¡¸¦ ÇÃ·¹ÀÌ¾î À§Ä¡ ±âÁØÀ¸·Î ¼³Á¤
+	// ì¹´ë©”ë¼ ìœ„ì¹˜ë¥¼ í”Œë ˆì´ì–´ ìœ„ì¹˜ ê¸°ì¤€ìœ¼ë¡œ ì„¤ì •
 	if (_player == nullptr)
 	{
 		Vec3 cameraposition = GetTransform()->GetPosition();
@@ -185,13 +185,13 @@ void Camera::UpdateMatrix()
 	Vec3 focusPosition;
 	Vec3 upDirection;
 
-	if (_type == ProjectionType::Perspective) // Main Ä«¸Þ¶ó
+	if (_type == ProjectionType::Perspective) // Main ì¹´ë©”ë¼
 	{
 		eyePosition = _cameraPosition;
 		focusPosition = _focusPosition;
 		upDirection = Vec3(0.0f, 1.0f, 0.0f);
 	}
-	else // UI Ä«¸Þ¶ó
+	else // UI ì¹´ë©”ë¼
 	{
 		eyePosition = GetTransform()->GetPosition();
 		focusPosition = eyePosition + GetTransform()->GetLook();

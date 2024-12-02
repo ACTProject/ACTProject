@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Model.h"
 #include "Utils.h"
 #include "FileUtils.h"
@@ -18,30 +18,30 @@ Model::~Model()
 
 }
 
-// XML ÆÄÀÏ¿¡¼­ ÀçÁú µ¥ÀÌÅÍ¸¦ ÀĞ¾î¿À´Â ÇÔ¼ö
+// XML íŒŒì¼ì—ì„œ ì¬ì§ˆ ë°ì´í„°ë¥¼ ì½ì–´ì˜¤ëŠ” í•¨ìˆ˜
 void Model::ReadMaterial(wstring filename)
 {
 	_textureName = filename;
 
-	// ÀçÁú ÆÄÀÏÀÇ ÀüÃ¼ °æ·Î¸¦ ±¸¼ºÇÕ´Ï´Ù.
+	// ì¬ì§ˆ íŒŒì¼ì˜ ì „ì²´ ê²½ë¡œë¥¼ êµ¬ì„±í•©ë‹ˆë‹¤.
 	wstring fullPath = _texturePath + filename + L".xml";
 	auto parentPath = filesystem::path(fullPath).parent_path();
 
-	// XML ¹®¼­¸¦ ·ÎµåÇÏ±â À§ÇÑ ÁØºñ¸¦ ÇÕ´Ï´Ù.
+	// XML ë¬¸ì„œë¥¼ ë¡œë“œí•˜ê¸° ìœ„í•œ ì¤€ë¹„ë¥¼ í•©ë‹ˆë‹¤.
 	tinyxml2::XMLDocument* document = new tinyxml2::XMLDocument();
 	tinyxml2::XMLError error = document->LoadFile(Utils::ToString(fullPath).c_str());
 	assert(error == tinyxml2::XML_SUCCESS);
 
-	// XML ¹®¼­ÀÇ ·çÆ® ¿¤¸®¸ÕÆ®¸¦ Ã£½À´Ï´Ù.
+	// XML ë¬¸ì„œì˜ ë£¨íŠ¸ ì—˜ë¦¬ë¨¼íŠ¸ë¥¼ ì°¾ìŠµë‹ˆë‹¤.
 	tinyxml2::XMLElement* root = document->FirstChildElement();
 	tinyxml2::XMLElement* materialNode = root->FirstChildElement();
 
-	// ¸ğµç ÀçÁú ³ëµå¸¦ ¼øÈ¸ÇÕ´Ï´Ù.
+	// ëª¨ë“  ì¬ì§ˆ ë…¸ë“œë¥¼ ìˆœíšŒí•©ë‹ˆë‹¤.
 	while (materialNode)
 	{
 		shared_ptr<Material> material = make_shared<Material>();
 
-		// ÀçÁúÀÇ ÀÌ¸§À» ¼³Á¤ÇÕ´Ï´Ù.
+		// ì¬ì§ˆì˜ ì´ë¦„ì„ ì„¤ì •í•©ë‹ˆë‹¤.
 		tinyxml2::XMLElement* node = nullptr;
 
 		node = materialNode->FirstChildElement();
@@ -140,127 +140,127 @@ void Model::ReadMaterial(wstring filename)
 		// Next Material
 		materialNode = materialNode->NextSiblingElement();
 	}
-	// ÀçÁú Á¤º¸¸¦ ±â¹İÀ¸·Î Ãß°¡ Ã³¸®¸¦ ¼öÇàÇÕ´Ï´Ù (¿¹: Ä³½Ã Á¤º¸ ¹ÙÀÎµù).
+	// ì¬ì§ˆ ì •ë³´ë¥¼ ê¸°ë°˜ìœ¼ë¡œ ì¶”ê°€ ì²˜ë¦¬ë¥¼ ìˆ˜í–‰í•©ë‹ˆë‹¤ (ì˜ˆ: ìºì‹œ ì •ë³´ ë°”ì¸ë”©).
 	BindCacheInfo();
 }
 
-// ¸ğµ¨ ÆÄÀÏÀ» ÀĞ¾î ¸ğµ¨ÀÇ º»°ú ¸Ş½Ã µ¥ÀÌÅÍ¸¦ ·ÎµåÇÏ´Â ÇÔ¼ö
+// ëª¨ë¸ íŒŒì¼ì„ ì½ì–´ ëª¨ë¸ì˜ ë³¸ê³¼ ë©”ì‹œ ë°ì´í„°ë¥¼ ë¡œë“œí•˜ëŠ” í•¨ìˆ˜
 void Model::ReadModel(wstring filename)
 {
-	// ¸ğµ¨ ÆÄÀÏÀÇ ÀüÃ¼ °æ·Î¸¦ »ı¼ºÇÕ´Ï´Ù.
+	// ëª¨ë¸ íŒŒì¼ì˜ ì „ì²´ ê²½ë¡œë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
 	wstring fullPath = _modelPath + filename + L".mesh";
 
-	// ÆÄÀÏ À¯Æ¿¸®Æ¼ °´Ã¼¸¦ »ı¼ºÇÏ°í ÆÄÀÏÀ» ÀĞ±â ¸ğµå·Î ¿±´Ï´Ù.
+	// íŒŒì¼ ìœ í‹¸ë¦¬í‹° ê°ì²´ë¥¼ ìƒì„±í•˜ê³  íŒŒì¼ì„ ì½ê¸° ëª¨ë“œë¡œ ì—½ë‹ˆë‹¤.
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(fullPath, FileMode::Read);
 
-	// º» µ¥ÀÌÅÍ¸¦ ÀĞ¾îµéÀÔ´Ï´Ù.
+	// ë³¸ ë°ì´í„°ë¥¼ ì½ì–´ë“¤ì…ë‹ˆë‹¤.
 	{
-		const uint32 count = file->Read<uint32>(); // º»ÀÇ °³¼ö¸¦ ÀĞ¾î¿É´Ï´Ù.
+		const uint32 count = file->Read<uint32>(); // ë³¸ì˜ ê°œìˆ˜ë¥¼ ì½ì–´ì˜µë‹ˆë‹¤.
 
-		for (uint32 i = 0; i < count; i++) // °¢ º»¿¡ ´ëÇÏ¿© ¹İº¹ÇÕ´Ï´Ù.
+		for (uint32 i = 0; i < count; i++) // ê° ë³¸ì— ëŒ€í•˜ì—¬ ë°˜ë³µí•©ë‹ˆë‹¤.
 		{
-			shared_ptr<ModelBone> bone = make_shared<ModelBone>(); // »õ·Î¿î º» °´Ã¼¸¦ »ı¼ºÇÕ´Ï´Ù.
-			bone->index = file->Read<int32>(); // º»ÀÇ ÀÎµ¦½º¸¦ ÀĞ¾î¿É´Ï´Ù.
-			bone->name = Utils::ToWString(file->Read<string>()); // º»ÀÇ ÀÌ¸§À» ÀĞ¾î¿É´Ï´Ù.
-			bone->parentIndex = file->Read<int32>(); // ºÎ¸ğ º»ÀÇ ÀÎµ¦½º¸¦ ÀĞ¾î¿É´Ï´Ù.
-			bone->transform = file->Read<Matrix>(); // º»ÀÇ º¯È¯ Çà·ÄÀ» ÀĞ¾î¿É´Ï´Ù.
+			shared_ptr<ModelBone> bone = make_shared<ModelBone>(); // ìƒˆë¡œìš´ ë³¸ ê°ì²´ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
+			bone->index = file->Read<int32>(); // ë³¸ì˜ ì¸ë±ìŠ¤ë¥¼ ì½ì–´ì˜µë‹ˆë‹¤.
+			bone->name = Utils::ToWString(file->Read<string>()); // ë³¸ì˜ ì´ë¦„ì„ ì½ì–´ì˜µë‹ˆë‹¤.
+			bone->parentIndex = file->Read<int32>(); // ë¶€ëª¨ ë³¸ì˜ ì¸ë±ìŠ¤ë¥¼ ì½ì–´ì˜µë‹ˆë‹¤.
+			bone->transform = file->Read<Matrix>(); // ë³¸ì˜ ë³€í™˜ í–‰ë ¬ì„ ì½ì–´ì˜µë‹ˆë‹¤.
 
-			_bones.push_back(bone); // Ã³¸®µÈ º» °´Ã¼¸¦ ¸ğµ¨ÀÇ º» ¸ñ·Ï¿¡ Ãß°¡ÇÕ´Ï´Ù.
+			_bones.push_back(bone); // ì²˜ë¦¬ëœ ë³¸ ê°ì²´ë¥¼ ëª¨ë¸ì˜ ë³¸ ëª©ë¡ì— ì¶”ê°€í•©ë‹ˆë‹¤.
 		}
 	}
 
-	// ¸Ş½Ã µ¥ÀÌÅÍ¸¦ ÀĞ¾îµéÀÔ´Ï´Ù.
+	// ë©”ì‹œ ë°ì´í„°ë¥¼ ì½ì–´ë“¤ì…ë‹ˆë‹¤.
 	{
-		const uint32 count = file->Read<uint32>(); // ¸Ş½ÃÀÇ °³¼ö¸¦ ÀĞ¾î¿É´Ï´Ù.
+		const uint32 count = file->Read<uint32>(); // ë©”ì‹œì˜ ê°œìˆ˜ë¥¼ ì½ì–´ì˜µë‹ˆë‹¤.
 
-		for (uint32 i = 0; i < count; i++) // °¢ ¸Ş½Ã¿¡ ´ëÇÏ¿© ¹İº¹ÇÕ´Ï´Ù.
+		for (uint32 i = 0; i < count; i++) // ê° ë©”ì‹œì— ëŒ€í•˜ì—¬ ë°˜ë³µí•©ë‹ˆë‹¤.
 		{
-			shared_ptr<ModelMesh> mesh = make_shared<ModelMesh>(); // »õ·Î¿î ¸Ş½Ã °´Ã¼¸¦ »ı¼ºÇÕ´Ï´Ù.
+			shared_ptr<ModelMesh> mesh = make_shared<ModelMesh>(); // ìƒˆë¡œìš´ ë©”ì‹œ ê°ì²´ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
 
-			mesh->name = Utils::ToWString(file->Read<string>()); // ¸Ş½ÃÀÇ ÀÌ¸§À» ÀĞ¾î¿É´Ï´Ù.
-			mesh->boneIndex = file->Read<int32>(); // ¸Ş½Ã¿Í ¿¬°üµÈ º»ÀÇ ÀÎµ¦½º¸¦ ÀĞ¾î¿É´Ï´Ù.
+			mesh->name = Utils::ToWString(file->Read<string>()); // ë©”ì‹œì˜ ì´ë¦„ì„ ì½ì–´ì˜µë‹ˆë‹¤.
+			mesh->boneIndex = file->Read<int32>(); // ë©”ì‹œì™€ ì—°ê´€ëœ ë³¸ì˜ ì¸ë±ìŠ¤ë¥¼ ì½ì–´ì˜µë‹ˆë‹¤.
 
-			// ¸Ş½Ã°¡ »ç¿ëÇÏ´Â ÀçÁúÀÇ ÀÌ¸§À» ÀĞ¾î¿É´Ï´Ù.
+			// ë©”ì‹œê°€ ì‚¬ìš©í•˜ëŠ” ì¬ì§ˆì˜ ì´ë¦„ì„ ì½ì–´ì˜µë‹ˆë‹¤.
 			mesh->materialName = Utils::ToWString(file->Read<string>());
 
-			//VertexData ¸Ş½ÃÀÇ Á¤Á¡ µ¥ÀÌÅÍ¸¦ ÀĞ¾î¿É´Ï´Ù.
+			//VertexData ë©”ì‹œì˜ ì •ì  ë°ì´í„°ë¥¼ ì½ì–´ì˜µë‹ˆë‹¤.
 			{
-				const uint32 count = file->Read<uint32>(); // Á¤Á¡ÀÇ °³¼ö¸¦ ÀĞ¾î¿É´Ï´Ù.
-				vector<ModelVertexType> vertices;// Á¤Á¡ µ¥ÀÌÅÍ¸¦ ÀúÀåÇÒ º¤ÅÍ¸¦ »ı¼ºÇÕ´Ï´Ù.
+				const uint32 count = file->Read<uint32>(); // ì •ì ì˜ ê°œìˆ˜ë¥¼ ì½ì–´ì˜µë‹ˆë‹¤.
+				vector<ModelVertexType> vertices;// ì •ì  ë°ì´í„°ë¥¼ ì €ì¥í•  ë²¡í„°ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
 				vertices.resize(count);
 
-				void* data = vertices.data();// Á¤Á¡ µ¥ÀÌÅÍ¸¦ ÀĞ¾î¿É´Ï´Ù.
+				void* data = vertices.data();// ì •ì  ë°ì´í„°ë¥¼ ì½ì–´ì˜µë‹ˆë‹¤.
 				file->Read(&data, sizeof(ModelVertexType) * count);
-				mesh->geometry->AddVertices(vertices);// ÀĞ¾î¿Â Á¤Á¡ µ¥ÀÌÅÍ¸¦ ¸Ş½Ã¿¡ Ãß°¡ÇÕ´Ï´Ù.
+				mesh->geometry->AddVertices(vertices);// ì½ì–´ì˜¨ ì •ì  ë°ì´í„°ë¥¼ ë©”ì‹œì— ì¶”ê°€í•©ë‹ˆë‹¤.
 
 			}
 
-			//IndexData ¸Ş½ÃÀÇ ÀÎµ¦½º µ¥ÀÌÅÍ¸¦ ÀĞ¾î¿É´Ï´Ù.
+			//IndexData ë©”ì‹œì˜ ì¸ë±ìŠ¤ ë°ì´í„°ë¥¼ ì½ì–´ì˜µë‹ˆë‹¤.
 			{
-				const uint32 count = file->Read<uint32>();// ÀÎµ¦½ºÀÇ °³¼ö¸¦ ÀĞ¾î¿É´Ï´Ù.
+				const uint32 count = file->Read<uint32>();// ì¸ë±ìŠ¤ì˜ ê°œìˆ˜ë¥¼ ì½ì–´ì˜µë‹ˆë‹¤.
 
 				vector<uint32> indices;
-				indices.resize(count);// ÀÎµ¦½º µ¥ÀÌÅÍ¸¦ ÀúÀåÇÒ º¤ÅÍ¸¦ »ı¼ºÇÕ´Ï´Ù.
+				indices.resize(count);// ì¸ë±ìŠ¤ ë°ì´í„°ë¥¼ ì €ì¥í•  ë²¡í„°ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
 
-				void* data = indices.data();// ÀÎµ¦½º µ¥ÀÌÅÍ¸¦ ÀĞ¾î¿É´Ï´Ù.
+				void* data = indices.data();// ì¸ë±ìŠ¤ ë°ì´í„°ë¥¼ ì½ì–´ì˜µë‹ˆë‹¤.
 				file->Read(&data, sizeof(uint32) * count);
-				mesh->geometry->AddIndices(indices);// ÀĞ¾î¿Â ÀÎµ¦½º µ¥ÀÌÅÍ¸¦ ¸Ş½Ã¿¡ Ãß°¡ÇÕ´Ï´Ù.
+				mesh->geometry->AddIndices(indices);// ì½ì–´ì˜¨ ì¸ë±ìŠ¤ ë°ì´í„°ë¥¼ ë©”ì‹œì— ì¶”ê°€í•©ë‹ˆë‹¤.
 			}
 
-			mesh->CreateBuffers(); // ¸Ş½ÃÀÇ ¹öÆÛ¸¦ »ı¼ºÇÕ´Ï´Ù.
+			mesh->CreateBuffers(); // ë©”ì‹œì˜ ë²„í¼ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
 
-			_meshes.push_back(mesh); // Ã³¸®µÈ ¸Ş½Ã °´Ã¼¸¦ ¸ğµ¨ÀÇ ¸Ş½Ã ¸ñ·Ï¿¡ Ãß°¡ÇÕ´Ï´Ù.
+			_meshes.push_back(mesh); // ì²˜ë¦¬ëœ ë©”ì‹œ ê°ì²´ë¥¼ ëª¨ë¸ì˜ ë©”ì‹œ ëª©ë¡ì— ì¶”ê°€í•©ë‹ˆë‹¤.
 		}
 	}
 
-	// ¸ğµ¨ µ¥ÀÌÅÍ¿Í °ü·ÃµÈ Ä³½Ã Á¤º¸¸¦ ¹ÙÀÎµùÇÕ´Ï´Ù.
+	// ëª¨ë¸ ë°ì´í„°ì™€ ê´€ë ¨ëœ ìºì‹œ ì •ë³´ë¥¼ ë°”ì¸ë”©í•©ë‹ˆë‹¤.
 	BindCacheInfo();
 }
 
 void Model::ReadAnimation(wstring filename, AnimationState state)
 {
-    wstring fullPath = _modelPath + filename + L".clip"; // ÆÄÀÏÀÇ ÀüÃ¼ °æ·Î¸¦ »ı¼º
+    wstring fullPath = _modelPath + filename + L".clip"; // íŒŒì¼ì˜ ì „ì²´ ê²½ë¡œë¥¼ ìƒì„±
 
     shared_ptr<FileUtils> file = make_shared<FileUtils>();
-    file->Open(fullPath, FileMode::Read); // .clip ÆÄÀÏÀ» ÀĞ±â ¸ğµå·Î ¿±´Ï´Ù.
+    file->Open(fullPath, FileMode::Read); // .clip íŒŒì¼ì„ ì½ê¸° ëª¨ë“œë¡œ ì—½ë‹ˆë‹¤.
 
     shared_ptr<ModelAnimation> animation = make_shared<ModelAnimation>();
 
-    // ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ ÀÌ¸§°ú »óÅÂ¸¦ ¼³Á¤
+    // ì• ë‹ˆë©”ì´ì…˜ì˜ ì´ë¦„ê³¼ ìƒíƒœë¥¼ ì„¤ì •
     animation->animationName = AnimationStateToString(state);
     animation->state = state;
-    animation->name = Utils::ToWString(file->Read<string>()); // ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌ¸§
-    animation->duration = file->Read<float>();                // ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ ÃÑ Áö¼Ó ½Ã°£
-    animation->frameRate = file->Read<float>();               // ÃÊ´ç ÇÁ·¹ÀÓ ¼ö
-    animation->frameCount = file->Read<uint32>();             // ÀüÃ¼ ÇÁ·¹ÀÓ ¼ö
+    animation->name = Utils::ToWString(file->Read<string>()); // ì• ë‹ˆë©”ì´ì…˜ ì´ë¦„
+    animation->duration = file->Read<float>();                // ì• ë‹ˆë©”ì´ì…˜ì˜ ì´ ì§€ì† ì‹œê°„
+    animation->frameRate = file->Read<float>();               // ì´ˆë‹¹ í”„ë ˆì„ ìˆ˜
+    animation->frameCount = file->Read<uint32>();             // ì „ì²´ í”„ë ˆì„ ìˆ˜
 
-	// ¾Ö´Ï¸ŞÀÌ¼Ç Áö¼Ó½Ã°£ ÀúÀå
+	// ì• ë‹ˆë©”ì´ì…˜ ì§€ì†ì‹œê°„ ì €ì¥
 	_durations.insert(make_pair(state, animation->duration));
 
-    // Å°ÇÁ·¹ÀÓÀÇ ÃÑ °³¼ö
+    // í‚¤í”„ë ˆì„ì˜ ì´ ê°œìˆ˜
     uint32 keyframesCount = file->Read<uint32>();
 
     for (uint32 i = 0; i < keyframesCount; i++)
     {
-        // °³º° º»¿¡ ´ëÇÑ Å°ÇÁ·¹ÀÓ µ¥ÀÌÅÍ¸¦ ÀĞ°í ÀúÀå
+        // ê°œë³„ ë³¸ì— ëŒ€í•œ í‚¤í”„ë ˆì„ ë°ì´í„°ë¥¼ ì½ê³  ì €ì¥
         shared_ptr<ModelKeyframe> keyframe = make_shared<ModelKeyframe>();
-        keyframe->boneName = Utils::ToWString(file->Read<string>()); // º»ÀÇ ÀÌ¸§
+        keyframe->boneName = Utils::ToWString(file->Read<string>()); // ë³¸ì˜ ì´ë¦„
 
-        uint32 size = file->Read<uint32>(); // ÇØ´ç º»¿¡ ´ëÇÑ Å°ÇÁ·¹ÀÓ µ¥ÀÌÅÍÀÇ Å©±â
+        uint32 size = file->Read<uint32>(); // í•´ë‹¹ ë³¸ì— ëŒ€í•œ í‚¤í”„ë ˆì„ ë°ì´í„°ì˜ í¬ê¸°
 
         if (size > 0)
         {
-            keyframe->transforms.resize(size); // Å°ÇÁ·¹ÀÓ µ¥ÀÌÅÍ ¹è¿­ÀÇ Å©±â ¼³Á¤
+            keyframe->transforms.resize(size); // í‚¤í”„ë ˆì„ ë°ì´í„° ë°°ì—´ì˜ í¬ê¸° ì„¤ì •
             void* ptr = &keyframe->transforms[0];
-            file->Read(&ptr, sizeof(ModelKeyframeData) * size); // µ¥ÀÌÅÍ º¹»ç
+            file->Read(&ptr, sizeof(ModelKeyframeData) * size); // ë°ì´í„° ë³µì‚¬
         }
 
-        // º» ÀÌ¸§À» Å°·Î ÇÏ¿© Å°ÇÁ·¹ÀÓ µ¥ÀÌÅÍ¸¦ ¸Ê¿¡ Ãß°¡
+        // ë³¸ ì´ë¦„ì„ í‚¤ë¡œ í•˜ì—¬ í‚¤í”„ë ˆì„ ë°ì´í„°ë¥¼ ë§µì— ì¶”ê°€
         animation->keyframes[keyframe->boneName] = keyframe;
     }
 
-    _animations.push_back(animation); // ¾Ö´Ï¸ŞÀÌ¼ÇÀ» ¾Ö´Ï¸ŞÀÌ¼Ç ¸ñ·Ï¿¡ Ãß°¡
+    _animations.push_back(animation); // ì• ë‹ˆë©”ì´ì…˜ì„ ì• ë‹ˆë©”ì´ì…˜ ëª©ë¡ì— ì¶”ê°€
 }
 
 std::shared_ptr<Material> Model::GetMaterialByName(const wstring& name)
@@ -323,10 +323,10 @@ int Model::GetAnimationIndexByState(AnimationState state)
 	{
 		if (_animations[i]->state == state)
 		{
-			return static_cast<int>(i); // ÀÎµ¦½º¸¦ Á¤¼öÇüÀ¸·Î ¹İÈ¯
+			return static_cast<int>(i); // ì¸ë±ìŠ¤ë¥¼ ì •ìˆ˜í˜•ìœ¼ë¡œ ë°˜í™˜
 		}
 	}
-	return -1; // ÀÌ¸§¿¡ ÇØ´çÇÏ´Â ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ¾ø´Â °æ¿ì
+	return -1; // ì´ë¦„ì— í•´ë‹¹í•˜ëŠ” ì• ë‹ˆë©”ì´ì…˜ì´ ì—†ëŠ” ê²½ìš°
 }
 
 float Model::GetAnimationDuration(AnimationState state)
@@ -339,7 +339,7 @@ float Model::GetAnimationDuration(AnimationState state)
 		return iter->second;
 }
 
-// AnimationState °ªÀ» ¹®ÀÚ¿­·Î ¹İÈ¯
+// AnimationState ê°’ì„ ë¬¸ìì—´ë¡œ ë°˜í™˜
 string Model::AnimationStateToString(AnimationState state)
 {
 	switch (state)
@@ -356,50 +356,50 @@ string Model::AnimationStateToString(AnimationState state)
 	case AnimationState::Die:   return "Die";
 	case AnimationState::Roar:   return "Roar";
 	case AnimationState::Aggro:   return "Aggro";
-		// ´Ù¸¥ »óÅÂ Ãß°¡ °¡´É
+		// ë‹¤ë¥¸ ìƒíƒœ ì¶”ê°€ ê°€ëŠ¥
 	default: return "Unknown";
 	}
 }
 
-// ¸ğµ¨ÀÇ ¸Ş½Ã¿Í º»¿¡ ´ëÇÑ ÂüÁ¶ Á¤º¸¸¦ ¹ÙÀÎµùÇÏ´Â ÇÔ¼ö
+// ëª¨ë¸ì˜ ë©”ì‹œì™€ ë³¸ì— ëŒ€í•œ ì°¸ì¡° ì •ë³´ë¥¼ ë°”ì¸ë”©í•˜ëŠ” í•¨ìˆ˜
 void Model::BindCacheInfo()
 {
-	// ¸Ş½Ã¿¡ ÀçÁú Á¤º¸¸¦ ¹ÙÀÎµùÇÕ´Ï´Ù.
+	// ë©”ì‹œì— ì¬ì§ˆ ì •ë³´ë¥¼ ë°”ì¸ë”©í•©ë‹ˆë‹¤.
 	for (const auto& mesh : _meshes)
 	{
-		if (mesh->material != nullptr) // ¸Ş½Ã¿¡ ÀÌ¹Ì ÀçÁúÀÌ ¹ÙÀÎµùµÇ¾î ÀÖ´Ù¸é, ´ÙÀ½ ¸Ş½Ã·Î ³Ñ¾î°©´Ï´Ù.
+		if (mesh->material != nullptr) // ë©”ì‹œì— ì´ë¯¸ ì¬ì§ˆì´ ë°”ì¸ë”©ë˜ì–´ ìˆë‹¤ë©´, ë‹¤ìŒ ë©”ì‹œë¡œ ë„˜ì–´ê°‘ë‹ˆë‹¤.
 			continue;
 
-		// ¸Ş½ÃÀÇ ÀÌ¸§À» ÅëÇØ ÇØ´çÇÏ´Â ÀçÁúÀ» Ã£¾Æ ¸Ş½Ã¿¡ ¹ÙÀÎµùÇÕ´Ï´Ù.
+		// ë©”ì‹œì˜ ì´ë¦„ì„ í†µí•´ í•´ë‹¹í•˜ëŠ” ì¬ì§ˆì„ ì°¾ì•„ ë©”ì‹œì— ë°”ì¸ë”©í•©ë‹ˆë‹¤.
 		mesh->material = GetMaterialByName(mesh->materialName);
 	}
 
-	// ¸Ş½Ã¿¡ º» Á¤º¸¸¦ ¹ÙÀÎµùÇÕ´Ï´Ù.
+	// ë©”ì‹œì— ë³¸ ì •ë³´ë¥¼ ë°”ì¸ë”©í•©ë‹ˆë‹¤.
 	for (const auto& mesh : _meshes)
 	{
-		if (mesh->bone != nullptr) // ¸Ş½Ã¿¡ ÀÌ¹Ì º»ÀÌ ¹ÙÀÎµùµÇ¾î ÀÖ´Ù¸é, ´ÙÀ½ ¸Ş½Ã·Î ³Ñ¾î°©´Ï´Ù.
+		if (mesh->bone != nullptr) // ë©”ì‹œì— ì´ë¯¸ ë³¸ì´ ë°”ì¸ë”©ë˜ì–´ ìˆë‹¤ë©´, ë‹¤ìŒ ë©”ì‹œë¡œ ë„˜ì–´ê°‘ë‹ˆë‹¤.
 			continue;
 
-		// ¸Ş½Ã°¡ ÂüÁ¶ÇÏ´Â º»ÀÇ ÀÎµ¦½º¸¦ ÅëÇØ ÇØ´ç º»À» Ã£¾Æ ¸Ş½Ã¿¡ ¹ÙÀÎµùÇÕ´Ï´Ù.
+		// ë©”ì‹œê°€ ì°¸ì¡°í•˜ëŠ” ë³¸ì˜ ì¸ë±ìŠ¤ë¥¼ í†µí•´ í•´ë‹¹ ë³¸ì„ ì°¾ì•„ ë©”ì‹œì— ë°”ì¸ë”©í•©ë‹ˆë‹¤.
 		mesh->bone = GetBoneByIndex(mesh->boneIndex);
 	}
 
-	// º» ±¸Á¶ÀÇ °èÃş Á¤º¸¸¦ ¼³Á¤ÇÕ´Ï´Ù.
-	if (_root == nullptr && !_bones.empty()) // ·çÆ® º»ÀÌ ¼³Á¤µÇÁö ¾Ê¾Ò°í, º»ÀÌ ÇÏ³ª ÀÌ»ó ÀÖ´Â °æ¿ì
+	// ë³¸ êµ¬ì¡°ì˜ ê³„ì¸µ ì •ë³´ë¥¼ ì„¤ì •í•©ë‹ˆë‹¤.
+	if (_root == nullptr && !_bones.empty()) // ë£¨íŠ¸ ë³¸ì´ ì„¤ì •ë˜ì§€ ì•Šì•˜ê³ , ë³¸ì´ í•˜ë‚˜ ì´ìƒ ìˆëŠ” ê²½ìš°
 	{
-		_root = _bones[0]; // Ã¹ ¹øÂ° º»À» ·çÆ® º»À¸·Î ¼³Á¤ÇÕ´Ï´Ù.
+		_root = _bones[0]; // ì²« ë²ˆì§¸ ë³¸ì„ ë£¨íŠ¸ ë³¸ìœ¼ë¡œ ì„¤ì •í•©ë‹ˆë‹¤.
 
 		for (const auto& bone : _bones)
 		{
-			if (bone->parentIndex >= 0) // ºÎ¸ğ º»ÀÌ ÀÖ´Â °æ¿ì
+			if (bone->parentIndex >= 0) // ë¶€ëª¨ ë³¸ì´ ìˆëŠ” ê²½ìš°
 			{
-				// ºÎ¸ğ º»ÀÇ ÀÎµ¦½º¸¦ ÅëÇØ ºÎ¸ğ º»À» Ã£¾Æ ¼³Á¤ÇÏ°í, ºÎ¸ğ º»ÀÇ ÀÚ½Ä ¸ñ·Ï¿¡ ÇöÀç º»À» Ãß°¡ÇÕ´Ï´Ù.
+				// ë¶€ëª¨ ë³¸ì˜ ì¸ë±ìŠ¤ë¥¼ í†µí•´ ë¶€ëª¨ ë³¸ì„ ì°¾ì•„ ì„¤ì •í•˜ê³ , ë¶€ëª¨ ë³¸ì˜ ìì‹ ëª©ë¡ì— í˜„ì¬ ë³¸ì„ ì¶”ê°€í•©ë‹ˆë‹¤.
 				bone->parent = _bones[bone->parentIndex];
 				bone->parent->children.push_back(bone);
 			}
 			else
 			{
-				// ºÎ¸ğ º»ÀÌ ¾ø´Â °æ¿ì(·çÆ® º»)
+				// ë¶€ëª¨ ë³¸ì´ ì—†ëŠ” ê²½ìš°(ë£¨íŠ¸ ë³¸)
 				bone->parent = nullptr;
 			}
 		}
@@ -408,19 +408,19 @@ void Model::BindCacheInfo()
 
 void Model::AddDummyBoneAndAttach(ModelMesh& mesh, const wstring& targetBoneName, const wstring& dummyBoneName)
 {
-	// Å¸°Ù º» °Ë»ö
+	// íƒ€ê²Ÿ ë³¸ ê²€ìƒ‰
 	shared_ptr<ModelBone> targetBone = nullptr;
 
 	targetBone = GetBoneByName(targetBoneName);
 
 	if (targetBone)
 	{
-		// ´õ¹Ì º» Ãß°¡
-		Matrix dummyTransform = Matrix::CreateTranslation(0.1f, 0.0f, 0.0f); // ¼Õ ¾ÕÂÊÀ¸·Î ¹èÄ¡
+		// ë”ë¯¸ ë³¸ ì¶”ê°€
+		Matrix dummyTransform = Matrix::CreateTranslation(0.1f, 0.0f, 0.0f); // ì† ì•ìª½ìœ¼ë¡œ ë°°ì¹˜
 		auto dummyBone = targetBone->AddDummyBone(dummyBoneName, dummyTransform, GetBoneCount());
 
-		// `ModelMesh`¿¡ ´õ¹Ì º» ¿¬°á
-		mesh.AttachToDummyBone(dummyBone); // ¸¶Áö¸· ÀÚ½ÄÀÌ »õ·Î Ãß°¡µÈ ´õ¹Ì º»
+		// `ModelMesh`ì— ë”ë¯¸ ë³¸ ì—°ê²°
+		mesh.AttachToDummyBone(dummyBone); // ë§ˆì§€ë§‰ ìì‹ì´ ìƒˆë¡œ ì¶”ê°€ëœ ë”ë¯¸ ë³¸
 		mesh.CreateBuffers();
 
 		shared_ptr<ModelMesh> meshPtr = make_shared<ModelMesh>(mesh);

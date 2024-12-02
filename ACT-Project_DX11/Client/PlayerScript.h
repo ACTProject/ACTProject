@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "MonoBehaviour.h"
 
 class Model;
@@ -30,15 +30,15 @@ private:
 	float _FPS;
 
 	// Attack
-	int _attackStage = 0; // ÇöÀç °ø°İ ´Ü°è (0: Idle, 1~4: ¿¬¼Ó °ø°İ ´Ü°è)
-	bool _isAttacking = false; // °ø°İ ÁßÀÎÁö ¿©ºÎ
-	float _attackCooldown = 0.f; // °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ÃÖ¼Ò ½ÇÇà ½Ã°£
-	float _attackTimer = 0.0f; // ÇöÀç °ø°İ ´Ü°èÀÇ °æ°ú ½Ã°£
+	int _attackStage = 0; // í˜„ì¬ ê³µê²© ë‹¨ê³„ (0: Idle, 1~4: ì—°ì† ê³µê²© ë‹¨ê³„)
+	bool _isAttacking = false; // ê³µê²© ì¤‘ì¸ì§€ ì—¬ë¶€
+	float _attackCooldown = 0.f; // ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ìµœì†Œ ì‹¤í–‰ ì‹œê°„
+	float _attackTimer = 0.0f; // í˜„ì¬ ê³µê²© ë‹¨ê³„ì˜ ê²½ê³¼ ì‹œê°„
 
-	float _attackDurations[4]; // °¢ °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç Áö¼Ó ½Ã°£ (ÃÊ)
+	float _attackDurations[4]; // ê° ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì§€ì† ì‹œê°„ (ì´ˆ)
 	float _currentDuration = 0.f;
 
-	bool _isPlayeringAttackAnimation = false; // °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı ÁßÀÎÁö ¿©ºÎ È®ÀÎ
+	bool _isPlayeringAttackAnimation = false; // ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ ì¤‘ì¸ì§€ ì—¬ë¶€ í™•ì¸
 	AnimationState _currentAnimationState = AnimationState::Idle;
 };
 

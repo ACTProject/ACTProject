@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Slider.h"
 #include "pch.h"
 #include "Slider.h"
@@ -17,7 +17,7 @@ void Slider::Update()
 {
 	ImGui::SliderFloat("SliderTest", &_uvRatio, 0.0f, 1.0f);
 
-	// ÀÌ ºÎºÐÀº ³ªÁß¿¡ µ¥¹ÌÁö Ã³¸®µÉ ¶§ µ¥¹ÌÁö°¡ µé¾î¿À¸é È£ÃâµÇ´Â ÇÔ¼ö·Î ³ÖÀ» ¿¹Á¤.
+	// ì´ ë¶€ë¶„ì€ ë‚˜ì¤‘ì— ë°ë¯¸ì§€ ì²˜ë¦¬ë  ë•Œ ë°ë¯¸ì§€ê°€ ë“¤ì–´ì˜¤ë©´ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜ë¡œ ë„£ì„ ì˜ˆì •.
 	auto go = _gameObject.lock();
 	Vec3 vecScale = go->GetTransform()->GetLocalScale();
 	go->GetTransform()->SetLocalScale(Vec3(_maxRatio * _uvRatio, vecScale.y, vecScale.z));

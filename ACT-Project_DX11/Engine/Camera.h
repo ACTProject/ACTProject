@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include "Component.h"
 
 enum class ProjectionType
 {
-	Perspective, // ¿ø±Ù Åõ¿µ
-	Orthographic, // Á÷±³ Åõ¿µ
+	Perspective, // ì›ê·¼ íˆ¬ì˜
+	Orthographic, // ì§êµ íˆ¬ì˜
 };
 
 class Camera :  public Component
@@ -24,7 +24,7 @@ public:
 	virtual void Update() override;
 	void UpdateCameraWithMouseInput();
 	void UpdateMatrix();
-	void FreeCameraMovement(); // µğ¹ö±× ¸ğµå½Ã Ä«¸Ş¶ó ÀÌµ¿
+	void FreeCameraMovement(); // ë””ë²„ê·¸ ëª¨ë“œì‹œ ì¹´ë©”ë¼ ì´ë™
 
 	void SetProjectionType(ProjectionType type) { _type = type; }
 	ProjectionType GetProjectionType() { return _type; }
@@ -78,22 +78,22 @@ private:
 	float _width = 0.f;
 	float _height = 0.f;
 
-	//Ä«¸Ş¶ó°¡ ÇÃ·¹ÀÌ¾î¸¦ Áß½ÉÀ¸·Î ¾î´À Á¤µµ ¶³¾îÁø À§Ä¡¿¡ ÀÖÀ»Áö Á¤ÇÏ´Â À§Ä¡ º¤ÅÍ
+	//ì¹´ë©”ë¼ê°€ í”Œë ˆì´ì–´ë¥¼ ì¤‘ì‹¬ìœ¼ë¡œ ì–´ëŠ ì •ë„ ë–¨ì–´ì§„ ìœ„ì¹˜ì— ìˆì„ì§€ ì •í•˜ëŠ” ìœ„ì¹˜ ë²¡í„°
 	Vec3 _cameraOffset = Vec3(0.f);
 
-	float _yaw = 0.0f;				// ÁÂ¿ì È¸Àü °¢µµ
-	float _pitch = 0.0f;			// »óÇÏ È¸Àü °¢µµ
-	float _cameraDistance = 5.0f;	// ÇÃ·¹ÀÌ¾î¿Í Ä«¸Ş¶ó °£ÀÇ °Å¸®
-	float _sensitivity = 0.005f;	// ¸¶¿ì½º °¨µµ
+	float _yaw = 0.0f;				// ì¢Œìš° íšŒì „ ê°ë„
+	float _pitch = 0.0f;			// ìƒí•˜ íšŒì „ ê°ë„
+	float _cameraDistance = 5.0f;	// í”Œë ˆì´ì–´ì™€ ì¹´ë©”ë¼ ê°„ì˜ ê±°ë¦¬
+	float _sensitivity = 0.005f;	// ë§ˆìš°ìŠ¤ ê°ë„
 
-	float _normalSpeed = 15.0f;  // ÀÏ¹İ ÀÌµ¿ ¼Óµµ
-	float _fastSpeed = 100.0f;   // ºü¸¥ ÀÌµ¿ ¼Óµµ (Shift Å°)
+	float _normalSpeed = 15.0f;  // ì¼ë°˜ ì´ë™ ì†ë„
+	float _fastSpeed = 100.0f;   // ë¹ ë¥¸ ì´ë™ ì†ë„ (Shift í‚¤)
 
-	// µğ¹ö±ë ¸ğµå ÀÌÀü »óÅÂ ÀúÀå
-	bool _debugInitialized = false;			// µğ¹ö±ë ¸ğµå ÃÊ±âÈ­ ¿©ºÎ
+	// ë””ë²„ê¹… ëª¨ë“œ ì´ì „ ìƒíƒœ ì €ì¥
+	bool _debugInitialized = false;			// ë””ë²„ê¹… ëª¨ë“œ ì´ˆê¸°í™” ì—¬ë¶€
 
-	// Ä«¸Ş¶ó À§Ä¡
+	// ì¹´ë©”ë¼ ìœ„ì¹˜
 	Vec3 _cameraPosition = Vec3(0.f);
-	// ÃÊÁ¡ À§Ä¡
+	// ì´ˆì  ìœ„ì¹˜
 	Vec3 _focusPosition = Vec3(0.f);
 };

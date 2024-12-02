@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Light.h"
 
 Light::Light() : Component(ComponentType::Light)

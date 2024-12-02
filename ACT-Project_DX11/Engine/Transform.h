@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Component.h"
 
 class Transform : public Component
@@ -36,7 +36,7 @@ public:
 	Vec3 GetPosition() { return _position; }
 	void SetPosition(const Vec3& position);
 
-	// ÇöÀç À§Ä¡¿¡ offset º¤ÅÍ¸¦ ´õÇÔ
+	// í˜„ì¬ ìœ„ì¹˜ì— offset ë²¡í„°ë¥¼ ë”í•¨
 	void Translate(const Vec3& offset) { SetPosition(_position + offset); }
 
 	Vec3 GetRight();
@@ -46,7 +46,7 @@ public:
 	Matrix GetWorldMatrix() { return _matWorld; }
 	void SetWorldMatrix(Matrix matWorld) { _matWorld = matWorld; }
 
-	// °èÃş °ü°è
+	// ê³„ì¸µ ê´€ê³„
 	bool HasParent() { return _parent != nullptr; }
 	
 	shared_ptr<Transform> GetParent() { return _parent; }
@@ -60,7 +60,7 @@ private:
 	Vec3 _localRotation = { 0.f, 0.f, 0.f };
 	Vec3 _localPosition = { 0.f, 0.f, 0.f };
 	
-	// ¿ÀºêÁ§Æ® ·ÎÄÃ Áß½ÉÁÂÇ¥ ¿Å±â´Â º¯¼ö
+	// ì˜¤ë¸Œì íŠ¸ ë¡œì»¬ ì¤‘ì‹¬ì¢Œí‘œ ì˜®ê¸°ëŠ” ë³€ìˆ˜
 	Vec3 _localCenter = { 0.f, 0.f, 0.f };
 	//Matrix _matCenter = Matrix::Identity;
 

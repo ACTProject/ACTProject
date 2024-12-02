@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "MapManager.h"
 #include "MeshRenderer.h"
 #include "ModelRenderer.h"
@@ -31,7 +31,7 @@ void MapManager::Update()
 	if (DEBUG->IsDebugEnabled())
 	{
 
-		// ¿ÀºêÁ§Æ® »èÁ¦ ÇÔ¼ö.
+		// ì˜¤ë¸Œì íŠ¸ ì‚­ì œ í•¨ìˆ˜.
 		if (_mapSelectObj != nullptr && InputManager::GetInstance()->GetButtonDown(KEY_TYPE::DELETEKEY))
 		{
 			RemoveMapObj(_mapSelectObj);
@@ -57,7 +57,7 @@ void MapManager::Update()
 
 
 
-		// ½Ç½Ã°£ Å¬¸¯ ½Ã ÇØ´ç À§Ä¡¿¡ ¿ÀºêÁ§Æ® ¹èÄ¡ ÇÏ´Â ÄÚµå.
+		// ì‹¤ì‹œê°„ í´ë¦­ ì‹œ í•´ë‹¹ ìœ„ì¹˜ì— ì˜¤ë¸Œì íŠ¸ ë°°ì¹˜ í•˜ëŠ” ì½”ë“œ.
 		if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
 		{
 			POINT screenPt = INPUT->GetMousePos();
@@ -65,7 +65,7 @@ void MapManager::Update()
 		}
 
 
-		// ¼±ÅÃÇÑ ¿ÀºêÁ§Æ® Æ®·£½ºÆû º¯°æ ÇÔ¼ö.
+		// ì„ íƒí•œ ì˜¤ë¸Œì íŠ¸ íŠ¸ëœìŠ¤í¼ ë³€ê²½ í•¨ìˆ˜.
 		if (_mapSelectObj != nullptr && InputManager::GetInstance()->GetButton(KEY_TYPE::RBUTTON) && _transformSelect == 0)
 		{
 			ChangeMapObjPosition();
@@ -250,7 +250,7 @@ void MapManager::ChangeMapObjRotation()
 }
 
 
-// TODO : ½ºÄÉÀÏ°ªÀ» ¹Ù²Ü ¶§, Äİ¶óÀÌ´õµµ °°ÀÌ Ä¿Áö°Ô ÇÏ´Â ±â´É ÇÊ¿ä.
+// TODO : ìŠ¤ì¼€ì¼ê°’ì„ ë°”ê¿€ ë•Œ, ì½œë¼ì´ë”ë„ ê°™ì´ ì»¤ì§€ê²Œ í•˜ëŠ” ê¸°ëŠ¥ í•„ìš”.
 void MapManager::ChangeMapObjScale()
 {
 	Vec3 scale = { 0.0f,0.0f,0.0f };
@@ -511,7 +511,7 @@ void MapManager::UpdateMapObjTransform()
 
 
 
-// TODO : ¸Ê ¿ÀºêÁ§Æ®°¡ ´Ü ÇÑ°³µµ ¾øÀ¸¸é ÆÄÀÏ¿¡ ÀúÀåµÇÁö ¾ÊÀ½.
+// TODO : ë§µ ì˜¤ë¸Œì íŠ¸ê°€ ë‹¨ í•œê°œë„ ì—†ìœ¼ë©´ íŒŒì¼ì— ì €ì¥ë˜ì§€ ì•ŠìŒ.
 void MapManager::RemoveMapObj(shared_ptr<GameObject> obj)
 {
 	auto it = std::find(_mapObjList.begin(), _mapObjList.end(), obj);
@@ -522,6 +522,6 @@ void MapManager::RemoveMapObj(shared_ptr<GameObject> obj)
 
 	SCENE->GetCurrentScene()->Remove(obj);
 
-	// ¿©±â¼­ ¸®¼ÂÇÏ±âÀü¿¡ ÄÄÆ÷³ÍÆ®µé ÀüºÎ Áö¿ö¾ß µÉ ¼öµµ.
+	// ì—¬ê¸°ì„œ ë¦¬ì…‹í•˜ê¸°ì „ì— ì»´í¬ë„ŒíŠ¸ë“¤ ì „ë¶€ ì§€ì›Œì•¼ ë  ìˆ˜ë„.
 	obj.reset();
 }

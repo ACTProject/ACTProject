@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "IExecute.h"
 
 class StaticMeshDemo : public IExecute

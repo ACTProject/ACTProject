@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Camera.h"
 #include "CameraScript.h"
 #include "Transform.h"
@@ -15,7 +15,7 @@ void CameraScript::Update()
 
 void CameraScript::ProcessInput()
 {
-	if (INPUT->GetButtonDown(KEY_TYPE::KEY_F1)) // F1 디버그 모드 ON/OFF
+	if (INPUT->GetButtonDown(KEY_TYPE::KEY_F1)) // F1 ?붾쾭洹?紐⑤뱶 ON/OFF
 	{
 		bool currentState = DEBUG->IsDebugEnabled();
 		DEBUG->EnableDebug(!currentState);

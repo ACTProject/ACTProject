@@ -1,38 +1,38 @@
-#include <coroutine>
+ï»¿#include <coroutine>
 #include <thread>
 
 #pragma once
 
-// co_await(°ª ¹İÈ¯x ÁßÁö), co_yield(°ª ¹İÈ¯o ÁßÁö), co_return(ÄÚ·çÆ¾ ÇÔ¼ö Á¾·á)
+// co_await(ê°’ ë°˜í™˜x ì¤‘ì§€), co_yield(ê°’ ë°˜í™˜o ì¤‘ì§€), co_return(ì½”ë£¨í‹´ í•¨ìˆ˜ ì¢…ë£Œ)
 class MyCoroutine
 {
 public:
-	// promise_type: ÄÚ·çÆ¾ÀÇ »óÅÂ¸¦ °ü¸®ÇÏ°í, ÄÚ·çÆ¾À» Á¦¾îÇÏ´Â ¿ªÇÒÀ» ÇÔ
+	// promise_type: ì½”ë£¨í‹´ì˜ ìƒíƒœë¥¼ ê´€ë¦¬í•˜ê³ , ì½”ë£¨í‹´ì„ ì œì–´í•˜ëŠ” ì—­í• ì„ í•¨
 	struct promise_type
 	{
-		// ÄÚ·çÆ¾ °´Ã¼¸¦ ¹İÈ¯. promise_type°ú ¿¬°áµÈ ÄÚ·çÆ¾ ÇÚµé·¯¸¦ »ı¼º
+		// ì½”ë£¨í‹´ ê°ì²´ë¥¼ ë°˜í™˜. promise_typeê³¼ ì—°ê²°ëœ ì½”ë£¨í‹´ í•¸ë“¤ëŸ¬ë¥¼ ìƒì„±
 		MyCoroutine get_return_object() { return MyCoroutine{ std::coroutine_handle<promise_type>::from_promise(*this) }; }
 		
 
-		// ÄÚ·çÆ¾ÀÇ ÃÊ±â »óÅÂ¸¦ ÁöÁ¤. ÄÚ·çÆ¾À» ½ÇÇàÇÏ±â Àü¿¡ Ç×»ó Áß´ÜÇÏµµ·Ï ¼³Á¤
+		// ì½”ë£¨í‹´ì˜ ì´ˆê¸° ìƒíƒœë¥¼ ì§€ì •. ì½”ë£¨í‹´ì„ ì‹¤í–‰í•˜ê¸° ì „ì— í•­ìƒ ì¤‘ë‹¨í•˜ë„ë¡ ì„¤ì •
 		std::suspend_always initial_suspend() { return std::suspend_always{}; }
 
-		// ÄÚ·çÆ¾ÀÇ ÃÖÁ¾ »óÅÂ¸¦ ÁöÁ¤. ÄÚ·çÆ¾ÀÌ Á¾·áµÉ ¶§ Ç×»ó Áß´ÜÇÏµµ·Ï ¼³Á¤
+		// ì½”ë£¨í‹´ì˜ ìµœì¢… ìƒíƒœë¥¼ ì§€ì •. ì½”ë£¨í‹´ì´ ì¢…ë£Œë  ë•Œ í•­ìƒ ì¤‘ë‹¨í•˜ë„ë¡ ì„¤ì •
 		std::suspend_always final_suspend() noexcept { return std::suspend_always{}; }
 
-		// co_returnÀ» »ç¿ëÇÏ´Â °æ¿ì ±¸Çö
+		// co_returnì„ ì‚¬ìš©í•˜ëŠ” ê²½ìš° êµ¬í˜„
 		std::suspend_never return_void() { return std::suspend_never{}; }
 
 		void unhandled_exception() { std::exit(1); }
 	};
 	
-	// »ı¼ºÀÚ: promise_typeÀ¸·ÎºÎÅÍ »ı¼ºµÈ ÄÚ·çÆ¾ ÇÚµé·¯¸¦ ÀúÀå
+	// ìƒì„±ì: promise_typeìœ¼ë¡œë¶€í„° ìƒì„±ëœ ì½”ë£¨í‹´ í•¸ë“¤ëŸ¬ë¥¼ ì €ì¥
 	MyCoroutine(std::coroutine_handle<promise_type> handler) : _handler(handler) {}
 
-	// ¼Ò¸êÀÚ: ÇÚµé·¯°¡ À¯È¿ÇÏ¸é ÄÚ·çÆ¾ ÇÚµé·¯¸¦ ÆÄ±«
+	// ì†Œë©¸ì: í•¸ë“¤ëŸ¬ê°€ ìœ íš¨í•˜ë©´ ì½”ë£¨í‹´ í•¸ë“¤ëŸ¬ë¥¼ íŒŒê´´
 	~MyCoroutine() {}
 
-	// ÇÚµé·¯¸¦ ¿ÜºÎ¿¡¼­ °ü¸®ÇÒ ¼ö ÀÖµµ·Ï Á¦°ø
+	// í•¸ë“¤ëŸ¬ë¥¼ ì™¸ë¶€ì—ì„œ ê´€ë¦¬í•  ìˆ˜ ìˆë„ë¡ ì œê³µ
 	std::coroutine_handle<promise_type> GetHandler() { return _handler; }
 
 private:
@@ -47,7 +47,7 @@ struct AwaitableSleep
 	bool await_ready() const noexcept { return false; }
 	void await_suspend(std::coroutine_handle<> handle) const
 	{
-		// ÇÚµé·¯¸¦ ¾ÈÀüÇÏ°Ô Ä¸Ã³ÇÏ±â À§ÇØ shared_ptr »ç¿ë
+		// í•¸ë“¤ëŸ¬ë¥¼ ì•ˆì „í•˜ê²Œ ìº¡ì²˜í•˜ê¸° ìœ„í•´ shared_ptr ì‚¬ìš©
 		auto handlePtr = std::make_shared<std::coroutine_handle<>>(handle);
 
 		std::thread t([handle, d = duration]() {

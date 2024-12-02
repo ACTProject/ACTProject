@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CollisionManager.h"
 #include "BaseCollider.h"
 #include "Rigidbody.h"
@@ -8,7 +8,7 @@ void CollisionManager::Init()
 
 }
 
-// Ãæµ¹ °¨Áö ¹× Ã³¸®
+// ì¶©ëŒ ê°ì§€ ë° ì²˜ë¦¬
 void CollisionManager::Update()
 {
 	for (size_t i = 0; i < _colliders.size(); ++i)
@@ -18,7 +18,7 @@ void CollisionManager::Update()
 			auto colliderA = _colliders[i];
 			auto colliderB = _colliders[j];
 
-			// Ãæµ¹ °¨Áö
+			// ì¶©ëŒ ê°ì§€
 			if (colliderA->Intersects(colliderB))
 			{
 				HandleCollision(colliderA, colliderB);
@@ -41,36 +41,36 @@ void CollisionManager::AddRigidbody(shared_ptr<Rigidbody> rigidbody)
 
 void CollisionManager::HandleCollision(shared_ptr<BaseCollider> colliderA, shared_ptr<BaseCollider> colliderB)
 {
-	// Rigidbody °¡Á®¿À±â
+	// Rigidbody ê°€ì ¸ì˜¤ê¸°
 	auto rigidbodyA = colliderA->GetGameObject()->GetRigidbody();
 	auto rigidbodyB = colliderB->GetGameObject()->GetRigidbody();
 
-	// Rigidbody°¡ ¾øÀ¸¸é Ã³¸®ÇÏÁö ¾ÊÀ½
+	// Rigidbodyê°€ ì—†ìœ¼ë©´ ì²˜ë¦¬í•˜ì§€ ì•ŠìŒ
 	if (!rigidbodyA || !rigidbodyB)
 		return;
 
-	// Penetration Depth °è»ê
+	// Penetration Depth ê³„ì‚°
 	Vec3 penetrationDepth;
 	if (!colliderA->CalculatePenetraionDepth(colliderB, penetrationDepth))
 	{
-		return; // Ãæµ¹ÀÌ ¹ß»ıÇÏÁö ¾ÊÀ½
+		return; // ì¶©ëŒì´ ë°œìƒí•˜ì§€ ì•ŠìŒ
 	}
 
-	// Ãæµ¹ ¹æÇâ °è»ê
+	// ì¶©ëŒ ë°©í–¥ ê³„ì‚°
 	penetrationDepth.Normalize();
 	Vec3 collisionNormal = penetrationDepth;
 
-	// °£°İ À¯Áö ¼³Á¤
-	float minimumSeparation = 0.1f; // ¿ÀºêÁ§Æ® °£ ÃÖ¼Ò °£°İ
+	// ê°„ê²© ìœ ì§€ ì„¤ì •
+	float minimumSeparation = 0.1f; // ì˜¤ë¸Œì íŠ¸ ê°„ ìµœì†Œ ê°„ê²©
 	float penetrationLength = penetrationDepth.Length();
 
 	if (penetrationLength <= minimumSeparation)
 	{
-		// ÀÌ¹Ì ÃæºĞÇÑ °Å¸®°¡ À¯ÁöµÇ¸é ´õ ÀÌ»ó ¹Ğ¾î³»Áö ¾ÊÀ½
+		// ì´ë¯¸ ì¶©ë¶„í•œ ê±°ë¦¬ê°€ ìœ ì§€ë˜ë©´ ë” ì´ìƒ ë°€ì–´ë‚´ì§€ ì•ŠìŒ
 		return;
 	}
 
-	// Áú·® È®ÀÎ
+	// ì§ˆëŸ‰ í™•ì¸
 	float massA = rigidbodyA->GetMass();
 	float massB = rigidbodyB->GetMass();
 
@@ -83,7 +83,7 @@ void CollisionManager::HandleCollision(shared_ptr<BaseCollider> colliderA, share
 		ApplyForce(rigidbodyA, colliderA->GetColliderCenter(), colliderB->GetColliderCenter(), rigidbodyB->GetMass() - rigidbodyA->GetMass());
 	}
 
-	// Ãæµ¹ »óÅÂ ¼³Á¤
+	// ì¶©ëŒ ìƒíƒœ ì„¤ì •
 	colliderA->SetColliding(true);
 	colliderB->SetColliding(true);
 }
@@ -92,7 +92,7 @@ void CollisionManager::ApplyForce(shared_ptr<Rigidbody> rigidbody, const Vec3& t
 {
 	Vec3 collisionNormal = (target - source);
 	collisionNormal.Normalize();
-	Vec3 force = collisionNormal * massDifference * 10.0f; // ¹Ğ¸² °­µµ
+	Vec3 force = collisionNormal * massDifference * 10.0f; // ë°€ë¦¼ ê°•ë„
 	rigidbody->Addforce(force);
 }
 

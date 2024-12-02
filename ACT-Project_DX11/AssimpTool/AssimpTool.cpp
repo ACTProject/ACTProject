@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "AssimpTool.h"
 #include "Converter.h"
 

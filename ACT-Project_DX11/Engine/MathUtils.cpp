@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "MathUtils.h"
 
 float MathUtils::Random(float r1, float r2)

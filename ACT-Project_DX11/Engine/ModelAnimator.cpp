@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ModelAnimator.h"
 #include "Material.h"
 #include "ModelMesh.h"
@@ -34,13 +34,13 @@ void ModelAnimator::ChangeAnimation(AnimationState newState)
 {
 	int stateAsInt = static_cast<int>(newState);
 
-	if (_tweenDesc.curr.state != stateAsInt) // »õ·Î¿î »óÅÂÀÏ ¶§¸¸ ÀüÈ¯
+	if (_tweenDesc.curr.state != stateAsInt) // ìƒˆë¡œìš´ ìƒíƒœì¼ ë•Œë§Œ ì „í™˜
 	{
 		_tweenDesc.curr.state = stateAsInt;
-		_tweenDesc.curr.animIndex = _model->GetAnimationIndexByState(newState); // »óÅÂ¿¡ ¸Â´Â ¾Ö´Ï¸ŞÀÌ¼Ç ÀÎµ¦½º¸¦ °¡Á®¿È
-		_tweenDesc.tweenSumTime = 0; // Æ®À© ½ÃÀÛ
+		_tweenDesc.curr.animIndex = _model->GetAnimationIndexByState(newState); // ìƒíƒœì— ë§ëŠ” ì• ë‹ˆë©”ì´ì…˜ ì¸ë±ìŠ¤ë¥¼ ê°€ì ¸ì˜´
+		_tweenDesc.tweenSumTime = 0; // íŠ¸ìœˆ ì‹œì‘
 
-		// ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ º¯°æµÉ ¶§ Ã¹ ÇÁ·¹ÀÓ °­Á¦ ¼³Á¤
+		// ì• ë‹ˆë©”ì´ì…˜ì´ ë³€ê²½ë  ë•Œ ì²« í”„ë ˆì„ ê°•ì œ ì„¤ì •
 		{
 			_tweenDesc.curr.currFrame = 0;
 			_tweenDesc.curr.nextFrame = 1 % _model->GetAnimationByIndex(_tweenDesc.curr.animIndex)->frameCount;
@@ -59,16 +59,16 @@ void ModelAnimator::UpdateTweenData()
 {
 	TweenDesc& desc = _tweenDesc;
 
-	// ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ıÀ» À§ÇÑ ½Ã°£ ´©Àû
+	// ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒì„ ìœ„í•œ ì‹œê°„ ëˆ„ì 
 	desc.curr.sumTime += DT;
 	{
-		// ÇöÀç Àç»ı ÁßÀÎ ¾Ö´Ï¸ŞÀÌ¼Ç °¡Á®¿À±â
+		// í˜„ì¬ ì¬ìƒ ì¤‘ì¸ ì• ë‹ˆë©”ì´ì…˜ ê°€ì ¸ì˜¤ê¸°
 		shared_ptr<ModelAnimation> currentAnim = _model->GetAnimationByState(static_cast<AnimationState>(desc.curr.state));
 		if (currentAnim)
 		{
-			// ÇÁ·¹ÀÓ ´ç ½Ã°£ °è»ê (ÇÁ·¹ÀÓ·¹ÀÌÆ®¿Í Àç»ı ¼Óµµ °í·Á)
+			// í”„ë ˆì„ ë‹¹ ì‹œê°„ ê³„ì‚° (í”„ë ˆì„ë ˆì´íŠ¸ì™€ ì¬ìƒ ì†ë„ ê³ ë ¤)
 			float timePerFrame = 1 / (currentAnim->frameRate * desc.curr.speed);
-			// ´©Àû ½Ã°£ÀÌ ÇÁ·¹ÀÓ ´ç ½Ã°£À» ÃÊ°úÇÏ¸é ´ÙÀ½ ÇÁ·¹ÀÓÀ¸·Î
+			// ëˆ„ì  ì‹œê°„ì´ í”„ë ˆì„ ë‹¹ ì‹œê°„ì„ ì´ˆê³¼í•˜ë©´ ë‹¤ìŒ í”„ë ˆì„ìœ¼ë¡œ
 			if (desc.curr.sumTime >= timePerFrame)
 			{
 				desc.curr.sumTime = 0;
@@ -76,11 +76,11 @@ void ModelAnimator::UpdateTweenData()
 				desc.curr.nextFrame = (desc.curr.currFrame + 1) % currentAnim->frameCount;
 			}
 
-			// ´ÙÀ½ ÇÁ·¹ÀÓÀ¸·Î ³Ñ¾î°¡´Â ºñÀ² °è»ê
+			// ë‹¤ìŒ í”„ë ˆì„ìœ¼ë¡œ ë„˜ì–´ê°€ëŠ” ë¹„ìœ¨ ê³„ì‚°
 			desc.curr.ratio = (desc.curr.sumTime / timePerFrame);
 		}
 
-		// ´ÙÀ½ ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ¿¹¾à µÇ¾î ÀÖ´Ù¸é
+		// ë‹¤ìŒ ì• ë‹ˆë©”ì´ì…˜ì´ ì˜ˆì•½ ë˜ì–´ ìˆë‹¤ë©´
 		if (desc.next.animIndex >= 0)
 		{
 			desc.tweenSumTime += DT;
@@ -88,13 +88,13 @@ void ModelAnimator::UpdateTweenData()
 
 			if (desc.tweenRatio >= 1.f)
 			{
-				// ¾Ö´Ï¸ŞÀÌ¼Ç ±³Ã¼ ¼º°ø
+				// ì• ë‹ˆë©”ì´ì…˜ êµì²´ ì„±ê³µ
 				desc.curr = desc.next;
 				desc.ClearNextAnim();
 			}
 			else
 			{
-				// ±³Ã¼Áß
+				// êµì²´ì¤‘
 				shared_ptr<ModelAnimation> nextAnim = _model->GetAnimationByState(static_cast<AnimationState>(desc.next.state));
 				desc.next.sumTime += DT;
 
@@ -124,7 +124,7 @@ void ModelAnimator::RenderSingle()
 
 	ImGui::InputFloat("Speed", &_tweenDesc.curr.speed, 0.5f, 4.f);
 
-	// ÇöÀç ÇÁ·¹ÀÓ Á¤º¸¸¦ ·»´õ·¯¿¡ Àü´Ş
+	// í˜„ì¬ í”„ë ˆì„ ì •ë³´ë¥¼ ë Œë”ëŸ¬ì— ì „ë‹¬
 	_shader->PushTweenData(GetTweenDesc());
 
 	// GlobalData
@@ -138,21 +138,21 @@ void ModelAnimator::RenderSingle()
 	if (lightObj)
 		_shader->PushLightData(lightObj->GetLight()->GetLightDesc());
 
-	// SRV¸¦ ÅëÇØ Á¤º¸ Àü´Ş
+	// SRVë¥¼ í†µí•´ ì •ë³´ ì „ë‹¬
 	_shader->GetSRV("TransformMap")->SetResource(_srv.Get());
 
-	// º» µ¥ÀÌÅÍ ÁØºñ
+	// ë³¸ ë°ì´í„° ì¤€ë¹„
 	BoneDesc boneDesc;
 
-	// ¸ğµ¨ÀÇ º» °¹¼ö °¡Á®¿À±â
+	// ëª¨ë¸ì˜ ë³¸ ê°¯ìˆ˜ ê°€ì ¸ì˜¤ê¸°
 	const uint32 boneCount = _model->GetBoneCount();
 	for (uint32 i = 0; i < boneCount; i++)
 	{
 		shared_ptr<ModelBone> bone = _model->GetBoneByIndex(i);
-		// °¢ º»ÀÇ º¯È¯ Á¤º¸¸¦ º» ¼³¸íÀÚ¿¡ ÀúÀå
+		// ê° ë³¸ì˜ ë³€í™˜ ì •ë³´ë¥¼ ë³¸ ì„¤ëª…ìì— ì €ì¥
 		boneDesc.transforms[i] = bone->transform;
 	}
-	// ·»´õ·¯¿¡ º» µ¥ÀÌÅÍ Àü´Ş
+	// ë Œë”ëŸ¬ì— ë³¸ ë°ì´í„° ì „ë‹¬
 	_shader->PushBoneData(boneDesc);
 
 	const auto& meshes = _model->GetMeshes();
@@ -184,10 +184,10 @@ void ModelAnimator::RenderSingle()
 
 void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 {
-	// ¸ğµ¨ÀÌ ¼³Á¤µÇÁö ¾Ê¾Ò´Ù¸é ¾÷µ¥ÀÌÆ®¸¦ ÁøÇàÇÏÁö ¾ÊÀ½
+	// ëª¨ë¸ì´ ì„¤ì •ë˜ì§€ ì•Šì•˜ë‹¤ë©´ ì—…ë°ì´íŠ¸ë¥¼ ì§„í–‰í•˜ì§€ ì•ŠìŒ
 	if (_model == nullptr)
 		return;
-	// ÅØ½ºÃ³°¡ ¾øÀ¸¸é »ı¼º
+	// í…ìŠ¤ì²˜ê°€ ì—†ìœ¼ë©´ ìƒì„±
 	if (_texture == nullptr)
 		CreateTexture();
 
@@ -202,7 +202,7 @@ void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 	if (lightObj)
 		_shader->PushLightData(lightObj->GetLight()->GetLightDesc());
 
-	// SRV¸¦ ÅëÇØ Á¤º¸ Àü´Ş
+	// SRVë¥¼ í†µí•´ ì •ë³´ ì „ë‹¬
 	_shader->GetSRV("TransformMap")->SetResource(_srv.Get());
 
 	// Bones
@@ -249,7 +249,7 @@ void ModelAnimator::RenderCollider()
 		if (collider)
 		{
 			collider->RenderCollider(_shader);
-			// ±âº» ÅäÆú·ÎÁö º¹±¸
+			// ê¸°ë³¸ í† í´ë¡œì§€ ë³µêµ¬
 			DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		}
 	}
@@ -276,7 +276,7 @@ void ModelAnimator::CreateTexture()
 		desc.Width = MAX_MODEL_TRANSFORMS * 4;
 		desc.Height = MAX_MODEL_KEYFRAMES;
 		desc.ArraySize = _model->GetAnimationCount();
-		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT; // 16¹ÙÀÌÆ®
+		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT; // 16ë°”ì´íŠ¸
 		desc.Usage = D3D11_USAGE_IMMUTABLE;
 		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 		desc.MipLevels = 1;
@@ -286,7 +286,7 @@ void ModelAnimator::CreateTexture()
 		const uint32 pageSize = dataSize * MAX_MODEL_KEYFRAMES;
 		void* mallocPtr = ::malloc(pageSize * _model->GetAnimationCount());
 
-		// ÆÄÆíÈ­µÈ µ¥ÀÌÅÍ¸¦ Á¶¸³ÇÑ´Ù.
+		// íŒŒí¸í™”ëœ ë°ì´í„°ë¥¼ ì¡°ë¦½í•œë‹¤.
 		for (uint32 c = 0; c < _model->GetAnimationCount(); c++)
 		{
 			uint32 startOffset = c * pageSize;
@@ -300,7 +300,7 @@ void ModelAnimator::CreateTexture()
 			}
 		}
 
-		// ¸®¼Ò½º ¸¸µé±â
+		// ë¦¬ì†ŒìŠ¤ ë§Œë“¤ê¸°
 		vector<D3D11_SUBRESOURCE_DATA> subResources(_model->GetAnimationCount());
 
 		for (uint32 c = 0; c < _model->GetAnimationCount(); c++)
@@ -333,21 +333,21 @@ void ModelAnimator::CreateTexture()
 
 void ModelAnimator::CreateAnimationTransform(uint32 index)
 {
-	// ÀÓ½Ã º» º¯È¯ º¤ÅÍ »ı¼º
+	// ì„ì‹œ ë³¸ ë³€í™˜ ë²¡í„° ìƒì„±
 	vector<Matrix> tempAnimBoneTransforms(MAX_MODEL_TRANSFORMS, Matrix::Identity);
-	// ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ °¡Á®¿À±â
+	// ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„° ê°€ì ¸ì˜¤ê¸°
 	shared_ptr<ModelAnimation> animation = _model->GetAnimationByIndex(index);
-	// ÇÁ·¹ÀÓ ¹× º» ·çÇÁ
+	// í”„ë ˆì„ ë° ë³¸ ë£¨í”„
 	for (uint32 f = 0; f < animation->frameCount; f++)
 	{
 		for (uint32 b = 0; b < _model->GetBoneCount(); b++)
 		{
 			shared_ptr<ModelBone> bone = _model->GetBoneByIndex(b);
 
-			// ¾Ö´Ï¸ŞÀÌ¼Ç º¯È¯ Çà·Ä °è»ê
+			// ì• ë‹ˆë©”ì´ì…˜ ë³€í™˜ í–‰ë ¬ ê³„ì‚°
 			Matrix matAnimation;
 			shared_ptr<ModelKeyframe> frame = animation->GetKeyframe(bone->name);
-			// Å°ÇÁ·¹ÀÓ µ¥ÀÌÅÍ¿¡¼­ º¯È¯ Çà·Ä ±¸¼º
+			// í‚¤í”„ë ˆì„ ë°ì´í„°ì—ì„œ ë³€í™˜ í–‰ë ¬ êµ¬ì„±
 			if (frame != nullptr)
 			{
 				ModelKeyframeData& data = frame->transforms[f];
@@ -363,19 +363,19 @@ void ModelAnimator::CreateAnimationTransform(uint32 index)
 			{
 				matAnimation = Matrix::Identity;
 			}
-			// [ º»ÀÇ ·çÆ® º¯È¯ ¹× ¿ªÇà·Ä °è»ê ]
+			// [ ë³¸ì˜ ë£¨íŠ¸ ë³€í™˜ ë° ì—­í–‰ë ¬ ê³„ì‚° ]
 			Matrix toRootMatrix = bone->transform;
-			Matrix invGlobal = toRootMatrix.Invert();	// ¾Ö´Ï¸ŞÀÌ¼Ç Àû¿ë ÈÄ º»À» ¿øÁ¡¿¡ ¸ÂÃß±â À§ÇØ »ç¿ë
+			Matrix invGlobal = toRootMatrix.Invert();	// ì• ë‹ˆë©”ì´ì…˜ ì ìš© í›„ ë³¸ì„ ì›ì ì— ë§ì¶”ê¸° ìœ„í•´ ì‚¬ìš©
 
-			// ºÎ¸ğ º» º¯È¯ Àû¿ë
+			// ë¶€ëª¨ ë³¸ ë³€í™˜ ì ìš©
 			int32 parentIndex = bone->parentIndex;
 			Matrix matParent = Matrix::Identity;
 			if (parentIndex >= 0)
 				matParent = tempAnimBoneTransforms[parentIndex];
 
-			// ÇöÀç º»ÀÇ ÃÖÁ¾ ¿ùµå º¯È¯ °è»ê
+			// í˜„ì¬ ë³¸ì˜ ìµœì¢… ì›”ë“œ ë³€í™˜ ê³„ì‚°
 			tempAnimBoneTransforms[b] = matAnimation * matParent;
-			// º»ÀÇ ÃÖÁ¾ º¯È¯À» _animTransforms¿¡ ÀúÀå
+			// ë³¸ì˜ ìµœì¢… ë³€í™˜ì„ _animTransformsì— ì €ì¥
 			_animTransforms[index].transforms[f][b] = invGlobal * tempAnimBoneTransforms[b];
 		}
 	}

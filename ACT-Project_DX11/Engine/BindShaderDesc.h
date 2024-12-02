@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "ConstantBuffer.h"
 
 class Shader;
@@ -50,13 +50,13 @@ struct BoneDesc
 struct KeyframeDesc
 {
 	int32 state = 0;
-	int32 animIndex = 0;	// ¾Ö´Ï¸ŞÀÌ¼Ç ÀÎµ¦½º
-	uint32 currFrame = 0;	// ÇöÀç ÇÁ·¹ÀÓ
-	uint32 nextFrame = 0;	// ´ÙÀ½ ÇÁ·¹ÀÓ
-	float ratio = 0.f;		// ÇöÀç ÇÁ·¹ÀÓ°ú ´ÙÀ½ ÇÁ·¹ÀÓ »çÀÌÀÇ º¸°£ ºñÀ²
-	float sumTime = 0.f;	// ¾Ö´Ï¸ŞÀÌ¼Ç ÁøÇà ½Ã°£ ÇÕ°è
-	float speed = 1.5f;		// ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı ¼Óµµ
-	float padding = 0.f; // 32¹ÙÀÌÆ®·Î ¸ÂÃß±â À§ÇÑ ÆĞµù
+	int32 animIndex = 0;	// ì• ë‹ˆë©”ì´ì…˜ ì¸ë±ìŠ¤
+	uint32 currFrame = 0;	// í˜„ì¬ í”„ë ˆì„
+	uint32 nextFrame = 0;	// ë‹¤ìŒ í”„ë ˆì„
+	float ratio = 0.f;		// í˜„ì¬ í”„ë ˆì„ê³¼ ë‹¤ìŒ í”„ë ˆì„ ì‚¬ì´ì˜ ë³´ê°„ ë¹„ìœ¨
+	float sumTime = 0.f;	// ì• ë‹ˆë©”ì´ì…˜ ì§„í–‰ ì‹œê°„ í•©ê³„
+	float speed = 1.5f;		// ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ ì†ë„
+	float padding = 0.f; // 32ë°”ì´íŠ¸ë¡œ ë§ì¶”ê¸° ìœ„í•œ íŒ¨ë”©
 };
 
 struct TweenDesc
@@ -78,12 +78,12 @@ struct TweenDesc
 		tweenRatio = 0;
 	}
 
-	float tweenDuration = 0.2f;	// Æ®À©(Áß°£ »óÅÂ) Áö¼Ó ½Ã°£
-	float tweenRatio = 0.f;		// Æ®À© ºñÀ²
-	float tweenSumTime = 0.f;	// Æ®À© ÁøÇà ½Ã°£ ÇÕ°è
-	float padding = 0.f;		// ÆĞµù
-	KeyframeDesc curr;			// ÇöÀç Å°ÇÁ·¹ÀÓ Á¤º¸
-	KeyframeDesc next;			// ´ÙÀ½ Å°ÇÁ·¹ÀÓ Á¤º¸
+	float tweenDuration = 0.2f;	// íŠ¸ìœˆ(ì¤‘ê°„ ìƒíƒœ) ì§€ì† ì‹œê°„
+	float tweenRatio = 0.f;		// íŠ¸ìœˆ ë¹„ìœ¨
+	float tweenSumTime = 0.f;	// íŠ¸ìœˆ ì§„í–‰ ì‹œê°„ í•©ê³„
+	float padding = 0.f;		// íŒ¨ë”©
+	KeyframeDesc curr;			// í˜„ì¬ í‚¤í”„ë ˆì„ ì •ë³´
+	KeyframeDesc next;			// ë‹¤ìŒ í‚¤í”„ë ˆì„ ì •ë³´
 };
 
 struct InstancedTweenDesc

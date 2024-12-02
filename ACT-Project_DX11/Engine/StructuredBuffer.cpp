@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "StructuredBuffer.h"
 
 StructuredBuffer::StructuredBuffer(void* inputData, uint32 inputStride, uint32 inputCount, uint32 outputStride, uint32 outputCount)

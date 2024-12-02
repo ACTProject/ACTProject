@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "BaseCollider.h"
 
 BaseCollider::BaseCollider(ColliderType colliderType)
@@ -34,36 +34,36 @@ bool BaseCollider::CalculateAABBAABBCollision(const BoundingBox& boxA, const Bou
 	float dy = min(maxA.y - minB.y, maxB.y - minA.y);
 	float dz = min(maxA.z - minB.z, maxB.z - minA.z);
 
-	if (dx > 0 && dy > 0 && dz > 0) // °ãÄ§ ¹ß»ı
+	if (dx > 0 && dy > 0 && dz > 0) // ê²¹ì¹¨ ë°œìƒ
 	{
 		penetrationDepth = Vec3(dx, dy, dz);
 		return true;
 	}
 
-	penetrationDepth = Vec3(0.f); // °ãÄ§ ¾øÀ½
+	penetrationDepth = Vec3(0.f); // ê²¹ì¹¨ ì—†ìŒ
 	return false;
 }
 
 bool BaseCollider::CalculateAABBSphereCollision(const BoundingBox& box, const BoundingSphere& sphere, Vec3& penetrationDepth)
 {
-	// 1. SphereÀÇ Áß½ÉÀ» AABB ¹üÀ§·Î ClampÇÏ¿© °¡Àå °¡±î¿î Á¡ °è»ê
+	// 1. Sphereì˜ ì¤‘ì‹¬ì„ AABB ë²”ìœ„ë¡œ Clampí•˜ì—¬ ê°€ì¥ ê°€ê¹Œìš´ ì  ê³„ì‚°
 	Vec3 closestPoint;
 	closestPoint.x = max(box.Center.x - box.Extents.x, min(sphere.Center.x, box.Center.x + box.Extents.x));
 	closestPoint.y = max(box.Center.y - box.Extents.y, min(sphere.Center.y, box.Center.y + box.Extents.y));
 	closestPoint.z = max(box.Center.z - box.Extents.z, min(sphere.Center.z, box.Center.z + box.Extents.z));
 
-	// 2. SphereÀÇ Áß½É°ú AABB °¡Àå °¡±î¿î Á¡ °£ÀÇ °Å¸® °è»ê
+	// 2. Sphereì˜ ì¤‘ì‹¬ê³¼ AABB ê°€ì¥ ê°€ê¹Œìš´ ì  ê°„ì˜ ê±°ë¦¬ ê³„ì‚°
 	Vec3 difference = sphere.Center - closestPoint;
-	float distanceSquared = difference.LengthSquared(); // °Å¸®ÀÇ Á¦°ö
-	float radiusSquared = sphere.Radius * sphere.Radius; // Sphere ¹İÁö¸§ Á¦°ö
+	float distanceSquared = difference.LengthSquared(); // ê±°ë¦¬ì˜ ì œê³±
+	float radiusSquared = sphere.Radius * sphere.Radius; // Sphere ë°˜ì§€ë¦„ ì œê³±
 
-	if (distanceSquared < radiusSquared) // Ãæµ¹ ¹ß»ı
+	if (distanceSquared < radiusSquared) // ì¶©ëŒ ë°œìƒ
 	{
-		// Ãæµ¹ ±íÀÌ °è»ê
+		// ì¶©ëŒ ê¹Šì´ ê³„ì‚°
 		float distance = sqrt(distanceSquared);
 		float penetration = sphere.Radius - distance;
 
-		if (distance > 0) // Áß½ÉÀÌ Á¤È®È÷ °ãÄ¡Áö ¾Ê¾ÒÀ» ¶§ ¹æÇâ °è»ê
+		if (distance > 0) // ì¤‘ì‹¬ì´ ì •í™•íˆ ê²¹ì¹˜ì§€ ì•Šì•˜ì„ ë•Œ ë°©í–¥ ê³„ì‚°
 		{
 			difference.Normalize();
 			penetrationDepth = difference * penetration;
@@ -74,7 +74,7 @@ bool BaseCollider::CalculateAABBSphereCollision(const BoundingBox& box, const Bo
 		return true;
 	}
 
-	// Ãæµ¹ ¾øÀ½
+	// ì¶©ëŒ ì—†ìŒ
 	penetrationDepth = Vec3(0.f);
 	return false;
 }
@@ -89,12 +89,12 @@ bool BaseCollider::CalculateSphereSphereCollision(const BoundingSphere& sphereA,
 	float distance = (centerB - centerA).Length();
 	float radiusSum = sphereA.Radius + sphereB.Radius;
 
-	if (distance < radiusSum) // °ãÄ§ ¹ß»ı
+	if (distance < radiusSum) // ê²¹ì¹¨ ë°œìƒ
 	{
 		penetrationDepth = (radiusSum - distance) * centerNormal;
 		return true;
 	}
 
-	penetrationDepth = Vec3(0.f); // °ãÄ§ ¾øÀ½
+	penetrationDepth = Vec3(0.f); // ê²¹ì¹¨ ì—†ìŒ
 	return false;
 }

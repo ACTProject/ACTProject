@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 class TimeManager
@@ -15,7 +15,7 @@ public:
 private:
 	uint64	_frequency = 0;		
 	uint64	_prevCount = 0;
-	float	_deltaTime = 0.f; // ÇöÀç ÇÁ·¹ÀÓÀÇ °æ°ú ½Ã°£
+	float	_deltaTime = 0.f; // í˜„ì¬ í”„ë ˆì„ì˜ ê²½ê³¼ ì‹œê°„
 
 private:
 	float	_frameTime = 0.f;

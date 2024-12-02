@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "InstancingManager.h"
 #include "InstancingBuffer.h"
 #include "GameObject.h"
@@ -21,7 +21,7 @@ void InstancingManager::RenderMeshRenderer(vector<shared_ptr<GameObject>>& gameO
 {
 	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
 
-	// ºÐ·ù ´Ü°è
+	// ë¶„ë¥˜ ë‹¨ê³„
 	for (shared_ptr<GameObject>& gameObject : gameObjects)
 	{
 		if (gameObject->GetMeshRenderer() == nullptr)

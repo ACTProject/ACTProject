@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <windows.h>
 #include "DirectXMath.h"
 #include "SimpleMath.h"
@@ -34,9 +34,9 @@ enum class AnimationState
 	Attack3,
 	Attack4,
 	Jump,
-	Hit, //ÇÇ°İ
-	Die, //Á×À½
-	Roar, //¿ïÀ½,Æ÷È¿
+	Hit, //í”¼ê²©
+	Die, //ì£½ìŒ
+	Roar, //ìš¸ìŒ,í¬íš¨
 	Aggro,
-	// ´Ù¸¥ »óÅÂ Ãß°¡ °¡´É
+	// ë‹¤ë¥¸ ìƒíƒœ ì¶”ê°€ ê°€ëŠ¥
 };

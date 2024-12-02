@@ -1,39 +1,39 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "TimeManager.h"
 #include <thread>
 
 void TimeManager::Init()
 {
-    // CPUÀÇ °íÇØ»óµµ Å¸ÀÌ¸ÓÀÇ ÁÖÆÄ¼ö(ÃÊ´ç Ä«¿îÆ® ¼ö)¸¦ °¡Á®¿É´Ï´Ù.
+    // CPUì˜ ê³ í•´ìƒë„ íƒ€ì´ë¨¸ì˜ ì£¼íŒŒìˆ˜(ì´ˆë‹¹ ì¹´ìš´íŠ¸ ìˆ˜)ë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
     ::QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&_frequency));
-    // ÇöÀç CPU Å¸ÀÌ¸ÓÀÇ °ªÀ» °¡Á®¿É´Ï´Ù.
+    // í˜„ì¬ CPU íƒ€ì´ë¨¸ì˜ ê°’ì„ ê°€ì ¸ì˜µë‹ˆë‹¤.
     ::QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&_prevCount));
 
-    // ¸ñÇ¥ ÇÁ·¹ÀÓ ½Ã°£ (60 FPS = 1 / 60ÃÊ)
+    // ëª©í‘œ í”„ë ˆì„ ì‹œê°„ (60 FPS = 1 / 60ì´ˆ)
     _targetFrameTime = 1.0f / 60.f;
 }
 
 void TimeManager::Update()
 {
-    // ÇöÀç ÇÁ·¹ÀÓÀÇ CPU Å¸ÀÌ¸Ó °ªÀ» °¡Á®¿Í currentCount¿¡ ÀúÀåÇÕ´Ï´Ù.
+    // í˜„ì¬ í”„ë ˆì„ì˜ CPU íƒ€ì´ë¨¸ ê°’ì„ ê°€ì ¸ì™€ currentCountì— ì €ì¥í•©ë‹ˆë‹¤.
     uint64 currentCount;
     ::QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currentCount));
 
-    // ÀÌÀü ÇÁ·¹ÀÓ°ú ÇöÀç ÇÁ·¹ÀÓ »çÀÌÀÇ ½Ã°£(ÃÊ ´ÜÀ§)À» °è»êÇÕ´Ï´Ù.
+    // ì´ì „ í”„ë ˆì„ê³¼ í˜„ì¬ í”„ë ˆì„ ì‚¬ì´ì˜ ì‹œê°„(ì´ˆ ë‹¨ìœ„)ì„ ê³„ì‚°í•©ë‹ˆë‹¤.
     _deltaTime = (currentCount - _prevCount) / static_cast<float>(_frequency);
 
-    // ¸ñÇ¥ ÇÁ·¹ÀÓ ½Ã°£º¸´Ù ºü¸¦ °æ¿ì ´ë±â
+    // ëª©í‘œ í”„ë ˆì„ ì‹œê°„ë³´ë‹¤ ë¹ ë¥¼ ê²½ìš° ëŒ€ê¸°
     while (_deltaTime < _targetFrameTime)
     {
-        // ÇöÀç ÇÁ·¹ÀÓ±îÁö ´©Àû ½Ã°£ °è»ê
+        // í˜„ì¬ í”„ë ˆì„ê¹Œì§€ ëˆ„ì  ì‹œê°„ ê³„ì‚°
         ::QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currentCount));
         _deltaTime = (currentCount - _prevCount) / static_cast<float>(_frequency);
     }
 
-    // ÇÁ·¹ÀÓÀÌ ¿Ï·áµÇ¾úÀ¸¹Ç·Î ÀÌÀü Å¸ÀÌ¸Ó °ªÀ» °»½Å
+    // í”„ë ˆì„ì´ ì™„ë£Œë˜ì—ˆìœ¼ë¯€ë¡œ ì´ì „ íƒ€ì´ë¨¸ ê°’ì„ ê°±ì‹ 
     _prevCount = currentCount;
 
-    // FPS °è»ê
+    // FPS ê³„ì‚°
     _frameCount++;
     _frameTime += _deltaTime;
 

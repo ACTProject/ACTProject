@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Component.h"
 
 class Terrain : public Component
@@ -15,7 +15,7 @@ public:
 
 	void Create(int32 sizeX, int32 sizeZ, shared_ptr<Material> material);
 	bool Pick(int32 screenX, int32 screenY, Vec3& pickPos, float& distance);
-	// Ãæµ¹ °¨Áö¿ë ÇÔ¼ö
+	// ì¶©ëŒ ê°ì§€ìš© í•¨ìˆ˜
 	float GetHeightAtPosition(float x, float z) const;
 
 private:

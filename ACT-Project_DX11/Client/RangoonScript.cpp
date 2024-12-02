@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "RangoonScript.h"
 #include "MyCoroutine.h"
 #include <coroutine>
@@ -14,11 +14,11 @@ void RangoonEndCoroutine() {
 	}
 }
 
-// ÇÃ·¹ÀÌ¾î°ø°İ ÄÚ·çÆ¾ ÇÔ¼ö Á¤ÀÇ
+// í”Œë ˆì´ì–´ê³µê²© ì½”ë£¨í‹´ í•¨ìˆ˜ ì •ì˜
 MyCoroutine RangoonCoroutine(RangoonScript* rangoonScript, float animationDuration)
 {
-	// ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı ½Ã°£ ´ë±â
-	co_await AwaitableSleep(chrono::milliseconds(static_cast<int>(animationDuration * 1000)));		// °ø°İ Àü `atkType`À» ·£´ıÀ¸·Î ¼³Á¤
+	// ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ ì‹œê°„ ëŒ€ê¸°
+	co_await AwaitableSleep(chrono::milliseconds(static_cast<int>(animationDuration * 1000)));		// ê³µê²© ì „ `atkType`ì„ ëœë¤ìœ¼ë¡œ ì„¤ì •
 	RangoonEndCoroutine();
 }
 
@@ -26,14 +26,14 @@ void RangoonScript::Move(const Vec3 targetPos)
 {
 	direction = targetPos - _transform->GetPosition();
 	
-	if (direction.LengthSquared() < EPSILON) // EPSILON »ç¿ë
+	if (direction.LengthSquared() < EPSILON) // EPSILON ì‚¬ìš©
 	{
 		return;
 	}
 	
-	direction.Normalize();  // ¹æÇâ º¤ÅÍ¸¦ ´ÜÀ§ º¤ÅÍ·Î Á¤±ÔÈ­
+	direction.Normalize();  // ë°©í–¥ ë²¡í„°ë¥¼ ë‹¨ìœ„ ë²¡í„°ë¡œ ì •ê·œí™”
 
-	_transform->SetPosition(_transform->GetPosition() + direction * _speed * _deltaTime);  // ÀÏÁ¤ °Å¸®¸¸Å­ ÀÌµ¿
+	_transform->SetPosition(_transform->GetPosition() + direction * _speed * _deltaTime);  // ì¼ì • ê±°ë¦¬ë§Œí¼ ì´ë™
 }
 
 void RangoonScript::Rota(const Vec3 targetPos)
@@ -42,10 +42,10 @@ void RangoonScript::Rota(const Vec3 targetPos)
 	direction = targetPos - _transform->GetPosition();
 	direction.Normalize();
 
-	// ¿ÜÀûÀ» ÀÌ¿ëÇÑ È¸Àü Ãà °è»ê
+	// ì™¸ì ì„ ì´ìš©í•œ íšŒì „ ì¶• ê³„ì‚°
 	Vec3 rotationAxis = CurForward.Cross(direction);
 
-	// ¿ÜÀû °á°ú°¡ ¸Å¿ì ÀÛÀ¸¸é ¹æÇâ Â÷ÀÌ°¡ °ÅÀÇ ¾øÀ¸¹Ç·Î È¸Àü ÇÊ¿ä ¾øÀ½
+	// ì™¸ì  ê²°ê³¼ê°€ ë§¤ìš° ì‘ìœ¼ë©´ ë°©í–¥ ì°¨ì´ê°€ ê±°ì˜ ì—†ìœ¼ë¯€ë¡œ íšŒì „ í•„ìš” ì—†ìŒ
 	if (rotationAxis.LengthSquared() < EPSILON)
 	{
 		return;
@@ -53,22 +53,22 @@ void RangoonScript::Rota(const Vec3 targetPos)
 
 	rotationAxis.Normalize();
 
-	// °¢µµ °è»ê
+	// ê°ë„ ê³„ì‚°
 	float angle = std::acos(CurForward.Dot(direction));
 
-	// ÀÛÀº °¢µµ´Â ¹«½Ã
-	if (abs(angle) < EPSILON) // 0.01 ¶óµğ¾È(¾à 0.57µµ) ÀÌÇÏ È¸Àü ¹«½Ã
+	// ì‘ì€ ê°ë„ëŠ” ë¬´ì‹œ
+	if (abs(angle) < EPSILON) // 0.01 ë¼ë””ì•ˆ(ì•½ 0.57ë„) ì´í•˜ íšŒì „ ë¬´ì‹œ
 	{
 		return;
 	}
-	// ¹æÇâ¿¡ µû¶ó °¢µµ Á¶Á¤ (yÃà Áß½É È¸Àü)
+	// ë°©í–¥ì— ë”°ë¼ ê°ë„ ì¡°ì • (yì¶• ì¤‘ì‹¬ íšŒì „)
 	if (rotationAxis.y < 0) {
-		angle = -angle;  // ¿ŞÂÊ È¸Àü
+		angle = -angle;  // ì™¼ìª½ íšŒì „
 	}
 
-	// ÇöÀç È¸Àü°ª ¾÷µ¥ÀÌÆ®
+	// í˜„ì¬ íšŒì „ê°’ ì—…ë°ì´íŠ¸
 	Vec3 currentRotation = _transform->GetLocalRotation();
-	Vec3 newRotation = Vec3::Lerp(currentRotation, currentRotation + Vec3(0, angle, 0), 0.1f); // 0.1f´Â º¸°£ ¼Óµµ
+	Vec3 newRotation = Vec3::Lerp(currentRotation, currentRotation + Vec3(0, angle, 0), 0.1f); // 0.1fëŠ” ë³´ê°„ ì†ë„
 	_transform->SetRotation(newRotation);
 
 }
@@ -79,9 +79,9 @@ void RangoonScript::Tracking(Vec3 pos, const std::vector<Node3D>& path)
 		return;
 	}
 
-	// °æ·Î »óÀÇ °¢ ³ëµå¸¦ µû¶ó ÀÌµ¿
+	// ê²½ë¡œ ìƒì˜ ê° ë…¸ë“œë¥¼ ë”°ë¼ ì´ë™
 	for (size_t i = 0; i < path.size(); ++i) {
-		// ÇöÀç À§Ä¡°¡ ¸ñÇ¥ ³ëµå¿¡ µµ´ŞÇß´Ù¸é ´ÙÀ½ ³ëµå·Î ÀÌµ¿
+		// í˜„ì¬ ìœ„ì¹˜ê°€ ëª©í‘œ ë…¸ë“œì— ë„ë‹¬í–ˆë‹¤ë©´ ë‹¤ìŒ ë…¸ë“œë¡œ ì´ë™
 		if (i + 1 < path.size()) {
 			//Move(path[i + 1].pos);
 		}
@@ -107,7 +107,7 @@ void RangoonScript::Attack(int type)
 		break;
 	}
 
-	// ÄÚ·çÆ¾ ½ÇÇà
+	// ì½”ë£¨í‹´ ì‹¤í–‰
 	MyCoroutine attackCoroutine = RangoonCoroutine(this, atkDuration);
 	currentRangoonCoroutine = attackCoroutine.GetHandler();
 	currentRangoonCoroutine.resume();
@@ -159,13 +159,13 @@ void RangoonScript::Update()
 
 			if (animPlayingTime >= atkDuration)
 			{
-				atkType = rand() % 3; // ´ÙÀ½ °ø°İ Å¸ÀÔ °áÁ¤
+				atkType = rand() % 3; // ë‹¤ìŒ ê³µê²© íƒ€ì… ê²°ì •
 				ResetToIdleState();
 			}
 			return;
 		}
 
-		// Aggro ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ¿Ï·áµÇ¾ú´ÂÁö È®ÀÎ
+		// Aggro ì• ë‹ˆë©”ì´ì…˜ì´ ì™„ë£Œë˜ì—ˆëŠ”ì§€ í™•ì¸
 		if (_currentAnimationState == AnimationState::Aggro)
 		{
 			if (animPlayingTime >= _aggroDuration / _FPS)
@@ -177,7 +177,7 @@ void RangoonScript::Update()
 		}
 	}
 
-	// ÇÃ·¹ÀÌ¾î À§Ä¡ °è»ê4
+	// í”Œë ˆì´ì–´ ìœ„ì¹˜ ê³„ì‚°4
 	_player = SCENE->GetCurrentScene()->GetPlayer();
 	Vec3 playerPosition = _player->GetTransform()->GetPosition();
 
@@ -185,25 +185,25 @@ void RangoonScript::Update()
 	distance = direction.Length();
 	rangeDis = (_transform->GetPosition() - StartPos).Length();
 
-	// ¹üÀ§ °Ë»ç
-	if (rangeDis > 30.f) // ÃÊ±â À§Ä¡¿¡¼­ ³Ê¹« ¸Ö¸® ¶³¾îÁö¸é º¹±Í
+	// ë²”ìœ„ ê²€ì‚¬
+	if (rangeDis > 30.f) // ì´ˆê¸° ìœ„ì¹˜ì—ì„œ ë„ˆë¬´ ë©€ë¦¬ ë–¨ì–´ì§€ë©´ ë³µê·€
 	{
 		BackToStart = true;
 		onTarget = false;
 		onAttack = false;
 		isFirstAggro = true;
 	}
-	else if (distance < 15.f) { onTarget = true; } // Å½Áö ¹üÀ§ ¾È¿¡ ÀÖÀ» ¶§
+	else if (distance < 15.f) { onTarget = true; } // íƒì§€ ë²”ìœ„ ì•ˆì— ìˆì„ ë•Œ
 	else
 	{
 		onTarget = false;
 	}
 
-	if (distance < 5.f) { onAttack = true; } // °ø°İ ¹üÀ§ ¾È¿¡ ÀÖÀ» ¶§
+	if (distance < 5.f) { onAttack = true; } // ê³µê²© ë²”ìœ„ ì•ˆì— ìˆì„ ë•Œ
 	else { onAttack = false; }
 
 
-	// »óÅÂº° ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà
+	// ìƒíƒœë³„ ì• ë‹ˆë©”ì´ì…˜ ì‹¤í–‰
 	if (isFirstAggro && onTarget)
 	{
 		Aggro();

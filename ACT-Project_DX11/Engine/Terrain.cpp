@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Terrain.h"
 #include "MeshRenderer.h"
 #include "Camera.h"
@@ -91,7 +91,7 @@ bool Terrain::Pick(int32 screenX, int32 screenY, Vec3& pickPos, float& distance)
 
 float Terrain::GetHeightAtPosition(float x, float z) const
 {
-	// Terrain ÁÂÇ¥¸¦ Heightmap ÁÂÇ¥·Î º¯È¯
+	// Terrain ì¢Œí‘œë¥¼ Heightmap ì¢Œí‘œë¡œ ë³€í™˜
 	float terrainWidth = static_cast<float>(_sizeX);
 	float terrrainHeight = static_cast<float>(_sizeZ);
 
@@ -99,31 +99,31 @@ float Terrain::GetHeightAtPosition(float x, float z) const
 	float normalizedZ = z / terrrainHeight;
 
 
-	// Clamp ÁÂÇ¥°¡ Terrain ¿µ¿ª ³»¿¡ ÀÖ´ÂÁö È®ÀÎ
+	// Clamp ì¢Œí‘œê°€ Terrain ì˜ì—­ ë‚´ì— ìˆëŠ”ì§€ í™•ì¸
 	normalizedX = std::clamp(normalizedX, 0.0f, 1.0f);
 	normalizedZ = std::clamp(normalizedZ, 0.0f, 1.0f);
 
-	// Heightmap ÀÎµ¦½º °è»ê
+	// Heightmap ì¸ë±ìŠ¤ ê³„ì‚°
 	int32 ix = static_cast<int32>(normalizedX * _sizeX);
 	int32 iz = static_cast<int32>(normalizedZ * _sizeZ);
 
-	// ´ÙÀ½ ÀÎµ¦½º °è»ê (°æ°è¸¦ ÃÊ°úÇÏÁö ¾Êµµ·Ï Ã³¸®)
+	// ë‹¤ìŒ ì¸ë±ìŠ¤ ê³„ì‚° (ê²½ê³„ë¥¼ ì´ˆê³¼í•˜ì§€ ì•Šë„ë¡ ì²˜ë¦¬)
 	int32 ixNext = std::min(ix + 1, _sizeX);
 	int32 izNext = std::min(iz + 1, _sizeZ);
 
-	// º¸°£À» À§ÇØ 4°³ÀÇ ÁÖº¯ Á¡ÀÇ ³ôÀÌ¸¦ °¡Á®¿È
+	// ë³´ê°„ì„ ìœ„í•´ 4ê°œì˜ ì£¼ë³€ ì ì˜ ë†’ì´ë¥¼ ê°€ì ¸ì˜´
 	vector<VertexTextureNormalTangentData>& vertices = const_cast<vector<VertexTextureNormalTangentData>&>(
 		_mesh->GetGeometry()->GetVertices()
 		);
 
-	int32 rowLength = _sizeX + 1; // ÇÑ ÇàÀÇ ±æÀÌ´Â (_sizeX + 1)
+	int32 rowLength = _sizeX + 1; // í•œ í–‰ì˜ ê¸¸ì´ëŠ” (_sizeX + 1)
 
-    int32 idx00 = iz * rowLength + ix;        // ¿ŞÂÊ À§
-    int32 idx10 = iz * rowLength + ixNext;    // ¿À¸¥ÂÊ À§
-    int32 idx01 = izNext * rowLength + ix;    // ¿ŞÂÊ ¾Æ·¡
-    int32 idx11 = izNext * rowLength + ixNext; // ¿À¸¥ÂÊ ¾Æ·¡
+    int32 idx00 = iz * rowLength + ix;        // ì™¼ìª½ ìœ„
+    int32 idx10 = iz * rowLength + ixNext;    // ì˜¤ë¥¸ìª½ ìœ„
+    int32 idx01 = izNext * rowLength + ix;    // ì™¼ìª½ ì•„ë˜
+    int32 idx11 = izNext * rowLength + ixNext; // ì˜¤ë¥¸ìª½ ì•„ë˜
 
-	// ·ÎÄÃ ÁÂÇ¥ °è»ê (0 ~ 1 ¹üÀ§)
+	// ë¡œì»¬ ì¢Œí‘œ ê³„ì‚° (0 ~ 1 ë²”ìœ„)
 	float localX = (normalizedX * _sizeX) - ix;
 	float localZ = (normalizedZ * _sizeZ) - iz;
 

@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "A_Star.h"
 
 A_Star::A_Star() {}

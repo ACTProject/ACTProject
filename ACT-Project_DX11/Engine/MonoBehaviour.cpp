@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "MonoBehaviour.h"
 
 MonoBehaviour::MonoBehaviour() : Super(ComponentType::Script)

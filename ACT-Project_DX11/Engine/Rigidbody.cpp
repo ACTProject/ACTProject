@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Rigidbody.h"
 #include "Terrain.h"
 
@@ -22,14 +22,14 @@ void Rigidbody::FixedUpdate()
 	if (_fixedDeltaTime == 0.f)
 		return;
 
-	// Áß·Â Àû¿ë
+	// ì¤‘ë ¥ ì ìš©
 	if (_useGravity)
 		Addforce(Vec3(0, -9.8f * _mass, 0)); // F = m * g
 
-	// °¡¼Óµµ °è»ê (a = F / m)
+	// ê°€ì†ë„ ê³„ì‚° (a = F / m)
 	Vec3 acceleration = _force / _mass;
 
-	// ¼Óµµ °è»ê (v = v0 + at)
+	// ì†ë„ ê³„ì‚° (v = v0 + at)
 	_velocity += acceleration * _fixedDeltaTime;
 
 	Vec3 position = transform->GetPosition();
@@ -40,10 +40,10 @@ void Rigidbody::FixedUpdate()
 		transform->SetPosition(position);
 	}
 
-	// ¿ÜºÎ Èû ÃÊ±âÈ­
+	// ì™¸ë¶€ í˜ ì´ˆê¸°í™”
 	_force = Vec3(0.f);
 
-	// ¸¶Âû·Â Àû¿ë (¼Óµµ °¨¼Ó)
+	// ë§ˆì°°ë ¥ ì ìš© (ì†ë„ ê°ì†)
 	ApplyFriction();
 }
 
@@ -54,16 +54,16 @@ void Rigidbody::Addforce(const Vec3& force)
 
 void Rigidbody::ApplyFriction()
 {
-	// ¸¶Âû °è¼ö
-	float friction = 0.97f; // 0.0 (¿ÏÀü Á¤Áö) ~ 1.0 (¸¶Âû ¾øÀ½)
+	// ë§ˆì°° ê³„ìˆ˜
+	float friction = 0.97f; // 0.0 (ì™„ì „ ì •ì§€) ~ 1.0 (ë§ˆì°° ì—†ìŒ)
 
-	// ¼Óµµ °¨¼Ó
+	// ì†ë„ ê°ì†
 	_velocity *= friction;
 
-	// ÃÖ¼Ò ¼Óµµ ÀÓ°è°ª
+	// ìµœì†Œ ì†ë„ ì„ê³„ê°’
 	if (_velocity.LengthSquared() < 0.001f)
 	{
-		_velocity = Vec3(0.f); // Á¤Áö »óÅÂ·Î ¼³Á¤
+		_velocity = Vec3(0.f); // ì •ì§€ ìƒíƒœë¡œ ì„¤ì •
 	}
 }
 
@@ -71,15 +71,15 @@ void Rigidbody::ApplyFriction()
 void Rigidbody::HandleCollisionWithTerrain(Vec3& objectPosition)
 {
 	auto terrain = SCENE->GetCurrentScene()->GetCurrentTerrain();
-	// TerrainÀÇ ÇØ´ç À§Ä¡¿¡¼­ ³ôÀÌ °¡Á®¿À±â
+	// Terrainì˜ í•´ë‹¹ ìœ„ì¹˜ì—ì„œ ë†’ì´ ê°€ì ¸ì˜¤ê¸°
 	float terrainHeight = terrain->GetTerrain()->GetHeightAtPosition(objectPosition.x, objectPosition.z);
 
 	Vec3 tp = terrain->GetTransform()->GetPosition();
 	Vec3 player = GetTransform()->GetPosition();
 
-	// ¹°Ã¼°¡ Terrain ¾Æ·¡·Î ³»·Á°¡¸é Ãæµ¹ Ã³¸®
+	// ë¬¼ì²´ê°€ Terrain ì•„ë˜ë¡œ ë‚´ë ¤ê°€ë©´ ì¶©ëŒ ì²˜ë¦¬
 	if (objectPosition.y <= terrainHeight) {
-		objectPosition.y = terrainHeight;  // Terrain À§·Î À§Ä¡ Á¶Á¤
-		_velocity.y = 0.0f;          // yÃà ¼Óµµ Á¦°Å
+		objectPosition.y = terrainHeight;  // Terrain ìœ„ë¡œ ìœ„ì¹˜ ì¡°ì •
+		_velocity.y = 0.0f;          // yì¶• ì†ë„ ì œê±°
 	}
 }

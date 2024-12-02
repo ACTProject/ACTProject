@@ -1,13 +1,13 @@
-#pragma once
+ï»¿#pragma once
 #include "Component.h"
 
 class Model;
 
 struct AnimTransform
 {
-	// [ ][ ][ ][ ][ ][ ][ ] ... 250°³
+	// [ ][ ][ ][ ][ ][ ][ ] ... 250ê°œ
 	using TransformArrayType = array<Matrix, MAX_MODEL_TRANSFORMS>;
-	// [ ][ ][ ][ ][ ][ ][ ] ... 500 °³
+	// [ ][ ][ ][ ][ ][ ][ ] ... 500 ê°œ
 	array<TransformArrayType, MAX_MODEL_KEYFRAMES> transforms;
 };
 

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "SceneManager.h"
 
 void SceneManager::Awake()
@@ -19,13 +19,13 @@ void SceneManager::Start()
 
 void SceneManager::FixedUpdate()
 {
-	// 1. ÇöÀç ÇÁ·¹ÀÓ¿¡¼­ °æ°úÇÑ ½Ã°£ °è»ê
+	// 1. í˜„ì¬ í”„ë ˆì„ì—ì„œ ê²½ê³¼í•œ ì‹œê°„ ê³„ì‚°
 	_deltaTime = TIME->GetDeltaTime();
 
-	// 2. °æ°ú ½Ã°£À» ´©Àû
+	// 2. ê²½ê³¼ ì‹œê°„ì„ ëˆ„ì 
 	_accumulatedTime += _deltaTime;
 
-	// 3. °íÁ¤µÈ °£°İÀ¸·Î FixedUpdate È£Ãâ
+	// 3. ê³ ì •ëœ ê°„ê²©ìœ¼ë¡œ FixedUpdate í˜¸ì¶œ
 	while (_accumulatedTime >= _fixedDeltaTime)
 	{
 		_currentScene->FixedUpdate();
@@ -48,7 +48,7 @@ void SceneManager::AddScene(const std::string& name, std::shared_ptr<Scene> scen
 {
 	if (_scenes.find(name) != _scenes.end())
 	{
-		// ÀÌ¹Ì °°Àº ÀÌ¸§ÀÇ ¾ÀÀÌ ÀÖ´Ù¸é °æ°í Ãâ·Â
+		// ì´ë¯¸ ê°™ì€ ì´ë¦„ì˜ ì”¬ì´ ìˆë‹¤ë©´ ê²½ê³  ì¶œë ¥
 		std::cerr << "Scene \"" << name << "\" already exists!" << std::endl;
 		return;
 	}
@@ -61,12 +61,12 @@ void SceneManager::ChangeScene(const string& name)
 	auto it = _scenes.find(name);
     if (it == _scenes.end())
     {
-        // ÇØ´ç ÀÌ¸§ÀÇ ¾ÀÀÌ ¾ø´Â °æ¿ì °æ°í Ãâ·Â
+        // í•´ë‹¹ ì´ë¦„ì˜ ì”¬ì´ ì—†ëŠ” ê²½ìš° ê²½ê³  ì¶œë ¥
         std::cerr << "Scene \"" << name << "\" does not exist!" << std::endl;
         return;
     }
 
-    // ÇöÀç ¾À º¯°æ ¹× »ı¸íÁÖ±â ÃÊ±âÈ­
+    // í˜„ì¬ ì”¬ ë³€ê²½ ë° ìƒëª…ì£¼ê¸° ì´ˆê¸°í™”
     _currentScene = it->second;
     _currentScene->Awake();
     _currentScene->Start();

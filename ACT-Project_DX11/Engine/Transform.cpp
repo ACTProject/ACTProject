@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Transform.h"
 
 Transform::Transform() : Super(ComponentType::Transform)
@@ -18,7 +18,7 @@ void Transform::Awake()
 void Transform::Update()
 {
 }
-// ÄõÅÍ´Ï¾ğ -> ¿ÀÀÏ·¯ °¢µµ º¯È¯
+// ì¿¼í„°ë‹ˆì–¸ -> ì˜¤ì¼ëŸ¬ ê°ë„ ë³€í™˜
 Vec3 Transform::ToEulerAngles(Quaternion q)
 {
 	Vec3 angles;
@@ -50,7 +50,7 @@ Vec3 Transform::ToEulerAngles(Quaternion q)
 
 //void Transform::SetLocalRotation(const Vec3& localRotation)
 //{
-//	// _localRotationÀÇ °¢µµ °ªÀ» ¶óµğ¾ÈÀ¸·Î º¯È¯
+//	// _localRotationì˜ ê°ë„ ê°’ì„ ë¼ë””ì•ˆìœ¼ë¡œ ë³€í™˜
 //	float rotationX = XMConvertToRadians(localRotation.x);
 //	float rotationY = XMConvertToRadians(localRotation.y);
 //	float rotationZ = XMConvertToRadians(localRotation.z);

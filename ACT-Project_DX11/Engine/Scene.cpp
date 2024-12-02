@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Scene.h"
 #include "GameObject.h"
 #include "BaseCollider.h"
@@ -178,16 +178,16 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 		if (gameObject->GetCollider() == nullptr)
 			continue;
 
-		// ViewSpace에서의 Ray 정의
+		// ViewSpace?먯꽌??Ray ?뺤쓽
 		Vec4 rayOrigin = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		Vec4 rayDir = Vec4(viewX, viewY, 1.0f, 0.0f);
 
-		// WorldSpace에서의 Ray 정의
+		// WorldSpace?먯꽌??Ray ?뺤쓽
 		Vec3 worldRayOrigin = XMVector3TransformCoord(rayOrigin, viewMatrixInv);
 		Vec3 worldRayDir = XMVector3TransformNormal(rayDir, viewMatrixInv);
 		worldRayDir.Normalize();
 
-		// WorldSpace에서 연산
+		// WorldSpace?먯꽌 ?곗궛
 		Ray ray = Ray(worldRayOrigin, worldRayDir);
 
 		float distance = 0.f;
@@ -195,7 +195,7 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 			continue;
 
 
-		// 여기에서 맵오브젝트 포인터 들면 될 듯.
+		// ?ш린?먯꽌 留듭삤釉뚯젥???ъ씤???ㅻ㈃ ????
 		MAP->ChekMapObjectSelect(gameObject);
 
 

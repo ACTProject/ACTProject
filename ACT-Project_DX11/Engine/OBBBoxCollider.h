@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "BaseCollider.h"
 
 class OBBBoxCollider : public BaseCollider

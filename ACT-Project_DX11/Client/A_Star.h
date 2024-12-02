@@ -1,15 +1,15 @@
-#include "EnginePch.h"
+ï»¿#include "EnginePch.h"
 
-// 3D ³ëµå ±¸Á¶Ã¼
+// 3D ë…¸ë“œ êµ¬ì¡°ì²´
 struct Node3D {
     Vec3 pos;
-    float gCost, hCost; // g: ÇöÀç±îÁö ÀÌµ¿ ºñ¿ë, h: ÈŞ¸®½ºÆ½ ºñ¿ë
-    float fCost() const { return gCost + hCost; } // ÃÑ ºñ¿ë
-    Node3D* parent; // ºÎ¸ğ ³ëµå (°æ·Î ÃßÀû¿ë)
+    float gCost, hCost; // g: í˜„ì¬ê¹Œì§€ ì´ë™ ë¹„ìš©, h: íœ´ë¦¬ìŠ¤í‹± ë¹„ìš©
+    float fCost() const { return gCost + hCost; } // ì´ ë¹„ìš©
+    Node3D* parent; // ë¶€ëª¨ ë…¸ë“œ (ê²½ë¡œ ì¶”ì ìš©)
 
-    // ¿ì¼±¼øÀ§ Å¥¿¡¼­ »ç¿ëÇÏ±â À§ÇÑ ºñ±³ ¿¬»êÀÚ
+    // ìš°ì„ ìˆœìœ„ íì—ì„œ ì‚¬ìš©í•˜ê¸° ìœ„í•œ ë¹„êµ ì—°ì‚°ì
     bool operator<(const Node3D& other) const {
-        return fCost() > other.fCost(); // ºñ¿ëÀÌ ³·Àº ¼ø¼­·Î Á¤·Ä
+        return fCost() > other.fCost(); // ë¹„ìš©ì´ ë‚®ì€ ìˆœì„œë¡œ ì •ë ¬
     }
 };
 

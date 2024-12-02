@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Viewport.h"
 
 class Graphics

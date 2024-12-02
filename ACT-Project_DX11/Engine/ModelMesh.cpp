@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ModelMesh.h"
 
 
@@ -8,7 +8,7 @@ shared_ptr<ModelBone> ModelBone::AddDummyBone(const wstring& dummyName, Matrix d
 	dummyBone->isDummy = true;
 	dummyBone->name = dummyName;
 	dummyBone->index = dummyIndex;
-	dummyBone->parentIndex = index; // ÇöÀç º»À» ºÎ¸ğ·Î ¼³Á¤
+	dummyBone->parentIndex = index; // í˜„ì¬ ë³¸ì„ ë¶€ëª¨ë¡œ ì„¤ì •
 	dummyBone->parent = shared_from_this();
 	dummyBone->transform = shared_from_this()->transform;
 
@@ -19,15 +19,15 @@ shared_ptr<ModelBone> ModelBone::AddDummyBone(const wstring& dummyName, Matrix d
 
 void ModelMesh::AttachToDummyBone(shared_ptr<ModelBone> dummyBone)
 {
-	bone = dummyBone; // º»À» ´õ¹Ì º»¿¡ ¿¬°á
+	bone = dummyBone; // ë³¸ì„ ë”ë¯¸ ë³¸ì— ì—°ê²°
 	boneIndex = dummyBone->index;
 
 	int parentBoneIndex = bone->parent ? bone->parentIndex : bone->index;
 
-	// ÇØ´ç º» ÀÎµ¦½º¿Í °¡ÁßÄ¡¸¦ ¸ğµç Á¤Á¡¿¡ Àû¿ë
+	// í•´ë‹¹ ë³¸ ì¸ë±ìŠ¤ì™€ ê°€ì¤‘ì¹˜ë¥¼ ëª¨ë“  ì •ì ì— ì ìš©
 	for (auto& vertex : geometry->GetVertices())
 	{
-		// ´õ¹Ì º»À» ºÎ¸ğ º»¿¡ °íÁ¤
+		// ë”ë¯¸ ë³¸ì„ ë¶€ëª¨ ë³¸ì— ê³ ì •
 		vertex.blendIndices = Vec4(static_cast<float>(parentBoneIndex), 0, 0, 0);
 		vertex.blendWeights = Vec4(1.0f, 0.0f, 0.0f, 0.0f);
 	}

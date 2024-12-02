@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 using VertexType = VertexTextureNormalTangentBlendData;
 
@@ -54,7 +54,7 @@ struct asBlendWeight
 	Vec4 weights = Vec4(0, 0, 0, 0);
 };
 
-// Á¤Á¡¸¶´Ù -> (°üÀý¹øÈ£, °¡ÁßÄ¡)
+// ì •ì ë§ˆë‹¤ -> (ê´€ì ˆë²ˆí˜¸, ê°€ì¤‘ì¹˜)
 struct asBoneWeights
 {
 	void AddWeights(uint32 boneIndex, float weight)

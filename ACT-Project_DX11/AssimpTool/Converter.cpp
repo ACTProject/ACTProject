@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Converter.h"
 #include <filesystem>
 #include "Utils.h"
@@ -35,74 +35,74 @@ void Converter::ReadAssetFile(wstring file)
 	assert(_scene != nullptr);
 }
 
-// ¸ğµ¨ µ¥ÀÌÅÍ¸¦ ³»º¸³»´Â ÇÔ¼ö
+// ëª¨ë¸ ë°ì´í„°ë¥¼ ë‚´ë³´ë‚´ëŠ” í•¨ìˆ˜
 void Converter::ExportModelData(wstring savePath)
 {
-	// ÃÖÁ¾ ÀúÀåµÉ ÆÄÀÏ °æ·Î¸¦ »ı¼ºÇÕ´Ï´Ù.
+	// ìµœì¢… ì €ì¥ë  íŒŒì¼ ê²½ë¡œë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
 	wstring finalPath = _modelPath + savePath + L".mesh";
 
-	// Assimp ¶óÀÌºê·¯¸®¸¦ »ç¿ëÇÏ¿© ÀĞ¾î¿Â 3D ¸ğµ¨ÀÇ ·çÆ® ³ëµåºÎÅÍ ½ÃÀÛÇÏ¿©
-	// ¸ğµ¨ µ¥ÀÌÅÍ¸¦ ¼øÈ¸ÇÏ¸ç ÀĞ¾îµéÀÔ´Ï´Ù.
+	// Assimp ë¼ì´ë¸ŒëŸ¬ë¦¬ë¥¼ ì‚¬ìš©í•˜ì—¬ ì½ì–´ì˜¨ 3D ëª¨ë¸ì˜ ë£¨íŠ¸ ë…¸ë“œë¶€í„° ì‹œì‘í•˜ì—¬
+	// ëª¨ë¸ ë°ì´í„°ë¥¼ ìˆœíšŒí•˜ë©° ì½ì–´ë“¤ì…ë‹ˆë‹¤.
 	ReadModelData(_scene->mRootNode, -1, -1);
 
-	// ¸Ş½Ã¿¡ Àû¿ëµÉ ½ºÅ²(º») µ¥ÀÌÅÍ¸¦ ÀĞ¾îµéÀÔ´Ï´Ù.
+	// ë©”ì‹œì— ì ìš©ë  ìŠ¤í‚¨(ë³¸) ë°ì´í„°ë¥¼ ì½ì–´ë“¤ì…ë‹ˆë‹¤.
 	ReadSkinData();
 
-	// º»°ú ¸Ş½Ã Á¤º¸¸¦ Æ÷ÇÔÇÑ CSV ÆÄÀÏÀ» ÀÛ¼ºÇÕ´Ï´Ù.
-	// ÀÌ ÆÄÀÏÀº ¸ğµ¨ÀÇ ±¸Á¶¸¦ ÀÌÇØÇÏ°Å³ª µğ¹ö±ë¿¡ À¯¿ëÇÏ°Ô »ç¿ëµÉ ¼ö ÀÖ½À´Ï´Ù.
+	// ë³¸ê³¼ ë©”ì‹œ ì •ë³´ë¥¼ í¬í•¨í•œ CSV íŒŒì¼ì„ ì‘ì„±í•©ë‹ˆë‹¤.
+	// ì´ íŒŒì¼ì€ ëª¨ë¸ì˜ êµ¬ì¡°ë¥¼ ì´í•´í•˜ê±°ë‚˜ ë””ë²„ê¹…ì— ìœ ìš©í•˜ê²Œ ì‚¬ìš©ë  ìˆ˜ ìˆìŠµë‹ˆë‹¤.
 	{
 		FILE* file;
-		// CSV ÆÄÀÏÀ» ¾²±â ¸ğµå·Î ¿±´Ï´Ù.
+		// CSV íŒŒì¼ì„ ì“°ê¸° ëª¨ë“œë¡œ ì—½ë‹ˆë‹¤.
 		::fopen_s(&file, "../Vertices.csv", "w");
 
-		// ¸ğµç º» Á¤º¸¸¦ ÆÄÀÏ¿¡ ¾¹´Ï´Ù.
+		// ëª¨ë“  ë³¸ ì •ë³´ë¥¼ íŒŒì¼ì— ì”ë‹ˆë‹¤.
 		for (shared_ptr<asBone>& bone : _bones)
 		{
 			string name = bone->name;
-			// º»ÀÇ ÀÎµ¦½º¿Í ÀÌ¸§À» ÆÄÀÏ¿¡ ±â·ÏÇÕ´Ï´Ù.
+			// ë³¸ì˜ ì¸ë±ìŠ¤ì™€ ì´ë¦„ì„ íŒŒì¼ì— ê¸°ë¡í•©ë‹ˆë‹¤.
 			::fprintf(file, "%d,%s\n", bone->index, bone->name.c_str());
 		}
 
-		// ¸Ş½Ã µ¥ÀÌÅÍ¸¦ ÆÄÀÏ¿¡ ¾¹´Ï´Ù.
+		// ë©”ì‹œ ë°ì´í„°ë¥¼ íŒŒì¼ì— ì”ë‹ˆë‹¤.
 		::fprintf(file, "\n");
 
 		for (shared_ptr<asMesh>& mesh : _meshes)
 		{
 			string name = mesh->name;
-			// ¸Ş½Ã ÀÌ¸§À» ÄÜ¼Ö¿¡ Ãâ·ÂÇÕ´Ï´Ù(µğ¹ö±ë ¿ëµµ).
+			// ë©”ì‹œ ì´ë¦„ì„ ì½˜ì†”ì— ì¶œë ¥í•©ë‹ˆë‹¤(ë””ë²„ê¹… ìš©ë„).
 			::printf("%s\n", name.c_str());
 
-			// ¸Ş½ÃÀÇ °¢ Á¤Á¡¿¡ ´ëÇÑ Á¤º¸¸¦ ÆÄÀÏ¿¡ ±â·ÏÇÕ´Ï´Ù.
+			// ë©”ì‹œì˜ ê° ì •ì ì— ëŒ€í•œ ì •ë³´ë¥¼ íŒŒì¼ì— ê¸°ë¡í•©ë‹ˆë‹¤.
 			for (UINT i = 0; i < mesh->vertices.size(); i++)
 			{
-				Vec3 p = mesh->vertices[i].position; // Á¤Á¡ÀÇ À§Ä¡
-				Vec4 indices = mesh->vertices[i].blendIndices; // º» ÀÎµ¦½º
-				Vec4 weights = mesh->vertices[i].blendWeights; // º» °¡ÁßÄ¡
+				Vec3 p = mesh->vertices[i].position; // ì •ì ì˜ ìœ„ì¹˜
+				Vec4 indices = mesh->vertices[i].blendIndices; // ë³¸ ì¸ë±ìŠ¤
+				Vec4 weights = mesh->vertices[i].blendWeights; // ë³¸ ê°€ì¤‘ì¹˜
 
-				// À§Ä¡, º» ÀÎµ¦½º, º» °¡ÁßÄ¡¸¦ ÆÄÀÏ¿¡ ±â·ÏÇÕ´Ï´Ù.
+				// ìœ„ì¹˜, ë³¸ ì¸ë±ìŠ¤, ë³¸ ê°€ì¤‘ì¹˜ë¥¼ íŒŒì¼ì— ê¸°ë¡í•©ë‹ˆë‹¤.
 				::fprintf(file, "%f,%f,%f,", p.x, p.y, p.z);
 				::fprintf(file, "%f,%f,%f,%f,", indices.x, indices.y, indices.z, indices.w);
 				::fprintf(file, "%f,%f,%f,%f\n", weights.x, weights.y, weights.z, weights.w);
 			}
 		}
 
-		// ÆÄÀÏ ÀÛ¼ºÀ» ¸¶Ä¡°í ÆÄÀÏÀ» ´İ½À´Ï´Ù.
+		// íŒŒì¼ ì‘ì„±ì„ ë§ˆì¹˜ê³  íŒŒì¼ì„ ë‹«ìŠµë‹ˆë‹¤.
 		::fclose(file);
 	}
 
-	// º¯È¯µÈ ¸ğµ¨ µ¥ÀÌÅÍ¸¦ `.mesh` ÆÄÀÏ Çü½ÄÀ¸·Î ÃÖÁ¾ ÀúÀåÇÕ´Ï´Ù.
+	// ë³€í™˜ëœ ëª¨ë¸ ë°ì´í„°ë¥¼ `.mesh` íŒŒì¼ í˜•ì‹ìœ¼ë¡œ ìµœì¢… ì €ì¥í•©ë‹ˆë‹¤.
 	WriteModelFile(finalPath);
 }
 
-// ÀçÁú µ¥ÀÌÅÍ¸¦ ³»º¸³»´Â ÇÔ¼ö
+// ì¬ì§ˆ ë°ì´í„°ë¥¼ ë‚´ë³´ë‚´ëŠ” í•¨ìˆ˜
 void Converter::ExportMaterialData(wstring savePath)
 {
-	wstring finalPath = _texturePath + savePath + L".xml"; // ÃÖÁ¾ ÆÄÀÏ °æ·Î
-	ReadMaterialData(); // ÀçÁú µ¥ÀÌÅÍ ÀĞ±â
-	WriteMaterialData(finalPath); // ÀçÁú ÆÄÀÏ ¾²±â
+	wstring finalPath = _texturePath + savePath + L".xml"; // ìµœì¢… íŒŒì¼ ê²½ë¡œ
+	ReadMaterialData(); // ì¬ì§ˆ ë°ì´í„° ì½ê¸°
+	WriteMaterialData(finalPath); // ì¬ì§ˆ íŒŒì¼ ì“°ê¸°
 }
 
-// ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ¸¦ ³»º¸³»´Â ÇÔ¼ö
+// ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ë¥¼ ë‚´ë³´ë‚´ëŠ” í•¨ìˆ˜
 void Converter::ExportAnimationData(wstring savePath, uint32 index /*= 0*/)
 {
 	wstring finalPath = _modelPath + savePath + L".clip";
@@ -111,166 +111,166 @@ void Converter::ExportAnimationData(wstring savePath, uint32 index /*= 0*/)
 	WriteAnimationData(animation, finalPath);
 }
 
-// ¸ğµ¨ÀÇ ³ëµå(º») µ¥ÀÌÅÍ¸¦ ÀĞ°í Ã³¸®ÇÏ´Â ÇÔ¼ö
+// ëª¨ë¸ì˜ ë…¸ë“œ(ë³¸) ë°ì´í„°ë¥¼ ì½ê³  ì²˜ë¦¬í•˜ëŠ” í•¨ìˆ˜
 void Converter::ReadModelData(aiNode* node, int32 index, int32 parent)
 {
-	// »õ·Î¿î º» °´Ã¼¸¦ »ı¼ºÇÏ°í ±âº» Á¤º¸¸¦ ¼³Á¤ÇÕ´Ï´Ù.
+	// ìƒˆë¡œìš´ ë³¸ ê°ì²´ë¥¼ ìƒì„±í•˜ê³  ê¸°ë³¸ ì •ë³´ë¥¼ ì„¤ì •í•©ë‹ˆë‹¤.
 	shared_ptr<asBone> bone = make_shared<asBone>();
-	bone->index = index; // º»ÀÇ °íÀ¯ ÀÎµ¦½º
-	bone->parent = parent; // ºÎ¸ğ º»ÀÇ ÀÎµ¦½º
-	bone->name = node->mName.C_Str(); // º»ÀÇ ÀÌ¸§
+	bone->index = index; // ë³¸ì˜ ê³ ìœ  ì¸ë±ìŠ¤
+	bone->parent = parent; // ë¶€ëª¨ ë³¸ì˜ ì¸ë±ìŠ¤
+	bone->name = node->mName.C_Str(); // ë³¸ì˜ ì´ë¦„
 
-	// º»ÀÇ ·ÎÄÃ º¯È¯ Çà·ÄÀ» °¡Á®¿À°í, ÀüÄ¡(transpose)ÇÏ¿© ÀúÀåÇÕ´Ï´Ù.
-	// Assimp´Â ¿­ ±âÁØ(column-major) Çà·ÄÀ» »ç¿ëÇÏÁö¸¸, DirectX³ª OpenGLÀº Çà ±âÁØ(row-major) Çà·ÄÀ» »ç¿ëÇÒ ¼ö ÀÖÀ¸¹Ç·Î, ÀüÄ¡°¡ ÇÊ¿äÇÒ ¼ö ÀÖ½À´Ï´Ù.
+	// ë³¸ì˜ ë¡œì»¬ ë³€í™˜ í–‰ë ¬ì„ ê°€ì ¸ì˜¤ê³ , ì „ì¹˜(transpose)í•˜ì—¬ ì €ì¥í•©ë‹ˆë‹¤.
+	// AssimpëŠ” ì—´ ê¸°ì¤€(column-major) í–‰ë ¬ì„ ì‚¬ìš©í•˜ì§€ë§Œ, DirectXë‚˜ OpenGLì€ í–‰ ê¸°ì¤€(row-major) í–‰ë ¬ì„ ì‚¬ìš©í•  ìˆ˜ ìˆìœ¼ë¯€ë¡œ, ì „ì¹˜ê°€ í•„ìš”í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.
 	Matrix transform(node->mTransformation[0]);
 	bone->transform = transform.Transpose();
 
-	// ·çÆ®(È¤Àº ºÎ¸ğ) º»À¸·ÎºÎÅÍ »ó´ëÀûÀÎ º¯È¯À» °è»êÇÕ´Ï´Ù.
-	Matrix matParent = Matrix::Identity; // ±âº»°ªÀ¸·Î ´ÜÀ§ Çà·ÄÀ» »ç¿ë
+	// ë£¨íŠ¸(í˜¹ì€ ë¶€ëª¨) ë³¸ìœ¼ë¡œë¶€í„° ìƒëŒ€ì ì¸ ë³€í™˜ì„ ê³„ì‚°í•©ë‹ˆë‹¤.
+	Matrix matParent = Matrix::Identity; // ê¸°ë³¸ê°’ìœ¼ë¡œ ë‹¨ìœ„ í–‰ë ¬ì„ ì‚¬ìš©
 	if (parent >= 0) {
-		matParent = _bones[parent]->transform; // ºÎ¸ğ º»ÀÇ º¯È¯ Çà·ÄÀ» °¡Á®¿É´Ï´Ù.
+		matParent = _bones[parent]->transform; // ë¶€ëª¨ ë³¸ì˜ ë³€í™˜ í–‰ë ¬ì„ ê°€ì ¸ì˜µë‹ˆë‹¤.
 	}
 
-	// ÃÖÁ¾ÀûÀ¸·Î º»ÀÇ º¯È¯ Çà·ÄÀ» °è»êÇÕ´Ï´Ù.
-	// º» ÀÚ½ÅÀÇ ·ÎÄÃ º¯È¯¿¡ ºÎ¸ğÀÇ º¯È¯ Çà·ÄÀ» °öÇÕ´Ï´Ù.
+	// ìµœì¢…ì ìœ¼ë¡œ ë³¸ì˜ ë³€í™˜ í–‰ë ¬ì„ ê³„ì‚°í•©ë‹ˆë‹¤.
+	// ë³¸ ìì‹ ì˜ ë¡œì»¬ ë³€í™˜ì— ë¶€ëª¨ì˜ ë³€í™˜ í–‰ë ¬ì„ ê³±í•©ë‹ˆë‹¤.
 	bone->transform = bone->transform * matParent;
 
-	// Ã³¸®µÈ º» Á¤º¸¸¦ ³»ºÎ ¸®½ºÆ®¿¡ Ãß°¡ÇÕ´Ï´Ù.
+	// ì²˜ë¦¬ëœ ë³¸ ì •ë³´ë¥¼ ë‚´ë¶€ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€í•©ë‹ˆë‹¤.
 	_bones.push_back(bone);
 
-	// ÇöÀç ³ëµå(º»)¿¡ ¿¬°áµÈ ¸Ş½Ã µ¥ÀÌÅÍ¸¦ ÀĞ¾îµéÀÔ´Ï´Ù.
+	// í˜„ì¬ ë…¸ë“œ(ë³¸)ì— ì—°ê²°ëœ ë©”ì‹œ ë°ì´í„°ë¥¼ ì½ì–´ë“¤ì…ë‹ˆë‹¤.
 	ReadMeshData(node, index);
 
-	// ÇöÀç ³ëµåÀÇ ¸ğµç ÀÚ½Ä ³ëµå¸¦ Àç±ÍÀûÀ¸·Î Å½»öÇÏ¿© °°Àº Ã³¸®¸¦ ¹İº¹ÇÕ´Ï´Ù.
+	// í˜„ì¬ ë…¸ë“œì˜ ëª¨ë“  ìì‹ ë…¸ë“œë¥¼ ì¬ê·€ì ìœ¼ë¡œ íƒìƒ‰í•˜ì—¬ ê°™ì€ ì²˜ë¦¬ë¥¼ ë°˜ë³µí•©ë‹ˆë‹¤.
 	for (uint32 i = 0; i < node->mNumChildren; i++) {
 		ReadModelData(node->mChildren[i], _bones.size(), index);
 	}
 }
 
 
-// ³ëµå¿¡¼­ ¸Ş½Ã µ¥ÀÌÅÍ¸¦ ÀĞ¾î¿Í ³»ºÎ ±¸Á¶Ã¼¿¡ ÀúÀåÇÏ´Â ÇÔ¼ö
+// ë…¸ë“œì—ì„œ ë©”ì‹œ ë°ì´í„°ë¥¼ ì½ì–´ì™€ ë‚´ë¶€ êµ¬ì¡°ì²´ì— ì €ì¥í•˜ëŠ” í•¨ìˆ˜
 void Converter::ReadMeshData(aiNode* node, int32 bone)
 {
 	if (node->mNumMeshes < 1)
-		return; // ¸Ş½Ã°¡ ¾ø´Â ³ëµå´Â Ã³¸®ÇÏÁö ¾ÊÀ½
+		return; // ë©”ì‹œê°€ ì—†ëŠ” ë…¸ë“œëŠ” ì²˜ë¦¬í•˜ì§€ ì•ŠìŒ
 
-	// ³ëµå¿¡ Æ÷ÇÔµÈ ¸ğµç ¸Ş½Ã¿¡ ´ëÇØ ¹İº¹
+	// ë…¸ë“œì— í¬í•¨ëœ ëª¨ë“  ë©”ì‹œì— ëŒ€í•´ ë°˜ë³µ
 	for (uint32 i = 0; i < node->mNumMeshes; i++) {
 
-		shared_ptr<asMesh> mesh = make_shared<asMesh>(); // »õ ¸Ş½Ã °´Ã¼ »ı¼º
-		mesh->name = node->mName.C_Str(); // ¸Ş½Ã ÀÌ¸§ ¼³Á¤
-		mesh->boneIndex = bone; // ¸Ş½Ã¿Í ¿¬°áµÈ º» ÀÎµ¦½º ¼³Á¤
+		shared_ptr<asMesh> mesh = make_shared<asMesh>(); // ìƒˆ ë©”ì‹œ ê°ì²´ ìƒì„±
+		mesh->name = node->mName.C_Str(); // ë©”ì‹œ ì´ë¦„ ì„¤ì •
+		mesh->boneIndex = bone; // ë©”ì‹œì™€ ì—°ê²°ëœ ë³¸ ì¸ë±ìŠ¤ ì„¤ì •
 
 		uint32 index = node->mMeshes[i];
-		const aiMesh* srcMesh = _scene->mMeshes[index]; // ¼Ò½º ¸Ş½Ã ÂüÁ¶
+		const aiMesh* srcMesh = _scene->mMeshes[index]; // ì†ŒìŠ¤ ë©”ì‹œ ì°¸ì¡°
 
-		// ¸Ş½ÃÀÇ ÀçÁú ÀÌ¸§À» °¡Á®¿È
+		// ë©”ì‹œì˜ ì¬ì§ˆ ì´ë¦„ì„ ê°€ì ¸ì˜´
 		const aiMaterial* material = _scene->mMaterials[srcMesh->mMaterialIndex];
-		mesh->materialName = material->GetName().C_Str(); // ÀçÁú ÀÌ¸§ ¼³Á¤
+		mesh->materialName = material->GetName().C_Str(); // ì¬ì§ˆ ì´ë¦„ ì„¤ì •
 
-		const uint32 startVertex = mesh->vertices.size(); // ÇöÀç ¸Ş½ÃÀÇ ½ÃÀÛ Á¤Á¡ ÀÎµ¦½º
+		const uint32 startVertex = mesh->vertices.size(); // í˜„ì¬ ë©”ì‹œì˜ ì‹œì‘ ì •ì  ì¸ë±ìŠ¤
 
-		// ¸Ş½ÃÀÇ ¸ğµç Á¤Á¡¿¡ ´ëÇØ ¹İº¹
+		// ë©”ì‹œì˜ ëª¨ë“  ì •ì ì— ëŒ€í•´ ë°˜ë³µ
 		for (uint32 v = 0; v < srcMesh->mNumVertices; v++)
 		{
-			VertexType vertex; // »õ Á¤Á¡ °´Ã¼
-			// Á¤Á¡ À§Ä¡, UV ÁÂÇ¥, ¹ı¼± º¤ÅÍ º¹»ç
+			VertexType vertex; // ìƒˆ ì •ì  ê°ì²´
+			// ì •ì  ìœ„ì¹˜, UV ì¢Œí‘œ, ë²•ì„  ë²¡í„° ë³µì‚¬
 			::memcpy(&vertex.position, &srcMesh->mVertices[v], sizeof(Vec3));
 			if (srcMesh->HasTextureCoords(0))
 				::memcpy(&vertex.uv, &srcMesh->mTextureCoords[0][v], sizeof(Vec2));
 			if (srcMesh->HasNormals())
 				::memcpy(&vertex.normal, &srcMesh->mNormals[v], sizeof(Vec3));
 
-			mesh->vertices.push_back(vertex); // Á¤Á¡À» ¸Ş½Ã¿¡ Ãß°¡
+			mesh->vertices.push_back(vertex); // ì •ì ì„ ë©”ì‹œì— ì¶”ê°€
 		}
 
-		// ¸Ş½ÃÀÇ ¸ğµç ¸é(ÆäÀÌ½º)¿¡ ´ëÇØ ¹İº¹ÇÏ¿© ÀÎµ¦½º Á¤º¸ ÃßÃâ
+		// ë©”ì‹œì˜ ëª¨ë“  ë©´(í˜ì´ìŠ¤)ì— ëŒ€í•´ ë°˜ë³µí•˜ì—¬ ì¸ë±ìŠ¤ ì •ë³´ ì¶”ì¶œ
 		for (uint32 f = 0; f < srcMesh->mNumFaces; f++)
 		{
 			aiFace& face = srcMesh->mFaces[f];
 			for (uint32 k = 0; k < face.mNumIndices; k++)
-				mesh->indices.push_back(face.mIndices[k] + startVertex); // ÀÎµ¦½º¸¦ ¸Ş½Ã¿¡ Ãß°¡
+				mesh->indices.push_back(face.mIndices[k] + startVertex); // ì¸ë±ìŠ¤ë¥¼ ë©”ì‹œì— ì¶”ê°€
 		}
-		_meshes.push_back(mesh); // ¸Ş½Ã¸¦ ³»ºÎ ¸Ş½Ã ¸®½ºÆ®¿¡ Ãß°¡
+		_meshes.push_back(mesh); // ë©”ì‹œë¥¼ ë‚´ë¶€ ë©”ì‹œ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€
 	}
 }
 
-// ¸ğµ¨ÀÇ º»°ú Á¤Á¡ °¡ÁßÄ¡ Á¤º¸¸¦ ÀĞ¾î¿Í Ã³¸®ÇÏ´Â ÇÔ¼ö
+// ëª¨ë¸ì˜ ë³¸ê³¼ ì •ì  ê°€ì¤‘ì¹˜ ì •ë³´ë¥¼ ì½ì–´ì™€ ì²˜ë¦¬í•˜ëŠ” í•¨ìˆ˜
 void Converter::ReadSkinData()
 {
-	// ¸ğµç ¸Ş½Ã¿¡ ´ëÇØ ¹İº¹
+	// ëª¨ë“  ë©”ì‹œì— ëŒ€í•´ ë°˜ë³µ
 	for (uint32 i = 0; i < _scene->mNumMeshes; i++) {
 		aiMesh* srcMesh = _scene->mMeshes[i];
-		if (!srcMesh->HasBones()) continue; // º»ÀÌ ¾øÀ¸¸é °Ç³Ê¶Ü
+		if (!srcMesh->HasBones()) continue; // ë³¸ì´ ì—†ìœ¼ë©´ ê±´ë„ˆëœ€
 
-		shared_ptr<asMesh> mesh = _meshes[i]; // ÇöÀç ¸Ş½Ã ÂüÁ¶
+		shared_ptr<asMesh> mesh = _meshes[i]; // í˜„ì¬ ë©”ì‹œ ì°¸ì¡°
 
 		vector<asBoneWeights> tempVertexBoneWeights;
-		tempVertexBoneWeights.resize(mesh->vertices.size()); // Á¤Á¡º° °¡ÁßÄ¡ ¸®½ºÆ® ÃÊ±âÈ­
+		tempVertexBoneWeights.resize(mesh->vertices.size()); // ì •ì ë³„ ê°€ì¤‘ì¹˜ ë¦¬ìŠ¤íŠ¸ ì´ˆê¸°í™”
 
-		// ¸ğµç º»¿¡ ´ëÇØ ¹İº¹ÇÏ¿© °¡ÁßÄ¡ Á¤º¸ ÃßÃâ
+		// ëª¨ë“  ë³¸ì— ëŒ€í•´ ë°˜ë³µí•˜ì—¬ ê°€ì¤‘ì¹˜ ì •ë³´ ì¶”ì¶œ
 		for (uint32 b = 0; b < srcMesh->mNumBones; b++) {
 			aiBone* srcMeshBone = srcMesh->mBones[b];
-			uint32 boneIndex = GetBoneIndex(srcMeshBone->mName.C_Str()); // º» ÀÎµ¦½º °Ë»ö
+			uint32 boneIndex = GetBoneIndex(srcMeshBone->mName.C_Str()); // ë³¸ ì¸ë±ìŠ¤ ê²€ìƒ‰
 
 			for (uint32 w = 0; w < srcMeshBone->mNumWeights; w++) {
-				uint32 index = srcMeshBone->mWeights[w].mVertexId; // Á¤Á¡ ÀÎµ¦½º
-				float weight = srcMeshBone->mWeights[w].mWeight; // °¡ÁßÄ¡
+				uint32 index = srcMeshBone->mWeights[w].mVertexId; // ì •ì  ì¸ë±ìŠ¤
+				float weight = srcMeshBone->mWeights[w].mWeight; // ê°€ì¤‘ì¹˜
 
-				tempVertexBoneWeights[index].AddWeights(boneIndex, weight); // °¡ÁßÄ¡ Á¤º¸ Ãß°¡
+				tempVertexBoneWeights[index].AddWeights(boneIndex, weight); // ê°€ì¤‘ì¹˜ ì •ë³´ ì¶”ê°€
 			}
 		}
 
-		// ÃÖÁ¾ °¡ÁßÄ¡ Á¤º¸¸¦ Á¤Á¡ µ¥ÀÌÅÍ¿¡ Àû¿ë
+		// ìµœì¢… ê°€ì¤‘ì¹˜ ì •ë³´ë¥¼ ì •ì  ë°ì´í„°ì— ì ìš©
 		for (uint32 v = 0; v < tempVertexBoneWeights.size(); v++)
 		{
-			tempVertexBoneWeights[v].Normalize(); // °¡ÁßÄ¡ Á¤±ÔÈ­
+			tempVertexBoneWeights[v].Normalize(); // ê°€ì¤‘ì¹˜ ì •ê·œí™”
 
 			asBlendWeight blendWeight = tempVertexBoneWeights[v].GetBlendWeights();
-			mesh->vertices[v].blendIndices = blendWeight.indices; // º» ÀÎµ¦½º ¼³Á¤
-			mesh->vertices[v].blendWeights = blendWeight.weights; // º» °¡ÁßÄ¡ ¼³Á¤
+			mesh->vertices[v].blendIndices = blendWeight.indices; // ë³¸ ì¸ë±ìŠ¤ ì„¤ì •
+			mesh->vertices[v].blendWeights = blendWeight.weights; // ë³¸ ê°€ì¤‘ì¹˜ ì„¤ì •
 		}
 	}
 }
 
-// ¸ğµ¨ ÆÄÀÏÀ» ÀÛ¼ºÇÏ´Â ÇÔ¼ö
+// ëª¨ë¸ íŒŒì¼ì„ ì‘ì„±í•˜ëŠ” í•¨ìˆ˜
 void Converter::WriteModelFile(wstring finalPath)
 {
 	auto path = filesystem::path(finalPath);
 
-	// ÃÖÁ¾ ÆÄÀÏÀÌ À§Ä¡ÇÒ µğ·ºÅä¸®¸¦ »ı¼ºÇÕ´Ï´Ù. ÀÌ¹Ì Á¸ÀçÇÏ¸é °Ç³Ê¶İ´Ï´Ù.
+	// ìµœì¢… íŒŒì¼ì´ ìœ„ì¹˜í•  ë””ë ‰í† ë¦¬ë¥¼ ìƒì„±í•©ë‹ˆë‹¤. ì´ë¯¸ ì¡´ì¬í•˜ë©´ ê±´ë„ˆëœë‹ˆë‹¤.
 	filesystem::create_directory(path.parent_path());
 
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
-	file->Open(finalPath, FileMode::Write); // ÆÄÀÏÀ» ¾²±â ¸ğµå·Î ¿±´Ï´Ù.
+	file->Open(finalPath, FileMode::Write); // íŒŒì¼ì„ ì“°ê¸° ëª¨ë“œë¡œ ì—½ë‹ˆë‹¤.
 
-	// º» µ¥ÀÌÅÍ¸¦ ÆÄÀÏ¿¡ ¾¹´Ï´Ù.
-	file->Write<uint32>(_bones.size()); // º»ÀÇ °³¼ö¸¦ ±â·ÏÇÕ´Ï´Ù.
+	// ë³¸ ë°ì´í„°ë¥¼ íŒŒì¼ì— ì”ë‹ˆë‹¤.
+	file->Write<uint32>(_bones.size()); // ë³¸ì˜ ê°œìˆ˜ë¥¼ ê¸°ë¡í•©ë‹ˆë‹¤.
 	for (shared_ptr<asBone>& bone : _bones)
 	{
-		// °¢ º»¿¡ ´ëÇÑ Á¤º¸¸¦ ÆÄÀÏ¿¡ ±â·ÏÇÕ´Ï´Ù.
-		file->Write<int32>(bone->index); // º»ÀÇ ÀÎµ¦½º
-		file->Write<string>(bone->name); // º»ÀÇ ÀÌ¸§
-		file->Write<int32>(bone->parent); // ºÎ¸ğ º»ÀÇ ÀÎµ¦½º
-		file->Write<Matrix>(bone->transform); // º»ÀÇ º¯È¯ Çà·Ä
+		// ê° ë³¸ì— ëŒ€í•œ ì •ë³´ë¥¼ íŒŒì¼ì— ê¸°ë¡í•©ë‹ˆë‹¤.
+		file->Write<int32>(bone->index); // ë³¸ì˜ ì¸ë±ìŠ¤
+		file->Write<string>(bone->name); // ë³¸ì˜ ì´ë¦„
+		file->Write<int32>(bone->parent); // ë¶€ëª¨ ë³¸ì˜ ì¸ë±ìŠ¤
+		file->Write<Matrix>(bone->transform); // ë³¸ì˜ ë³€í™˜ í–‰ë ¬
 	}
 
-	// ¸Ş½Ã µ¥ÀÌÅÍ¸¦ ÆÄÀÏ¿¡ ¾¹´Ï´Ù.
-	file->Write<uint32>(_meshes.size()); // ¸Ş½ÃÀÇ °³¼ö¸¦ ±â·ÏÇÕ´Ï´Ù.
+	// ë©”ì‹œ ë°ì´í„°ë¥¼ íŒŒì¼ì— ì”ë‹ˆë‹¤.
+	file->Write<uint32>(_meshes.size()); // ë©”ì‹œì˜ ê°œìˆ˜ë¥¼ ê¸°ë¡í•©ë‹ˆë‹¤.
 	for (shared_ptr<asMesh>& meshData : _meshes)
 	{
-		// °¢ ¸Ş½Ã¿¡ ´ëÇÑ Á¤º¸¸¦ ÆÄÀÏ¿¡ ±â·ÏÇÕ´Ï´Ù.
-		file->Write<string>(meshData->name); // ¸Ş½Ã ÀÌ¸§
-		file->Write<int32>(meshData->boneIndex); // ¿¬°áµÈ º»ÀÇ ÀÎµ¦½º
-		file->Write<string>(meshData->materialName); // »ç¿ëÇÏ´Â ÀçÁúÀÇ ÀÌ¸§
+		// ê° ë©”ì‹œì— ëŒ€í•œ ì •ë³´ë¥¼ íŒŒì¼ì— ê¸°ë¡í•©ë‹ˆë‹¤.
+		file->Write<string>(meshData->name); // ë©”ì‹œ ì´ë¦„
+		file->Write<int32>(meshData->boneIndex); // ì—°ê²°ëœ ë³¸ì˜ ì¸ë±ìŠ¤
+		file->Write<string>(meshData->materialName); // ì‚¬ìš©í•˜ëŠ” ì¬ì§ˆì˜ ì´ë¦„
 
-		// Á¤Á¡ µ¥ÀÌÅÍ¸¦ ÆÄÀÏ¿¡ ¾¹´Ï´Ù.
-		file->Write<uint32>(meshData->vertices.size()); // Á¤Á¡ÀÇ °³¼ö
-		file->Write(&meshData->vertices[0], sizeof(VertexType) * meshData->vertices.size()); // Á¤Á¡ µ¥ÀÌÅÍ
+		// ì •ì  ë°ì´í„°ë¥¼ íŒŒì¼ì— ì”ë‹ˆë‹¤.
+		file->Write<uint32>(meshData->vertices.size()); // ì •ì ì˜ ê°œìˆ˜
+		file->Write(&meshData->vertices[0], sizeof(VertexType) * meshData->vertices.size()); // ì •ì  ë°ì´í„°
 
-		// ÀÎµ¦½º µ¥ÀÌÅÍ¸¦ ÆÄÀÏ¿¡ ¾¹´Ï´Ù.
-		file->Write<uint32>(meshData->indices.size()); // ÀÎµ¦½ºÀÇ °³¼ö
-		file->Write(&meshData->indices[0], sizeof(uint32) * meshData->indices.size()); // ÀÎµ¦½º µ¥ÀÌÅÍ
+		// ì¸ë±ìŠ¤ ë°ì´í„°ë¥¼ íŒŒì¼ì— ì”ë‹ˆë‹¤.
+		file->Write<uint32>(meshData->indices.size()); // ì¸ë±ìŠ¤ì˜ ê°œìˆ˜
+		file->Write(&meshData->indices[0], sizeof(uint32) * meshData->indices.size()); // ì¸ë±ìŠ¤ ë°ì´í„°
 	}
 }
 
@@ -280,9 +280,9 @@ void Converter::ReadMaterialData()
 	{
 		aiMaterial* srcMaterial = _scene->mMaterials[i];
 		shared_ptr<asMaterial> material = make_shared<asMaterial>();
-		material->name = srcMaterial->GetName().C_Str(); // ÀçÁúÀÇ ÀÌ¸§
+		material->name = srcMaterial->GetName().C_Str(); // ì¬ì§ˆì˜ ì´ë¦„
 
-		// ÁÖº¯±¤, È®»ê±¤, ¹İ»ç±¤, ÀÚÃ¼¹ß±¤ ¼Ó¼ºÀ» ÀĞ¾îµéÀÔ´Ï´Ù.
+		// ì£¼ë³€ê´‘, í™•ì‚°ê´‘, ë°˜ì‚¬ê´‘, ìì²´ë°œê´‘ ì†ì„±ì„ ì½ì–´ë“¤ì…ë‹ˆë‹¤.
 		aiColor3D color;
 		//Ambient
 		srcMaterial->Get(AI_MATKEY_COLOR_AMBIENT, color);
@@ -301,7 +301,7 @@ void Converter::ReadMaterialData()
 		srcMaterial->Get(AI_MATKEY_COLOR_EMISSIVE, color);
 		material->emissive = Color(color.r, color.g, color.b, 1.f);
 
-		// ÅØ½ºÃ³ ÆÄÀÏ °æ·Î¸¦ ÀĞ¾îµéÀÔ´Ï´Ù.
+		// í…ìŠ¤ì²˜ íŒŒì¼ ê²½ë¡œë¥¼ ì½ì–´ë“¤ì…ë‹ˆë‹¤.
 		aiString file;
 
 		//Diffuse Texture
@@ -316,36 +316,36 @@ void Converter::ReadMaterialData()
 		srcMaterial->GetTexture(aiTextureType_NORMALS, 0, &file);
 		material->normalFile = file.C_Str();
 
-		// ÀçÁú Á¤º¸¸¦ ³»ºÎ ¸®½ºÆ®¿¡ Ãß°¡ÇÕ´Ï´Ù.
+		// ì¬ì§ˆ ì •ë³´ë¥¼ ë‚´ë¶€ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€í•©ë‹ˆë‹¤.
 		_materials.push_back(material);
 	}
 }
 
-// ÀçÁú µ¥ÀÌÅÍ¸¦ XML Çü½ÄÀ¸·Î ÀúÀåÇÏ´Â ÇÔ¼ö
+// ì¬ì§ˆ ë°ì´í„°ë¥¼ XML í˜•ì‹ìœ¼ë¡œ ì €ì¥í•˜ëŠ” í•¨ìˆ˜
 void Converter::WriteMaterialData(wstring finalPath)
 {
 	auto path = filesystem::path(finalPath);
 
-	// ÃÖÁ¾ ÀúÀå °æ·Î¿¡ ÇØ´çÇÏ´Â Æú´õ°¡ ¾øÀ¸¸é »ı¼ºÇÕ´Ï´Ù.
+	// ìµœì¢… ì €ì¥ ê²½ë¡œì— í•´ë‹¹í•˜ëŠ” í´ë”ê°€ ì—†ìœ¼ë©´ ìƒì„±í•©ë‹ˆë‹¤.
 	filesystem::create_directory(path.parent_path());
 
 	string folder = path.parent_path().string();
-	// XML ¹®¼­ °´Ã¼¸¦ »ı¼ºÇÕ´Ï´Ù.
+	// XML ë¬¸ì„œ ê°ì²´ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
 	shared_ptr<tinyxml2::XMLDocument> document = make_shared<tinyxml2::XMLDocument>();
-	// XML ¼±¾ğºÎ¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	// XML ì„ ì–¸ë¶€ë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
 
 	tinyxml2::XMLDeclaration* decl = document->NewDeclaration();
 	document->LinkEndChild(decl);
-	// ÀçÁú µ¥ÀÌÅÍÀÇ ·çÆ® ¿¤¸®¸ÕÆ®¸¦ »ı¼ºÇÏ°í ¹®¼­¿¡ Ãß°¡ÇÕ´Ï´Ù.
+	// ì¬ì§ˆ ë°ì´í„°ì˜ ë£¨íŠ¸ ì—˜ë¦¬ë¨¼íŠ¸ë¥¼ ìƒì„±í•˜ê³  ë¬¸ì„œì— ì¶”ê°€í•©ë‹ˆë‹¤.
 	tinyxml2::XMLElement* root = document->NewElement("Materials");
 	document->LinkEndChild(root);
-	// ¸ğµç ÀçÁú¿¡ ´ëÇØ ¹İº¹ÇÕ´Ï´Ù.
+	// ëª¨ë“  ì¬ì§ˆì— ëŒ€í•´ ë°˜ë³µí•©ë‹ˆë‹¤.
 	for (shared_ptr<asMaterial> material : _materials)
 	{
-		// °¢ ÀçÁú¿¡ ´ëÇÑ Á¤º¸¸¦ XML ¿¤¸®¸ÕÆ®·Î Ãß°¡ÇÕ´Ï´Ù.
+		// ê° ì¬ì§ˆì— ëŒ€í•œ ì •ë³´ë¥¼ XML ì—˜ë¦¬ë¨¼íŠ¸ë¡œ ì¶”ê°€í•©ë‹ˆë‹¤.
 		tinyxml2::XMLElement* node = document->NewElement("Material");
 		root->LinkEndChild(node);
-		// ÀçÁúÀÇ ÀÌ¸§, ÅØ½ºÃ³ ÆÄÀÏ °æ·Î, »ö»ó Á¤º¸ µîÀ» ¿¤¸®¸ÕÆ®ÀÇ ¼Ó¼ºÀ¸·Î Ãß°¡ÇÕ´Ï´Ù.
+		// ì¬ì§ˆì˜ ì´ë¦„, í…ìŠ¤ì²˜ íŒŒì¼ ê²½ë¡œ, ìƒ‰ìƒ ì •ë³´ ë“±ì„ ì—˜ë¦¬ë¨¼íŠ¸ì˜ ì†ì„±ìœ¼ë¡œ ì¶”ê°€í•©ë‹ˆë‹¤.
 		tinyxml2::XMLElement* element = nullptr;
 
 		element = document->NewElement("Name");
@@ -363,7 +363,7 @@ void Converter::WriteMaterialData(wstring finalPath)
 		element = document->NewElement("NormalFile");
 		element->SetText(WriteTexture(folder, material->normalFile).c_str());
 		node->LinkEndChild(element);
-		// °¢ »ö»ó ¼Ó¼º(ambient, diffuse, specular, emissive)¿¡ ´ëÇÑ Á¤º¸¸¦ Ãß°¡ÇÕ´Ï´Ù.
+		// ê° ìƒ‰ìƒ ì†ì„±(ambient, diffuse, specular, emissive)ì— ëŒ€í•œ ì •ë³´ë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
 		element = document->NewElement("Ambient");
 		element->SetAttribute("R", material->ambient.x);
 		element->SetAttribute("G", material->ambient.y);
@@ -392,19 +392,19 @@ void Converter::WriteMaterialData(wstring finalPath)
 		element->SetAttribute("A", material->emissive.w);
 		node->LinkEndChild(element);
 	}
-	// XML ¹®¼­¸¦ ÆÄÀÏ·Î ÀúÀåÇÕ´Ï´Ù.
+	// XML ë¬¸ì„œë¥¼ íŒŒì¼ë¡œ ì €ì¥í•©ë‹ˆë‹¤.
 	document->SaveFile(Utils::ToString(finalPath).c_str());
 }
 
-// ÅØ½ºÃ³ ÆÄÀÏÀ» ÀúÀåÇÏ°Å³ª ±âÁ¸ ÅØ½ºÃ³ ÆÄÀÏÀ» »õ À§Ä¡·Î º¹»çÇÏ´Â ÇÔ¼ö
+// í…ìŠ¤ì²˜ íŒŒì¼ì„ ì €ì¥í•˜ê±°ë‚˜ ê¸°ì¡´ í…ìŠ¤ì²˜ íŒŒì¼ì„ ìƒˆ ìœ„ì¹˜ë¡œ ë³µì‚¬í•˜ëŠ” í•¨ìˆ˜
 string Converter::WriteTexture(string saveFolder, string file)
 {
 	string fileName = filesystem::path(file).filename().string();
 	string folderName = filesystem::path(saveFolder).filename().string();
-	// ÀÓº£µğµå ÅØ½ºÃ³ ¶Ç´Â ¿ÜºÎ ÅØ½ºÃ³ ÆÄÀÏÀÇ Á¸Àç ¿©ºÎ¸¦ È®ÀÎÇÕ´Ï´Ù.
+	// ì„ë² ë””ë“œ í…ìŠ¤ì²˜ ë˜ëŠ” ì™¸ë¶€ í…ìŠ¤ì²˜ íŒŒì¼ì˜ ì¡´ì¬ ì—¬ë¶€ë¥¼ í™•ì¸í•©ë‹ˆë‹¤.
 	const aiTexture* srcTexture = _scene->GetEmbeddedTexture(file.c_str());
 	if (srcTexture) {
-		// ÅØ½ºÃ³ µ¥ÀÌÅÍ°¡ ÀÓº£µğµåµÇ¾î ÀÖÀ¸¸é »õ ÆÄÀÏ·Î ÀúÀåÇÕ´Ï´Ù.
+		// í…ìŠ¤ì²˜ ë°ì´í„°ê°€ ì„ë² ë””ë“œë˜ì–´ ìˆìœ¼ë©´ ìƒˆ íŒŒì¼ë¡œ ì €ì¥í•©ë‹ˆë‹¤.
 		string pathStr = (filesystem::path(saveFolder) / fileName).string();
 
 		if (srcTexture->mHeight == 0)
@@ -443,7 +443,7 @@ string Converter::WriteTexture(string saveFolder, string file)
 	}
 	else
 	{
-		// ¿ÜºÎ ÅØ½ºÃ³ ÆÄÀÏÀÌ¸é »õ À§Ä¡·Î º¹»çÇÕ´Ï´Ù.
+		// ì™¸ë¶€ í…ìŠ¤ì²˜ íŒŒì¼ì´ë©´ ìƒˆ ìœ„ì¹˜ë¡œ ë³µì‚¬í•©ë‹ˆë‹¤.
 		string originStr = (filesystem::path(_assetPath) / folderName / file).string();
 		Utils::Replace(originStr, "\\", "/");
 
@@ -453,67 +453,67 @@ string Converter::WriteTexture(string saveFolder, string file)
 		::CopyFileA(originStr.c_str(), pathStr.c_str(), false);
 	}
 
-	return fileName;// Ã³¸®µÈ ÅØ½ºÃ³ ÆÄÀÏÀÇ ÀÌ¸§À» ¹İÈ¯ÇÕ´Ï´Ù.
+	return fileName;// ì²˜ë¦¬ëœ í…ìŠ¤ì²˜ íŒŒì¼ì˜ ì´ë¦„ì„ ë°˜í™˜í•©ë‹ˆë‹¤.
 }
 
-// Assimp ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ¸¦ ÀĞ¾î »ç¿ëÀÚ Á¤ÀÇ ¾Ö´Ï¸ŞÀÌ¼Ç °´Ã¼·Î º¯È¯ÇÏ´Â ÇÔ¼ö
+// Assimp ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ë¥¼ ì½ì–´ ì‚¬ìš©ì ì •ì˜ ì• ë‹ˆë©”ì´ì…˜ ê°ì²´ë¡œ ë³€í™˜í•˜ëŠ” í•¨ìˆ˜
 std::shared_ptr<asAnimation> Converter::ReadAnimationData(aiAnimation* srcAnimation)
 {
-	// »õ·Î¿î ¾Ö´Ï¸ŞÀÌ¼Ç °´Ã¼¸¦ »ı¼ºÇÕ´Ï´Ù.
+	// ìƒˆë¡œìš´ ì• ë‹ˆë©”ì´ì…˜ ê°ì²´ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
 	shared_ptr<asAnimation> animation = make_shared<asAnimation>();
-	// ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌ¸§À» ¼³Á¤ÇÕ´Ï´Ù.
+	// ì• ë‹ˆë©”ì´ì…˜ ì´ë¦„ì„ ì„¤ì •í•©ë‹ˆë‹¤.
 	animation->name = srcAnimation->mName.C_Str();
-	// ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ ÇÁ·¹ÀÓ ¼Óµµ¸¦ ¼³Á¤ÇÕ´Ï´Ù. (ÃÊ´ç Æ½ ¼ö)
+	// ì• ë‹ˆë©”ì´ì…˜ì˜ í”„ë ˆì„ ì†ë„ë¥¼ ì„¤ì •í•©ë‹ˆë‹¤. (ì´ˆë‹¹ í‹± ìˆ˜)
 	animation->frameRate = (float)srcAnimation->mTicksPerSecond;
-	// ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ ÇÁ·¹ÀÓ ¼ö¸¦ ¼³Á¤ÇÕ´Ï´Ù. (Áö¼Ó ½Ã°£ ±â¹İ)
+	// ì• ë‹ˆë©”ì´ì…˜ì˜ í”„ë ˆì„ ìˆ˜ë¥¼ ì„¤ì •í•©ë‹ˆë‹¤. (ì§€ì† ì‹œê°„ ê¸°ë°˜)
 	animation->frameCount = (uint32)srcAnimation->mDuration + 1;
 
-	// ¾Ö´Ï¸ŞÀÌ¼Ç ³ëµå¸¦ Ä³½ÌÇÏ±â À§ÇÑ ¸ÊÀ» ¼±¾ğÇÕ´Ï´Ù.
+	// ì• ë‹ˆë©”ì´ì…˜ ë…¸ë“œë¥¼ ìºì‹±í•˜ê¸° ìœ„í•œ ë§µì„ ì„ ì–¸í•©ë‹ˆë‹¤.
 	map<string, shared_ptr<asAnimationNode>> cacheAnimNodes;
-	// Assimp ¾Ö´Ï¸ŞÀÌ¼Ç Ã¤³ÎÀ» ¼øÈ¸ÇÏ¸ç ³ëµåº° ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ¸¦ Ã³¸®ÇÕ´Ï´Ù.
+	// Assimp ì• ë‹ˆë©”ì´ì…˜ ì±„ë„ì„ ìˆœíšŒí•˜ë©° ë…¸ë“œë³„ ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ë¥¼ ì²˜ë¦¬í•©ë‹ˆë‹¤.
 	for (uint32 i = 0; i < srcAnimation->mNumChannels; i++)
 	{
 		aiNodeAnim* srcNode = srcAnimation->mChannels[i];
 
-		// ¾Ö´Ï¸ŞÀÌ¼Ç ³ëµå µ¥ÀÌÅÍ ÆÄ½Ì
+		// ì• ë‹ˆë©”ì´ì…˜ ë…¸ë“œ ë°ì´í„° íŒŒì‹±
 		shared_ptr<asAnimationNode> node = ParseAnimationNode(animation, srcNode);
 		if (node->keyframe.size() == 0)
 			continue;
 
-		// ÇöÀç Ã£Àº ³ëµå Áß¿¡ Á¦ÀÏ ±ä ½Ã°£À¸·Î ¾Ö´Ï¸ŞÀÌ¼Ç ½Ã°£ °»½Å
+		// í˜„ì¬ ì°¾ì€ ë…¸ë“œ ì¤‘ì— ì œì¼ ê¸´ ì‹œê°„ìœ¼ë¡œ ì• ë‹ˆë©”ì´ì…˜ ì‹œê°„ ê°±ì‹ 
 		animation->duration = max(animation->duration, node->keyframe.back().time);
-		// ÆÄ½ÌµÈ ³ëµå¸¦ Ä³½Ã¿¡ Ãß°¡ÇÕ´Ï´Ù.
+		// íŒŒì‹±ëœ ë…¸ë“œë¥¼ ìºì‹œì— ì¶”ê°€í•©ë‹ˆë‹¤.
 		cacheAnimNodes[srcNode->mNodeName.C_Str()] = node;
 	}
-	// ¾Ö´Ï¸ŞÀÌ¼Ç Å°ÇÁ·¹ÀÓ µ¥ÀÌÅÍ¸¦ Ã³¸®ÇÕ´Ï´Ù
+	// ì• ë‹ˆë©”ì´ì…˜ í‚¤í”„ë ˆì„ ë°ì´í„°ë¥¼ ì²˜ë¦¬í•©ë‹ˆë‹¤
 	ReadKeyframeData(animation, _scene->mRootNode, cacheAnimNodes);
 
 	return animation;
 }
 
-// ¾Ö´Ï¸ŞÀÌ¼Ç ³ëµå¸¦ ÆÄ½ÌÇÏ´Â ÇÔ¼ö
+// ì• ë‹ˆë©”ì´ì…˜ ë…¸ë“œë¥¼ íŒŒì‹±í•˜ëŠ” í•¨ìˆ˜
 std::shared_ptr<asAnimationNode> Converter::ParseAnimationNode(shared_ptr<asAnimation> animation, aiNodeAnim* srcNode)
 {
-	// »õ·Î¿î ¾Ö´Ï¸ŞÀÌ¼Ç ³ëµå °´Ã¼¸¦ »ı¼º
+	// ìƒˆë¡œìš´ ì• ë‹ˆë©”ì´ì…˜ ë…¸ë“œ ê°ì²´ë¥¼ ìƒì„±
 	std::shared_ptr<asAnimationNode> node = make_shared<asAnimationNode>();
-	// ³ëµå ÀÌ¸§ ¼³Á¤
+	// ë…¸ë“œ ì´ë¦„ ì„¤ì •
 	node->name = srcNode->mNodeName;
 
-	// À§Ä¡, È¸Àü, ½ºÄÉÀÏ Áß °¡Àå ¸¹Àº Å°ÇÁ·¹ÀÓÀ» °¡Áø °ÍÀ» ±âÁØÀ¸·Î ÃÑ Å°ÇÁ·¹ÀÓ ¼ö¸¦ °áÁ¤
+	// ìœ„ì¹˜, íšŒì „, ìŠ¤ì¼€ì¼ ì¤‘ ê°€ì¥ ë§ì€ í‚¤í”„ë ˆì„ì„ ê°€ì§„ ê²ƒì„ ê¸°ì¤€ìœ¼ë¡œ ì´ í‚¤í”„ë ˆì„ ìˆ˜ë¥¼ ê²°ì •
 	uint32 keyCount = max(max(srcNode->mNumPositionKeys, srcNode->mNumScalingKeys), srcNode->mNumRotationKeys);
 
-	// °¢ Å°ÇÁ·¹ÀÓ¿¡ ´ëÇØ ¹İº¹
+	// ê° í‚¤í”„ë ˆì„ì— ëŒ€í•´ ë°˜ë³µ
 	for (uint32 k = 0; k < keyCount; k++)
 	{
-		// Å°ÇÁ·¹ÀÓ µ¥ÀÌÅÍ °´Ã¼
+		// í‚¤í”„ë ˆì„ ë°ì´í„° ê°ì²´
 		asKeyframeData frameData;
 
-		// Å°ÇÁ·¹ÀÓÀÌ ¹ß°ßµÇ¾ú´ÂÁö ¿©ºÎ
+		// í‚¤í”„ë ˆì„ì´ ë°œê²¬ë˜ì—ˆëŠ”ì§€ ì—¬ë¶€
 		bool found = false;
-		// ÇöÀç Å°ÇÁ·¹ÀÓÀÇ ÀÎµ¦½º
+		// í˜„ì¬ í‚¤í”„ë ˆì„ì˜ ì¸ë±ìŠ¤
 		uint32 t = node->keyframe.size();
 
-		// À§Ä¡, È¸Àü, ½ºÄÉÀÏ Å°ÇÁ·¹ÀÓÀ» Ã³¸®ÇÕ´Ï´Ù. °¢ Å°ÇÁ·¹ÀÓÀÇ ½Ã°£°ú µ¥ÀÌÅÍ¸¦ ÃßÃâÇÏ¿© frameData¿¡ ÀúÀåÇÕ´Ï´Ù.
+		// ìœ„ì¹˜, íšŒì „, ìŠ¤ì¼€ì¼ í‚¤í”„ë ˆì„ì„ ì²˜ë¦¬í•©ë‹ˆë‹¤. ê° í‚¤í”„ë ˆì„ì˜ ì‹œê°„ê³¼ ë°ì´í„°ë¥¼ ì¶”ì¶œí•˜ì—¬ frameDataì— ì €ì¥í•©ë‹ˆë‹¤.
 		// Position
 		if (::fabsf((float)srcNode->mPositionKeys[k].mTime - (float)t) <= 0.0001f)
 		{
@@ -552,91 +552,91 @@ std::shared_ptr<asAnimationNode> Converter::ParseAnimationNode(shared_ptr<asAnim
 			node->keyframe.push_back(frameData);
 	}
 
-	// ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ Å°ÇÁ·¹ÀÓ ¼öº¸´Ù ³ëµåÀÇ Å°ÇÁ·¹ÀÓ ¼ö°¡ ÀûÀº °æ¿ì, ¸¶Áö¸· Å°ÇÁ·¹ÀÓÀ» º¹Á¦ÇÏ¿© Ã¤¿ó´Ï´Ù.
+	// ì• ë‹ˆë©”ì´ì…˜ì˜ í‚¤í”„ë ˆì„ ìˆ˜ë³´ë‹¤ ë…¸ë“œì˜ í‚¤í”„ë ˆì„ ìˆ˜ê°€ ì ì€ ê²½ìš°, ë§ˆì§€ë§‰ í‚¤í”„ë ˆì„ì„ ë³µì œí•˜ì—¬ ì±„ì›ë‹ˆë‹¤.
 	if (node->keyframe.size() < animation->frameCount && node->keyframe.size() != 0)
 	{
-		uint32 count = animation->frameCount - node->keyframe.size(); // Ã¤¿ö¾ßÇÒ Å°ÇÁ·¹ÀÓ ¼ö
-		asKeyframeData keyFrame = node->keyframe.back(); // ¸¶Áö¸· Å°ÇÁ·¹ÀÓ
+		uint32 count = animation->frameCount - node->keyframe.size(); // ì±„ì›Œì•¼í•  í‚¤í”„ë ˆì„ ìˆ˜
+		asKeyframeData keyFrame = node->keyframe.back(); // ë§ˆì§€ë§‰ í‚¤í”„ë ˆì„
 
 		for (uint32 n = 0; n < count; n++)
-			node->keyframe.push_back(keyFrame); // Å°ÇÁ·¹ÀÓ º¹Á¦ÇÏ¿© Ãß°¡
+			node->keyframe.push_back(keyFrame); // í‚¤í”„ë ˆì„ ë³µì œí•˜ì—¬ ì¶”ê°€
 	}
 
 	return node;
 }
 
-// ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ¿¡¼­ Æ¯Á¤ ³ëµåÀÇ Å°ÇÁ·¹ÀÓ µ¥ÀÌÅÍ¸¦ ÀĞ¾î ³»ºÎ µ¥ÀÌÅÍ ±¸Á¶¿¡ ÀúÀåÇÏ´Â ÇÔ¼ö
+// ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ì—ì„œ íŠ¹ì • ë…¸ë“œì˜ í‚¤í”„ë ˆì„ ë°ì´í„°ë¥¼ ì½ì–´ ë‚´ë¶€ ë°ì´í„° êµ¬ì¡°ì— ì €ì¥í•˜ëŠ” í•¨ìˆ˜
 void Converter::ReadKeyframeData(shared_ptr<asAnimation> animation, aiNode* srcNode, map<string, shared_ptr<asAnimationNode>>& cache)
 {
-	// »õ·Î¿î Å°ÇÁ·¹ÀÓ °´Ã¼¸¦ »ı¼ºÇÕ´Ï´Ù.
+	// ìƒˆë¡œìš´ í‚¤í”„ë ˆì„ ê°ì²´ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
 	shared_ptr<asKeyframe> keyframe = make_shared<asKeyframe>();
-	// ÇöÀç ³ëµå(º»)ÀÇ ÀÌ¸§À» Å°ÇÁ·¹ÀÓÀÇ º» ÀÌ¸§À¸·Î ¼³Á¤ÇÕ´Ï´Ù.
+	// í˜„ì¬ ë…¸ë“œ(ë³¸)ì˜ ì´ë¦„ì„ í‚¤í”„ë ˆì„ì˜ ë³¸ ì´ë¦„ìœ¼ë¡œ ì„¤ì •í•©ë‹ˆë‹¤.
 	keyframe->boneName = srcNode->mName.C_Str();
 
-	// ÇöÀç ³ëµå¿¡ ÇØ´çÇÏ´Â ¾Ö´Ï¸ŞÀÌ¼Ç ³ëµå¸¦ Ã£½À´Ï´Ù.
+	// í˜„ì¬ ë…¸ë“œì— í•´ë‹¹í•˜ëŠ” ì• ë‹ˆë©”ì´ì…˜ ë…¸ë“œë¥¼ ì°¾ìŠµë‹ˆë‹¤.
 	shared_ptr<asAnimationNode> findNode = cache[srcNode->mName.C_Str()];
 
-	// ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ ¸ğµç ÇÁ·¹ÀÓ¿¡ ´ëÇØ ¹İº¹ÇÕ´Ï´Ù.
+	// ì• ë‹ˆë©”ì´ì…˜ì˜ ëª¨ë“  í”„ë ˆì„ì— ëŒ€í•´ ë°˜ë³µí•©ë‹ˆë‹¤.
 	for (uint32 i = 0; i < animation->frameCount; i++)
 	{
-		asKeyframeData frameData; // Å°ÇÁ·¹ÀÓ µ¥ÀÌÅÍ °´Ã¼¸¦ »ı¼ºÇÕ´Ï´Ù.
+		asKeyframeData frameData; // í‚¤í”„ë ˆì„ ë°ì´í„° ê°ì²´ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
 
-		// ¸¸¾à ÇöÀç ³ëµå¿¡ ´ëÇÑ ¾Ö´Ï¸ŞÀÌ¼Ç ³ëµå°¡ Ä³½Ã¿¡¼­ Ã£¾ÆÁöÁö ¾Ê´Â °æ¿ì
+		// ë§Œì•½ í˜„ì¬ ë…¸ë“œì— ëŒ€í•œ ì• ë‹ˆë©”ì´ì…˜ ë…¸ë“œê°€ ìºì‹œì—ì„œ ì°¾ì•„ì§€ì§€ ì•ŠëŠ” ê²½ìš°
 		if (findNode == nullptr)
 		{
-			// ³ëµåÀÇ º¯È¯ Çà·ÄÀ» °¡Á®¿Í ÀüÄ¡ÇÑ µÚ, ÀÌ¸¦ ±â¹İÀ¸·Î À§Ä¡, È¸Àü, ½ºÄÉÀÏ µ¥ÀÌÅÍ¸¦ ÃßÃâÇÕ´Ï´Ù.
+			// ë…¸ë“œì˜ ë³€í™˜ í–‰ë ¬ì„ ê°€ì ¸ì™€ ì „ì¹˜í•œ ë’¤, ì´ë¥¼ ê¸°ë°˜ìœ¼ë¡œ ìœ„ì¹˜, íšŒì „, ìŠ¤ì¼€ì¼ ë°ì´í„°ë¥¼ ì¶”ì¶œí•©ë‹ˆë‹¤.
 			Matrix transform(srcNode->mTransformation[0]);
 			transform = transform.Transpose();
-			frameData.time = (float)i;	// ÇÁ·¹ÀÓ ½Ã°£À» ¼³Á¤ÇÕ´Ï´Ù.
+			frameData.time = (float)i;	// í”„ë ˆì„ ì‹œê°„ì„ ì„¤ì •í•©ë‹ˆë‹¤.
 			transform.Decompose(OUT frameData.scale, OUT frameData.rotation, OUT frameData.translation);
 		}
 		else
 		{
-			// Ä³½Ã¿¡¼­ Ã£¾ÆÁø ¾Ö´Ï¸ŞÀÌ¼Ç ³ëµå¿¡ ÀÌ¹Ì Å°ÇÁ·¹ÀÓ µ¥ÀÌÅÍ°¡ ÀÖÀ¸¸é, ÇØ´ç µ¥ÀÌÅÍ¸¦ »ç¿ëÇÕ´Ï´Ù.
+			// ìºì‹œì—ì„œ ì°¾ì•„ì§„ ì• ë‹ˆë©”ì´ì…˜ ë…¸ë“œì— ì´ë¯¸ í‚¤í”„ë ˆì„ ë°ì´í„°ê°€ ìˆìœ¼ë©´, í•´ë‹¹ ë°ì´í„°ë¥¼ ì‚¬ìš©í•©ë‹ˆë‹¤.
 			frameData = findNode->keyframe[i];
 		}
-		// Ã³¸®µÈ Å°ÇÁ·¹ÀÓ µ¥ÀÌÅÍ¸¦ Å°ÇÁ·¹ÀÓ °´Ã¼¿¡ Ãß°¡ÇÕ´Ï´Ù.
+		// ì²˜ë¦¬ëœ í‚¤í”„ë ˆì„ ë°ì´í„°ë¥¼ í‚¤í”„ë ˆì„ ê°ì²´ì— ì¶”ê°€í•©ë‹ˆë‹¤.
 		keyframe->transforms.push_back(frameData);
 	}
 
-	// Ã³¸®µÈ Å°ÇÁ·¹ÀÓ °´Ã¼¸¦ ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ Å°ÇÁ·¹ÀÓ ¸ñ·Ï¿¡ Ãß°¡ÇÕ´Ï´Ù.
+	// ì²˜ë¦¬ëœ í‚¤í”„ë ˆì„ ê°ì²´ë¥¼ ì• ë‹ˆë©”ì´ì…˜ì˜ í‚¤í”„ë ˆì„ ëª©ë¡ì— ì¶”ê°€í•©ë‹ˆë‹¤.
 	animation->keyframes.push_back(keyframe);
 
-	// ÇöÀç ³ëµåÀÇ ¸ğµç ÀÚ½Ä ³ëµå¿¡ ´ëÇØ Àç±ÍÀûÀ¸·Î µ¿ÀÏÇÑ Ã³¸®¸¦ ¼öÇàÇÕ´Ï´Ù.
+	// í˜„ì¬ ë…¸ë“œì˜ ëª¨ë“  ìì‹ ë…¸ë“œì— ëŒ€í•´ ì¬ê·€ì ìœ¼ë¡œ ë™ì¼í•œ ì²˜ë¦¬ë¥¼ ìˆ˜í–‰í•©ë‹ˆë‹¤.
 	for (uint32 i = 0; i < srcNode->mNumChildren; i++)
 		ReadKeyframeData(animation, srcNode->mChildren[i], cache);
 }
 
-// ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ¸¦ ÆÄÀÏ·Î ÀúÀåÇÏ´Â ÇÔ¼ö
+// ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ë¥¼ íŒŒì¼ë¡œ ì €ì¥í•˜ëŠ” í•¨ìˆ˜
 void Converter::WriteAnimationData(shared_ptr<asAnimation> animation, wstring finalPath)
 {
-	// ÃÖÁ¾ ÆÄÀÏ °æ·Î¸¦ »ı¼ºÇÏ°í, ÇØ´ç °æ·ÎÀÇ ºÎ¸ğ µğ·ºÅä¸®¸¦ ¸¸µì´Ï´Ù.
+	// ìµœì¢… íŒŒì¼ ê²½ë¡œë¥¼ ìƒì„±í•˜ê³ , í•´ë‹¹ ê²½ë¡œì˜ ë¶€ëª¨ ë””ë ‰í† ë¦¬ë¥¼ ë§Œë“­ë‹ˆë‹¤.
 	auto path = filesystem::path(finalPath);
 
-	// Æú´õ°¡ ¾øÀ¸¸é ¸¸µç´Ù.
+	// í´ë”ê°€ ì—†ìœ¼ë©´ ë§Œë“ ë‹¤.
 	filesystem::create_directory(path.parent_path());
 
-	// ÆÄÀÏ ÀÛ¼ºÀ» À§ÇÑ FileUtils °´Ã¼¸¦ »ı¼ºÇÏ°í ÆÄÀÏÀ» ¿±´Ï´Ù.
+	// íŒŒì¼ ì‘ì„±ì„ ìœ„í•œ FileUtils ê°ì²´ë¥¼ ìƒì„±í•˜ê³  íŒŒì¼ì„ ì—½ë‹ˆë‹¤.
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(finalPath, FileMode::Write);
 
-	// ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ ±âº» Á¤º¸¸¦ ÆÄÀÏ¿¡ ±â·ÏÇÕ´Ï´Ù.
-	file->Write<string>(animation->name); // ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌ¸§
-	file->Write<float>(animation->duration); // ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ ÃÑ Áö¼Ó ½Ã°£
-	file->Write<float>(animation->frameRate); // ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ ÇÁ·¹ÀÓ ¼Óµµ (ÃÊ´ç Æ½ ¼ö)
-	file->Write<uint32>(animation->frameCount); // ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ ÃÑ ÇÁ·¹ÀÓ ¼ö
+	// ì• ë‹ˆë©”ì´ì…˜ì˜ ê¸°ë³¸ ì •ë³´ë¥¼ íŒŒì¼ì— ê¸°ë¡í•©ë‹ˆë‹¤.
+	file->Write<string>(animation->name); // ì• ë‹ˆë©”ì´ì…˜ ì´ë¦„
+	file->Write<float>(animation->duration); // ì• ë‹ˆë©”ì´ì…˜ì˜ ì´ ì§€ì† ì‹œê°„
+	file->Write<float>(animation->frameRate); // ì• ë‹ˆë©”ì´ì…˜ì˜ í”„ë ˆì„ ì†ë„ (ì´ˆë‹¹ í‹± ìˆ˜)
+	file->Write<uint32>(animation->frameCount); // ì• ë‹ˆë©”ì´ì…˜ì˜ ì´ í”„ë ˆì„ ìˆ˜
 
-	// ¾Ö´Ï¸ŞÀÌ¼Ç Å°ÇÁ·¹ÀÓ µ¥ÀÌÅÍ¸¦ ÆÄÀÏ¿¡ ±â·ÏÇÕ´Ï´Ù.
-	file->Write<uint32>(animation->keyframes.size()); // Å°ÇÁ·¹ÀÓÀÇ ¼ö
+	// ì• ë‹ˆë©”ì´ì…˜ í‚¤í”„ë ˆì„ ë°ì´í„°ë¥¼ íŒŒì¼ì— ê¸°ë¡í•©ë‹ˆë‹¤.
+	file->Write<uint32>(animation->keyframes.size()); // í‚¤í”„ë ˆì„ì˜ ìˆ˜
 
-	// °¢ Å°ÇÁ·¹ÀÓ¿¡ ´ëÇÑ Á¤º¸¸¦ ¼øÈ¸ÇÏ¸ç ÆÄÀÏ¿¡ ±â·ÏÇÕ´Ï´Ù.
+	// ê° í‚¤í”„ë ˆì„ì— ëŒ€í•œ ì •ë³´ë¥¼ ìˆœíšŒí•˜ë©° íŒŒì¼ì— ê¸°ë¡í•©ë‹ˆë‹¤.
 	for (shared_ptr<asKeyframe> keyframe : animation->keyframes)
 	{
-		file->Write<string>(keyframe->boneName); // Å°ÇÁ·¹ÀÓÀÌ ¼ÓÇÑ º»ÀÇ ÀÌ¸§
+		file->Write<string>(keyframe->boneName); // í‚¤í”„ë ˆì„ì´ ì†í•œ ë³¸ì˜ ì´ë¦„
 
-		// Å°ÇÁ·¹ÀÓ º¯È¯ µ¥ÀÌÅÍÀÇ Å©±â¿Í µ¥ÀÌÅÍ ÀÚÃ¼¸¦ ÆÄÀÏ¿¡ ±â·ÏÇÕ´Ï´Ù.
-		file->Write<uint32>(keyframe->transforms.size()); // º¯È¯ µ¥ÀÌÅÍÀÇ ¼ö
-		file->Write(&keyframe->transforms[0], sizeof(asKeyframeData) * keyframe->transforms.size()); // º¯È¯ µ¥ÀÌÅÍ
+		// í‚¤í”„ë ˆì„ ë³€í™˜ ë°ì´í„°ì˜ í¬ê¸°ì™€ ë°ì´í„° ìì²´ë¥¼ íŒŒì¼ì— ê¸°ë¡í•©ë‹ˆë‹¤.
+		file->Write<uint32>(keyframe->transforms.size()); // ë³€í™˜ ë°ì´í„°ì˜ ìˆ˜
+		file->Write(&keyframe->transforms[0], sizeof(asKeyframeData) * keyframe->transforms.size()); // ë³€í™˜ ë°ì´í„°
 	}
 }
 

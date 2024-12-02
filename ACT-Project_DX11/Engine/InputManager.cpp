@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "InputManager.h"
 
 void InputManager::Init(HWND hwnd)
@@ -29,12 +29,12 @@ void InputManager::Update()
 
 	for (uint32 key = 0; key < KEY_TYPE_COUNT; key++)
 	{
-		// Å°°¡ ´­·Á ÀÖÀ¸¸é true
+		// í‚¤ê°€ ëˆŒë ¤ ìžˆìœ¼ë©´ true
 		if (asciiKeys[key] & 0x80)
 		{
 			KEY_STATE& state = _states[key];
 
-			// ÀÌÀü ÇÁ·¹ÀÓ¿¡ Å°¸¦ ´©¸¥ »óÅÂ¶ó¸é PRESS
+			// ì´ì „ í”„ë ˆìž„ì— í‚¤ë¥¼ ëˆ„ë¥¸ ìƒíƒœë¼ë©´ PRESS
 			if (state == KEY_STATE::PRESS || state == KEY_STATE::DOWN)
 				state = KEY_STATE::PRESS;
 			else
@@ -44,7 +44,7 @@ void InputManager::Update()
 		{
 			KEY_STATE& state = _states[key];
 
-			// ÀÌÀü ÇÁ·¹ÀÓ¿¡ Å°¸¦ ´©¸¥ »óÅÂ¶ó¸é UP
+			// ì´ì „ í”„ë ˆìž„ì— í‚¤ë¥¼ ëˆ„ë¥¸ ìƒíƒœë¼ë©´ UP
 			if (state == KEY_STATE::PRESS || state == KEY_STATE::DOWN)
 				state = KEY_STATE::UP;
 			else
@@ -52,16 +52,16 @@ void InputManager::Update()
 		}
 	}
 
-	// ¸¶¿ì½º Ä¿¼­ÀÇ ÇöÀç È­¸é ÁÂÇ¥(½ºÅ©¸° ÁÂÇ¥)¸¦ _mousePos¿¡ ÀúÀå
+	// ë§ˆìš°ìŠ¤ ì»¤ì„œì˜ í˜„ìž¬ í™”ë©´ ì¢Œí‘œ(ìŠ¤í¬ë¦° ì¢Œí‘œ)ë¥¼ _mousePosì— ì €ìž¥
 	::GetCursorPos(&_mousePos);
-	// ½ºÅ©¸° ÁÂÇ¥¸¦ À©µµ¿ì Å¬¶óÀÌ¾ðÆ® ÁÂÇ¥·Î º¯È¯
+	// ìŠ¤í¬ë¦° ì¢Œí‘œë¥¼ ìœˆë„ìš° í´ë¼ì´ì–¸íŠ¸ ì¢Œí‘œë¡œ ë³€í™˜
 	::ScreenToClient(_hwnd, &_mousePos);
 
-	// ¸¶¿ì½º ÀÌµ¿·® °è»ê
+	// ë§ˆìš°ìŠ¤ ì´ë™ëŸ‰ ê³„ì‚°
 	_deltaX = _mousePos.x - _prevMouseX;
 	_deltaY = _mousePos.y - _prevMouseY;
 
-	// ÇöÀç À§Ä¡¸¦ ÀÌÀü À§Ä¡·Î ÀúÀå
+	// í˜„ìž¬ ìœ„ì¹˜ë¥¼ ì´ì „ ìœ„ì¹˜ë¡œ ì €ìž¥
 	_prevMouseX = _mousePos.x;
 	_prevMouseY = _mousePos.y;
 }

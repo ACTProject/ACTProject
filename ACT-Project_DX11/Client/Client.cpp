@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "RawBuffer.h"
 #include "TextureBuffer.h"
 #include "Material.h"
@@ -151,7 +151,7 @@ void Client::Init()
 		}
 		// RedBar HPMesh
 		{
-			// ½½¶óÀÌ´õ ÄÄÆ÷³ÍÆ® Ãß°¡.
+			// ìŠ¬ë¼ì´ë” ì»´í¬ë„ŒíŠ¸ ì¶”ê°€.
 			auto obj = make_shared<GameObject>();
 			obj->AddComponent(make_shared<Slider>());
 			obj->GetSlider()->Create(Vec2(-290.f, -261.f), Vec2(126, 8), RESOURCES->Get<Material>(L"RedBar"));
@@ -161,7 +161,7 @@ void Client::Init()
 
 		// RedBar ARmor Mesh
 		{
-			// ½½¶óÀÌ´õ ÄÄÆ÷³ÍÆ® Ãß°¡.
+			// ìŠ¬ë¼ì´ë” ì»´í¬ë„ŒíŠ¸ ì¶”ê°€.
 			auto obj = make_shared<GameObject>();
 			obj->AddComponent(make_shared<Slider>());
 			obj->GetSlider()->Create(Vec2(-290.f, -234.f), Vec2(164, 7), RESOURCES->Get<Material>(L"RedBar"));
@@ -377,7 +377,7 @@ void Client::Init()
 
 				CUR_SCENE->Add(obj);
 			};
-			//¾Õ µÚ À§ ¾Æ·¡ ¿ŞÂÊ ¿À¸¥ÂÊ
+			//ì• ë’¤ ìœ„ ì•„ë˜ ì™¼ìª½ ì˜¤ë¥¸ìª½
 			createFace(1, L"Cubemap_Front");   // Front
 			createFace(2, L"Cubemap_Back");   // Back
 			createFace(3, L"Cubemap_Top");    // Top
@@ -513,7 +513,7 @@ void Client::Init()
 		src = make_shared<MapObjDesc>(L"MapObject/WallLeft", L"23. RenderDemo.fx");
 		MAP->AddMapObj(src);
 
-		// ImGui¿ë ÇÔ¼ö.
+		// ImGuiìš© í•¨ìˆ˜.
 		MAP->InitMapText();
 	}
 

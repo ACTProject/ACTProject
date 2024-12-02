@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Component.h"
 
 enum class ColliderType
@@ -32,9 +32,9 @@ public:
 	void SetColliding(bool isColliding) { _isColliding = isColliding; }
 protected:
 	ColliderType _colliderType;
-	Vec3 _offset = Vec3(0.0f); // Collider Áß½ÉÀÇ offset
+	Vec3 _offset = Vec3(0.0f); // Collider ì¤‘ì‹¬ì˜ offset
 
 private:
-	bool _isColliding = false; // Ãæµ¹ »óÅÂ ÃßÀû
+	bool _isColliding = false; // ì¶©ëŒ ìƒíƒœ ì¶”ì 
 };
 

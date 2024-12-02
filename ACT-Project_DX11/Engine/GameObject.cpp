@@ -187,6 +187,12 @@ std::shared_ptr<Skybox> GameObject::GetSkybox()
 	return static_pointer_cast<Skybox>(component);
 }
 
+std::shared_ptr<HitBox> GameObject::GetHitBox()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::HitBox);
+	return static_pointer_cast<HitBox>(component);
+}
+
 std::shared_ptr<Transform> GameObject::GetOrAddTransform()
 {
 	if (GetTransform() == nullptr)

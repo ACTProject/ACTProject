@@ -7,6 +7,7 @@
 #include "Terrain.h"
 #include "AABBBoxCollider.h"
 #include "CollisionManager.h"
+#include "Rigidbody.h"
 
 void MapManager::Init()
 {

@@ -217,6 +217,9 @@
     <ClCompile Include="Skybox.cpp">
       <Filter>04. Component</Filter>
     </ClCompile>
+    <ClCompile Include="HitBox.cpp">
+      <Filter>04. Component\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModelMesh.h">
@@ -446,6 +449,9 @@
     </ClInclude>
     <ClInclude Include="Skybox.h">
       <Filter>04. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="HitBox.h">
+      <Filter>04. Component\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

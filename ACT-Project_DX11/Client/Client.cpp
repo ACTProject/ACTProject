@@ -217,6 +217,7 @@ void Client::Init()
 			weaponModel->ReadMaterial(L"Fork/Fork");
 		}
 
+		// HitBox
 		ModelMesh& weaponMesh = *weaponModel->GetMeshes()[0];
 		playerModel->AddDummyBoneAndAttach(weaponMesh, L"Hand_Grip_L", L"WeaponDummy");
 	}
@@ -304,8 +305,8 @@ void Client::Init()
 		rigidBody->SetMass(2.0f);
 		enemy->AddComponent(rigidBody);
 
-		COLLISION->AddCollider(collider);
 		COLLISION->AddRigidbody(rigidBody);
+		COLLISION->AddCollider(collider);
 
 		CUR_SCENE->Add(enemy);
 	}

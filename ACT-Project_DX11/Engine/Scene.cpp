@@ -178,24 +178,22 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 		if (gameObject->GetCollider() == nullptr)
 			continue;
 
-		// ViewSpace?먯꽌??Ray ?뺤쓽
+		// ViewSpace에서의 Ray 정의
 		Vec4 rayOrigin = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		Vec4 rayDir = Vec4(viewX, viewY, 1.0f, 0.0f);
 
-		// WorldSpace?먯꽌??Ray ?뺤쓽
+		// WorldSpace에서의 Ray 정의
 		Vec3 worldRayOrigin = XMVector3TransformCoord(rayOrigin, viewMatrixInv);
 		Vec3 worldRayDir = XMVector3TransformNormal(rayDir, viewMatrixInv);
 		worldRayDir.Normalize();
 
-		// WorldSpace?먯꽌 ?곗궛
+		// WorldSpace에서 연산
 		Ray ray = Ray(worldRayOrigin, worldRayDir);
 
 		float distance = 0.f;
 		if (gameObject->GetCollider()->Intersects(ray, OUT distance) == false)
 			continue;
 
-
-		// ?ш린?먯꽌 留듭삤釉뚯젥???ъ씤???ㅻ㈃ ????
 		MAP->ChekMapObjectSelect(gameObject);
 
 

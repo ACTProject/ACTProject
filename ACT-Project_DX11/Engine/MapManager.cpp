@@ -2,7 +2,6 @@
 #include "MapManager.h"
 #include "MeshRenderer.h"
 #include "ModelRenderer.h"
-#include "Model.h"
 #include "AABBBoxCollider.h"
 #include "Terrain.h"
 #include "AABBBoxCollider.h"
@@ -11,7 +10,70 @@
 
 void MapManager::Init()
 {
+	////MapObj
+	shared_ptr<MapObjDesc> src;
+	{
+		src = make_shared<MapObjDesc>(L"MapObject/recyclingBox01", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/PencilHedgehog", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/StarFish", L"23. RenderDemo.fx", false);
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/pigeon", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/flagpole", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/WallLeft", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/Bottle", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/CardHouseEntity", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/Cylinder01", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/Cylinder07", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/KelpGround", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/road", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/rock", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/Umbrella", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/wall01", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/wall02", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/moonjelly", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+		src = make_shared<MapObjDesc>(L"MapObject/rock2", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+
+
+		// ImGui용 함수.
+		MAP->InitMapText();
+	}
+
 	ImportMapObj();
+
 }
 
 bool MapManager::ChekMapObjectSelect(shared_ptr<GameObject> obj)
@@ -92,16 +154,14 @@ shared_ptr<GameObject> MapManager::Create(Vec3& pos)
 		obj->GetOrAddTransform()->SetLocalRotation(_mapSelectDesc->rotation);
 		obj->GetOrAddTransform()->SetScale(_mapSelectDesc->scale);
 
-		shared_ptr<Model> model = make_shared<Model>();
+		auto it = _mapInfoList.find(_mapSelectDesc->filename);
+		if (it != _mapInfoList.end())
 		{
-			model->ReadModel(_mapSelectDesc->filename);
-			model->ReadMaterial(_mapSelectDesc->filename);
+			auto modelrender = make_shared<ModelRenderer>(it->second->_shader);
+			obj->AddComponent(modelrender);
+			obj->GetModelRenderer()->SetModel(it->second->_model);
+			obj->GetModelRenderer()->SetPass(1);
 		}
-		shared_ptr<Shader> renderShader = make_shared<Shader>(_mapSelectDesc->shadername);
-		auto modelrender = make_shared<ModelRenderer>(renderShader);
-		obj->AddComponent(modelrender);
-		obj->GetModelRenderer()->SetModel(model);
-		obj->GetModelRenderer()->SetPass(1);
 
 
 		if (_mapSelectDesc->isCollision == true)
@@ -110,6 +170,8 @@ shared_ptr<GameObject> MapManager::Create(Vec3& pos)
 			collider->SetOffset(_mapSelectDesc->offset);
 			collider->GetBoundingBox().Extents = _mapSelectDesc->extent;
 			obj->AddComponent(collider);
+
+
 			COLLISION->AddCollider(collider);
 		}
 	}
@@ -126,23 +188,24 @@ shared_ptr<GameObject> MapManager::Create(MapObjDesc& desc)
 		obj->GetOrAddTransform()->SetLocalRotation(desc.rotation); // XMConvertToRadians()
 		obj->GetOrAddTransform()->SetScale(desc.scale);
 
-		shared_ptr<Model> model = make_shared<Model>();
+		auto it = _mapInfoList.find(desc.filename);
+		if (it != _mapInfoList.end())
 		{
-			model->ReadModel(desc.filename);
-			model->ReadMaterial(desc.filename);
+			auto modelrender = make_shared<ModelRenderer>(it->second->_shader);
+			obj->AddComponent(modelrender);
+			obj->GetModelRenderer()->SetModel(it->second->_model);
+			obj->GetModelRenderer()->SetPass(1);
 		}
-		shared_ptr<Shader> shader = make_shared<Shader>(desc.shadername);
-		auto modelrender = make_shared<ModelRenderer>(shader);
-		obj->AddComponent(modelrender);
-		obj->GetModelRenderer()->SetModel(model);
-		obj->GetModelRenderer()->SetPass(1);
+
 
 		if (desc.isCollision == true)
 		{
 			auto collider = make_shared<AABBBoxCollider>();
+			obj->AddComponent(collider);
 			collider->SetOffset(desc.offset);
 			collider->GetBoundingBox().Extents = desc.extent;
-			obj->AddComponent(collider);
+
+
 			COLLISION->AddCollider(collider);
 		}
 	}
@@ -153,7 +216,25 @@ shared_ptr<GameObject> MapManager::Create(MapObjDesc& desc)
 
 void MapManager::AddMapObj(shared_ptr<MapObjDesc> obj)
 {
+	// 파일네임이 다를 경우 포인터로 만듦.
+	// 쉐이더네임 다르면?
+	auto it = _mapInfoList.find(obj->filename);
+	if (it != _mapInfoList.end())
+	{
+		return;
+	}
 	_mapInitInfoList.push_back(obj);
+
+	shared_ptr<MapModel> models = make_shared<MapModel>();
+
+	models->_model = make_shared<Model>();
+	{
+		models->_model->ReadModel(obj->filename);
+		models->_model->ReadMaterial(obj->filename);
+	}
+	models->_shader = make_shared<Shader>(obj->shadername);
+
+	_mapInfoList.insert(make_pair(obj->filename, models));
 }
 
 void MapManager::InitMapText()

@@ -11,11 +11,13 @@ public:
 
 	uint32 GetFps() { return _fps; }
 	float GetDeltaTime() { return _deltaTime; }
+	float GetGameTime() { return _gameTime; }
 
 private:
-	uint64	_frequency = 0;		
+	uint64	_frequency = 0;
 	uint64	_prevCount = 0;
 	float	_deltaTime = 0.f; // 현재 프레임의 경과 시간
+	float	_gameTime = 0.f;
 
 private:
 	float	_frameTime = 0.f;

@@ -36,6 +36,8 @@
 void Client::Init()
 {
 	shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
+	shared_ptr<Shader> renderBoxShader = make_shared<Shader>(L"23. RenderDemoBox.fx");
+	shared_ptr<Shader> renderUIShader = make_shared<Shader>(L"23. RenderDemoUI.fx");
 
 	// Camera
 	{
@@ -72,7 +74,7 @@ void Client::Init()
 		// Material
 		{
 			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(renderShader);
+			material->SetShader(renderUIShader);
 			auto texture = RESOURCES->Load<Texture>(L"HealBar", L"..\\Resources\\Textures\\UI\\BackBorder_Health.png");
 			material->SetDiffuseMap(texture);
 			MaterialDesc& desc = material->GetMaterialDesc();
@@ -84,7 +86,7 @@ void Client::Init()
 		// Material
 		{
 			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(renderShader);
+			material->SetShader(renderUIShader);
 			auto texture = RESOURCES->Load<Texture>(L"ArmorBar", L"..\\Resources\\Textures\\UI\\BackBorder_Armor.png");
 			material->SetDiffuseMap(texture);
 			MaterialDesc& desc = material->GetMaterialDesc();
@@ -96,7 +98,7 @@ void Client::Init()
 		// Material
 		{
 			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(renderShader);
+			material->SetShader(renderUIShader);
 			auto texture = RESOURCES->Load<Texture>(L"RedBar", L"..\\Resources\\Textures\\UI\\Front_HPBar2.png");
 			material->SetDiffuseMap(texture);
 			MaterialDesc& desc = material->GetMaterialDesc();
@@ -343,7 +345,7 @@ void Client::Init()
 			auto createMaterial = [&](const wstring& texturePath, const wstring& materialName)
 			{
 				shared_ptr<Material> material = make_shared<Material>();
-				material->SetShader(renderShader);
+				material->SetShader(renderBoxShader);
 				auto texture = RESOURCES->Load<Texture>(materialName, texturePath);
 				material->SetDiffuseMap(texture);
 

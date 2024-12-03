@@ -6,7 +6,6 @@
 #include "Shader.h"
 #include "Material.h"
 #include "Light.h"
-#include "BaseCollider.h"
 
 MeshRenderer::MeshRenderer() : Super(ComponentType::MeshRenderer)
 {
@@ -53,8 +52,6 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 		_technique = 0;
 
 	_shader->DrawIndexedInstanced(_technique, _pass, _mesh->GetIndexBuffer()->GetCount(), buffer->GetCount());
-
-	RenderCollider();
 }
 
 void MeshRenderer::RenderSingle()
@@ -97,21 +94,6 @@ void MeshRenderer::RenderSingle()
 	if (_isAlphaBlend)
 		_technique = 4;
 	_shader->DrawIndexed(_technique, _pass, _mesh->GetIndexBuffer()->GetCount(), 0, 0);
-
-	RenderCollider();
-}
-
-void MeshRenderer::RenderCollider()
-{
-	if (DEBUG->IsDebugEnabled() || INPUT->GetButton(KEY_TYPE::CAPSLOCK))
-	{
-		shared_ptr<BaseCollider> collider = GetGameObject()->GetCollider();
-		if (collider)
-		{
-			collider->RenderCollider(_shader);
-			DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		}
-	}
 }
 
 InstanceID MeshRenderer::GetInstanceID()

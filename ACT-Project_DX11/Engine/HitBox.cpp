@@ -12,14 +12,14 @@ HitBox::~HitBox()
 
 }
 
-void HitBox::Craete(shared_ptr<GameObject> target, Vec3 size, Vec3 offset)
+void HitBox::Craete(shared_ptr<GameObject> target, Vec3 size)
 {
 	auto go = _gameObject.lock();
 	if (!go) return;
 
 	// 플레이어 위치를 기준으로 히트박스 위치 설정
-	Vec3 targetPosition = target->GetTransform()->GetPosition();
-	go->GetOrAddTransform()->SetPosition(targetPosition + offset);
+	auto targetTransform = target->GetTransform();
+	go->GetOrAddTransform()->SetPosition(targetTransform->GetPosition() +_offset + targetTransform->GetLook() * 1.8f);
 
 	// Collider
 	auto collider = make_shared<AABBBoxCollider>();

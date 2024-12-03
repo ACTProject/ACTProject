@@ -21,11 +21,19 @@ void AABBBoxCollider::Update()
 
 bool AABBBoxCollider::Intersects(Ray& ray, OUT float& distance)
 {
+	// Collider가 비활성화 상태이면 충돌 검사 중단
+	if (!this->IsActive())
+		return false;
+
 	return _boundingBox.Intersects(ray.position, ray.direction, OUT distance);
 }
 
 bool AABBBoxCollider::Intersects(shared_ptr<BaseCollider>& other)
 {
+	// Collider가 비활성화 상태이면 충돌 검사 중단
+	if (!this->IsActive() || !other->IsActive())
+		return false;
+
 	ColliderType type = other->GetColliderType();
 
 	switch (type)

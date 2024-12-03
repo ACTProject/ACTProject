@@ -245,15 +245,19 @@ void Client::Init()
 	COLLISION->AddRigidbody(rigidBody);
 
 	// HitBox
+	shared_ptr<GameObject> hitboxGO = make_shared<GameObject>();
 	shared_ptr<HitBox> hitbox = make_shared<HitBox>();
-	player->AddComponent(hitbox);
-	player->GetHitBox()->Craete(player, Vec3(0.f, 1.f, 0.f), Vec3(0.f, 1.f, 0.f));
+	hitboxGO->AddComponent(hitbox);
+	hitbox->SetOffSet(Vec3(0.f, 0.6f, 0.f));
+	hitbox->Craete(player, Vec3(1.4f));
+	CUR_SCENE->Add(hitboxGO);
 
 	// Player::PlayerScript
 	shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();
 
 	playerScript->SetPlayer(playerModel);
 	playerScript->SetModelAnimator(ma1);
+	playerScript->SetHitBox(hitboxGO);
 
 	player->AddComponent(playerScript);
 

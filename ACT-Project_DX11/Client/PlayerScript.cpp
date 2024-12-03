@@ -5,6 +5,8 @@
 #include "ModelAnimator.h"
 #include "MyCoroutine.h"
 #include <coroutine>
+#include "HitBox.h"
+#include "BaseCollider.h"
 
 // Coroutine
 std::coroutine_handle<MyCoroutine::promise_type> currentCoroutine;
@@ -71,6 +73,9 @@ void PlayerScript::Update()
 	// 공격 타이머 갱신
 	if (_isAttacking)
 	{
+		// 히트박스 활성화
+		_hitbox->GetCollider()->SetActive(true);
+
 		_attackTimer += dt;
 
 		// 공격 단계 시간 초과 시 Idle로 복귀
@@ -80,7 +85,11 @@ void PlayerScript::Update()
 			ResetToIdleState();
 		}
 	}
-
+	else
+	{
+		// 히트박스 비활성화
+		_hitbox->GetCollider()->SetActive(false);
+	}
 	// 공격 애니메이션이 재생 중이면 다른 애니메이션 상태로 전환되지 않음
 	if (_isPlayeringAttackAnimation)
 		return;
@@ -114,6 +123,11 @@ void PlayerScript::Update()
 			}
 			_transform->SetRotation(_transform->GetRotation() + Vec3(0, angle, 0));
 
+		}
+
+		// HitBox
+		{
+			_hitbox->GetTransform()->SetPosition(_transform->GetPosition() + _hitbox->GetHitBox()->GetOffSet() + _transform->GetLook() * 1.8f);
 		}
 	}
 	else

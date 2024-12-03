@@ -7,6 +7,8 @@
 #include "ModelAnimator.h"
 #include "Transform.h"
 #include "Camera.h"
+#include "BaseCollider.h"
+#include "Shader.h"
 
 void InstancingManager::Render(vector<shared_ptr<GameObject>>& gameObjects)
 {
@@ -15,6 +17,7 @@ void InstancingManager::Render(vector<shared_ptr<GameObject>>& gameObjects)
 	RenderMeshRenderer(gameObjects);
 	RenderModelRenderer(gameObjects);
 	RenderAnimRenderer(gameObjects);
+	RenderCollider(gameObjects);
 }
 
 void InstancingManager::RenderMeshRenderer(vector<shared_ptr<GameObject>>& gameObjects)
@@ -143,6 +146,35 @@ void InstancingManager::RenderAnimRenderer(vector<shared_ptr<GameObject>>& gameO
 
 			shared_ptr<InstancingBuffer>& buffer = _buffers[instanceId];
 			vec[0]->GetModelAnimator()->RenderInstancing(buffer);
+		}
+	}
+}
+
+void InstancingManager::RenderCollider(vector<shared_ptr<GameObject>>& gameObjects)
+{
+	for (shared_ptr<GameObject>& gameObject : gameObjects)
+	{
+		if (DEBUG->IsDebugEnabled() || INPUT->GetButton(KEY_TYPE::CAPSLOCK))
+		{
+			shared_ptr<BaseCollider> collider = gameObject->GetCollider();
+			if (collider)
+			{
+				// Collider가 비활성화 상태이면 렌더링 x
+				if (!collider->IsActive())
+					continue;
+
+				shared_ptr<Shader> shader = make_shared<Shader>(L"23. RenderDemo.fx");
+
+				// GlobalData
+				if (gameObject->GetLayerIndex() == LayerMask::Layer_UI)
+					shader->PushGlobalData(Camera::S_UIMatView, Camera::S_UIMatProjection);
+				else
+					shader->PushGlobalData(Camera::S_MatView, Camera::S_MatProjection);
+
+				collider->RenderCollider(shader);
+				// 기본 토폴로지 복구
+				DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			}
 		}
 	}
 }

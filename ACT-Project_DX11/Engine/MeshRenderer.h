@@ -22,7 +22,6 @@ public:
 
 	void RenderInstancing(shared_ptr<class InstancingBuffer>& buffer);
 	void RenderSingle();
-	void RenderCollider();
 
 	InstanceID GetInstanceID();
 

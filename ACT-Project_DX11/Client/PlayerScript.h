@@ -15,6 +15,7 @@ public:
 	shared_ptr<ModelAnimator> GetModelAnimator() { return _modelAnimator; }
 	void SetModelAnimator(shared_ptr<ModelAnimator> modelAnimator) { _modelAnimator = modelAnimator; }
 	void SetAnimationState(AnimationState state);
+	void SetHitBox(shared_ptr<GameObject> hitbox) { _hitbox = hitbox; }
 
 	void StartAttack();
 	void ContinueAttack();
@@ -25,6 +26,8 @@ private:
 	shared_ptr<Model> _player;
 	shared_ptr<ModelAnimator> _modelAnimator;
 	shared_ptr<Transform> _transform;
+
+	shared_ptr<GameObject> _hitbox;
 
 private:
 	float _FPS;

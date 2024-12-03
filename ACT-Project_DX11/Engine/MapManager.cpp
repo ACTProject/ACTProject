@@ -66,7 +66,23 @@ void MapManager::Init()
 
 		src = make_shared<MapObjDesc>(L"MapObject/rock2", L"23. RenderDemo.fx");
 		MAP->AddMapObj(src);
-
+		//
+		src = make_shared<MapObjDesc>(L"MapObject/Urock01", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+		src = make_shared<MapObjDesc>(L"MapObject/Urock02", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+		src = make_shared<MapObjDesc>(L"MapObject/Urock03", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+		src = make_shared<MapObjDesc>(L"MapObject/Urock04", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+		src = make_shared<MapObjDesc>(L"MapObject/Urock05", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+		src = make_shared<MapObjDesc>(L"MapObject/Udrock01", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+		src = make_shared<MapObjDesc>(L"MapObject/Udrock02", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
+		src = make_shared<MapObjDesc>(L"MapObject/Udrock04", L"23. RenderDemo.fx");
+		MAP->AddMapObj(src);
 
 		// ImGui용 함수.
 		MAP->InitMapText();

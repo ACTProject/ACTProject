@@ -228,6 +228,58 @@ void AssimpTool::Init()
 			converter->ExportMaterialData(L"MapObject/rock2");
 			converter->ExportModelData(L"MapObject/rock2");
 		}
+		//
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"MapObject/Urock01.fbx");
+			converter->ExportMaterialData(L"MapObject/Urock01");
+			converter->ExportModelData(L"MapObject/Urock01");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"MapObject/Urock02.fbx");
+			converter->ExportMaterialData(L"MapObject/Urock02");
+			converter->ExportModelData(L"MapObject/Urock02");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"MapObject/Urock03.fbx");
+			converter->ExportMaterialData(L"MapObject/Urock03");
+			converter->ExportModelData(L"MapObject/Urock03");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"MapObject/Urock04.fbx");
+			converter->ExportMaterialData(L"MapObject/Urock04");
+			converter->ExportModelData(L"MapObject/Urock04");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"MapObject/Urock05.fbx");
+			converter->ExportMaterialData(L"MapObject/Urock05");
+			converter->ExportModelData(L"MapObject/Urock05");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"MapObject/Udrock01.fbx");
+			converter->ExportMaterialData(L"MapObject/Udrock01");
+			converter->ExportModelData(L"MapObject/Udrock01");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"MapObject/Udrock02.fbx");
+			converter->ExportMaterialData(L"MapObject/Udrock02");
+			converter->ExportModelData(L"MapObject/Udrock02");
+		}
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"MapObject/Udrock04.fbx");
+			converter->ExportMaterialData(L"MapObject/Udrock04");
+			converter->ExportModelData(L"MapObject/Udrock04");
+		}
+
+
+
 	}
 }
 

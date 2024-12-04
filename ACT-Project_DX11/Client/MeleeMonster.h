@@ -8,15 +8,15 @@
 class Model;
 class ModelAnimator;
 
-class RangoonScript : public MonoBehaviour
+class MeleeMonster : public MonoBehaviour
 {
 	A_Star astar;
 	virtual void Start() override;
 	virtual void Update() override;
 
 public:
-	shared_ptr<Model> GetEnemy() { return _rangoon; }
-	void SetEnemy(shared_ptr<Model> enemy) { _rangoon = enemy; }
+	shared_ptr<Model> GetEnemy() { return _enemy; }
+	void SetEnemy(shared_ptr<Model> enemy) { _enemy = enemy; }
 	shared_ptr<ModelAnimator> GetModelAnimator() { return _modelAnimator; }
 	void SetModelAnimator(shared_ptr<ModelAnimator> modelAnimator) { _modelAnimator = modelAnimator; }
 	void SetAnimationState(AnimationState state);
@@ -32,31 +32,32 @@ public:
 	//float angle; 
 	float distance;
 	Vec3 CurForward;
-	Vec3 RangoonPos;
+	Vec3 EnemyPos;
 	Vec3 PlayerPos;
 	Vec3 patrolTarget;
-	int atkType = 1;
-	bool _isAnimating = false;
 
 private:
 	float _speed = 10.f;
 	float _hp = 100.0f;
 	float _atk = 30.0f;
+	int atkType = 1;
+	float dt;
+	float _FPS;
+	float rangeDis;
+	float _attackDuration[3];
+	float _aggroDuration;
+	float animPlayingTime = 0.0f;
+	Vec3 StartPos;
+
+	bool _isAnimating = false;
+	bool onAttack = false;
+	bool isFirstAggro = true;
+	bool hasPatrolTarget = false;
 	bool onTarget = false;
 	bool onRange = true;
 	bool BackToStart = false;
-	float dt;
-	float _FPS;
-	Vec3 StartPos;
-	float rangeDis;
-	bool onAttack = false;
-	float _attackDuration[3];
-	float _aggroDuration;
-	bool isFirstAggro = true;
-	float animPlayingTime = 0.0f;
-	bool hasPatrolTarget = false;
 
-	shared_ptr<Model> _rangoon;
+	shared_ptr<Model> _enemy;
 	shared_ptr<ModelAnimator> _modelAnimator;
 	shared_ptr<Transform> _transform;
 	shared_ptr<GameObject> _player;

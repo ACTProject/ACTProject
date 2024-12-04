@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "RawBuffer.h"
 #include "TextureBuffer.h"
 #include "Material.h"
@@ -28,7 +28,7 @@
 #include "Camera.h"
 #include "Button.h"
 #include "Billboard.h"
-#include "RangoonScript.h"
+#include "MelleMonster.h"
 #include "Rigidbody.h"
 #include "Slider.h"
 #include "Skybox.h"
@@ -277,18 +277,18 @@ void Client::Init()
 		shared_ptr<Model> enemyModel = make_shared<Model>();
 		// Model
 		{
-			enemyModel->ReadModel(L"Enemy/Rangoon");
-			enemyModel->ReadMaterial(L"Enemy/Rangoon");
+			enemyModel->ReadModel(L"Enemy/MelleMonster");
+			enemyModel->ReadMaterial(L"Enemy/MelleMonster");
 
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_idle", AnimationState::Idle);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_run", AnimationState::Run);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_aggro", AnimationState::Aggro);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_atkBigSnippy", AnimationState::Attack1);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_atkSmallSnippy", AnimationState::Attack2);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_atkSmash", AnimationState::Attack3);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_die", AnimationState::Die);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_hit", AnimationState::Hit);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_roar", AnimationState::Roar);
+			enemyModel->ReadAnimation(L"Enemy/MelleMonster_idle", AnimationState::Idle);
+			enemyModel->ReadAnimation(L"Enemy/MelleMonster_run", AnimationState::Run);
+			enemyModel->ReadAnimation(L"Enemy/MelleMonster_aggro", AnimationState::Aggro);
+			enemyModel->ReadAnimation(L"Enemy/MelleMonster_atkBigSnippy", AnimationState::Attack1);
+			enemyModel->ReadAnimation(L"Enemy/MelleMonster_atkSmallSnippy", AnimationState::Attack2);
+			enemyModel->ReadAnimation(L"Enemy/MelleMonster_atkSmash", AnimationState::Attack3);
+			enemyModel->ReadAnimation(L"Enemy/MelleMonster_die", AnimationState::Die);
+			enemyModel->ReadAnimation(L"Enemy/MelleMonster_hit", AnimationState::Hit);
+			enemyModel->ReadAnimation(L"Enemy/MelleMonster_roar", AnimationState::Roar);
 		}
 		shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
 		enemy->AddComponent(ma2);
@@ -296,7 +296,7 @@ void Client::Init()
 			enemy->GetModelAnimator()->SetModel(enemyModel);
 			enemy->GetModelAnimator()->SetPass(2);
 		}
-		shared_ptr<RangoonScript> rangoon = make_shared<RangoonScript>();
+		shared_ptr<MelleMonster> rangoon = make_shared<MelleMonster>();
 
 		rangoon->SetEnemy(enemyModel);
 		rangoon->SetModelAnimator(ma2);
@@ -321,31 +321,55 @@ void Client::Init()
 		CUR_SCENE->Add(enemy);
 	}
 
-	//auto enemy2 = make_shared<GameObject>();
-	//{
-	//	enemy2->GetOrAddTransform()->SetPosition(Vec3(5, 0, 10));
-	//	enemy2->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
-	//	enemy2->GetOrAddTransform()->SetScale(Vec3(0.0001f));
+    auto enemy2 = make_shared<GameObject>(); // Pistol_Shrimp
+    {
+        enemy2->GetOrAddTransform()->SetPosition(Vec3(10, 0, 10));
+        enemy2->GetOrAddTransform()->SetLocalRotation(Vec3(0, XMConvertToRadians(180), 0)); // XMConvertToRadians()
+        enemy2->GetOrAddTransform()->SetScale(Vec3(0.01f));
 
-	//	shared_ptr<Model> enemyModel = make_shared<Model>();
-	//	// Model
-	//	{
-	//		enemyModel->ReadModel(L"Enemy/pistol");
-	//		enemyModel->ReadMaterial(L"Enemy/pistol");
+        shared_ptr<Model> enemyModel = make_shared<Model>();
+        // Model
+        {
+            enemyModel->ReadModel(L"Enemy/pistol");
+            enemyModel->ReadMaterial(L"Enemy/pistol");
 
-	//		enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Idle);
-	//		//enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Hit);
-	//		//enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
+            enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Idle);
+            enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Attack1);
+            //enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
 
-	//	}
-	//	shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
-	//	enemy2->AddComponent(ma2);
-	//	{
-	//		enemy2->GetModelAnimator()->SetModel(enemyModel);
-	//		enemy2->GetModelAnimator()->SetPass(2);
-	//	}
-	//	CUR_SCENE->Add(enemy2);
-	//}
+        }
+        shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
+        enemy2->AddComponent(ma2);
+        {
+            enemy2->GetModelAnimator()->SetModel(enemyModel);
+            enemy2->GetModelAnimator()->SetPass(2);
+        }
+        CUR_SCENE->Add(enemy2);
+    }
+
+    auto bullet = make_shared<GameObject>(); // bullet
+    {
+        bullet->GetOrAddTransform()->SetPosition(Vec3(5, 5, 5));
+        bullet->GetOrAddTransform()->SetLocalRotation(Vec3(XMConvertToRadians(90), 0, XMConvertToRadians(90))); // XMConvertToRadians()
+        bullet->GetOrAddTransform()->SetScale(Vec3(0.00005f));
+
+        shared_ptr<Model> enemyModel = make_shared<Model>();
+        // Model
+        {
+            enemyModel->ReadModel(L"Enemy/bullet");
+            enemyModel->ReadMaterial(L"Enemy/bullet");
+
+            //enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
+
+        }
+        shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
+        bullet->AddComponent(ma2);
+        {
+            bullet->GetModelAnimator()->SetModel(enemyModel);
+            bullet->GetModelAnimator()->SetPass(0);
+        }
+        CUR_SCENE->Add(bullet);
+    }
 
 	// Skybox
 	{

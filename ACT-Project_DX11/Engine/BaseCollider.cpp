@@ -1,5 +1,10 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "BaseCollider.h"
+#include "SphereCollider.h"
+#include "AABBBoxCollider.h"
+#include "MeshRenderer.h"
+#include "ModelRenderer.h"
+#include "ModelAnimator.h"
 
 BaseCollider::BaseCollider(ColliderType colliderType)
 	: Component(ComponentType::Collider), _colliderType(colliderType)
@@ -97,4 +102,17 @@ bool BaseCollider::CalculateSphereSphereCollision(const BoundingSphere& sphereA,
 
 	penetrationDepth = Vec3(0.f); // 겹침 없음
 	return false;
+}
+
+InstanceID BaseCollider::GetInstanceID()
+{
+    auto go = GetGameObject();
+    if (go->GetMeshRenderer() != nullptr)
+        return go->GetMeshRenderer()->GetInstanceID();
+    if (go->GetModelRenderer() != nullptr)
+        return go->GetModelRenderer()->GetInstanceID();
+    if (go->GetModelAnimator() != nullptr)
+        return go->GetModelAnimator()->GetInstanceID();
+
+    return make_pair(DEFAULT_MESH_ID, DEFAULT_MATERIAL_ID);
 }

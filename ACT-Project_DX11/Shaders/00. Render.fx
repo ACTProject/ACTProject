@@ -8,10 +8,20 @@
 #define MAX_MODEL_INSTANCE 500
 
 // ************** CollisionRender **************
-VSOutput VS_Collision(Vertex input)
+struct InstnaceingVertex
+{
+    float4 position : POSITION;
+    
+    // INSTANCING;
+    uint instanceID : SV_INSTANCEID;
+    matrix world : INST;
+};
+
+VSOutput VS_Collision(InstnaceingVertex input)
 {
     VSOutput output;
-    output.position = mul(input.position, VP);
+    float4 worldPosition = mul(input.position, input.world); // ë¡œì»¬ -> ì›”ë“œ ë³€í™˜
+    output.position = mul(worldPosition, VP); // ì›”ë“œ -> í´ë¦½ ê³µê°„ ë³€í™˜
     return output;
 }
 
@@ -119,14 +129,14 @@ MeshOutput VS_Model(VertexTextureNormalTangent input)
 
 struct KeyframeDesc
 {
-    int state;			// 4¹ÙÀÌÆ®: ¾Ö´Ï¸ŞÀÌ¼Ç »óÅÂ
-    int animIndex;		// 4¹ÙÀÌÆ®: ¾Ö´Ï¸ŞÀÌ¼Ç ÀÎµ¦½º
-    uint currFrame;		// 4¹ÙÀÌÆ®: ÇöÀç ÇÁ·¹ÀÓ
-    uint nextFrame;		// 4¹ÙÀÌÆ®: ´ÙÀ½ ÇÁ·¹ÀÓ
-    float ratio;		// 4¹ÙÀÌÆ®: ÇöÀç ÇÁ·¹ÀÓ°ú ´ÙÀ½ ÇÁ·¹ÀÓ »çÀÌÀÇ º¸°£ ºñÀ²
-    float sumTime;		// 4¹ÙÀÌÆ®: ¾Ö´Ï¸ŞÀÌ¼Ç ÁøÇà ½Ã°£ ÇÕ°è
-    float speed;		// 4¹ÙÀÌÆ®: ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı ¼Óµµ
-    float padding;		// 4¹ÙÀÌÆ®: 32¹ÙÀÌÆ®·Î ¸ÂÃß±â À§ÇÑ ÆĞµù
+    int state;			// 4ë°”ì´íŠ¸: ì• ë‹ˆë©”ì´ì…˜ ìƒíƒœ
+    int animIndex;		// 4ë°”ì´íŠ¸: ì• ë‹ˆë©”ì´ì…˜ ì¸ë±ìŠ¤
+    uint currFrame;		// 4ë°”ì´íŠ¸: í˜„ì¬ í”„ë ˆì„
+    uint nextFrame;		// 4ë°”ì´íŠ¸: ë‹¤ìŒ í”„ë ˆì„
+    float ratio;		// 4ë°”ì´íŠ¸: í˜„ì¬ í”„ë ˆì„ê³¼ ë‹¤ìŒ í”„ë ˆì„ ì‚¬ì´ì˜ ë³´ê°„ ë¹„ìœ¨
+    float sumTime;		// 4ë°”ì´íŠ¸: ì• ë‹ˆë©”ì´ì…˜ ì§„í–‰ ì‹œê°„ í•©ê³„
+    float speed;		// 4ë°”ì´íŠ¸: ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ ì†ë„
+    float padding;		// 4ë°”ì´íŠ¸: 32ë°”ì´íŠ¸ë¡œ ë§ì¶”ê¸° ìœ„í•œ íŒ¨ë”©
 };
 
 struct TweenFrameDesc
@@ -151,7 +161,7 @@ matrix GetAnimationMatrix(InstancingVertexModel input)
 	float indices[4] = { input.blendIndices.x, input.blendIndices.y, input.blendIndices.z, input.blendIndices.w };
 	float weights[4] = { input.blendWeights.x, input.blendWeights.y, input.blendWeights.z, input.blendWeights.w };
 	
-	// ÇöÀç ¾Ö´Ï¸ŞÀÌ¼Ç »óÅÂ¿¡ ´ëÇÑ Á¤º¸
+	// í˜„ì¬ ì• ë‹ˆë©”ì´ì…˜ ìƒíƒœì— ëŒ€í•œ ì •ë³´
 	int animIndex[2];
 	int currFrame[2];
 	int nextFrame[2];
@@ -167,32 +177,32 @@ matrix GetAnimationMatrix(InstancingVertexModel input)
     nextFrame[1] = InstancedTweenFrames[input.instanceID].next.nextFrame;
     ratio[1] = InstancedTweenFrames[input.instanceID].next.ratio;
 	
-    float4 c0, c1, c2, c3; // ÇöÀç ÇÁ·¹ÀÓÀÇ º¯È¯ ÄÄÆ÷³ÍÆ®
-    float4 n0, n1, n2, n3; // ´ÙÀ½ ÇÁ·¹ÀÓÀÇ º¯È¯ ÄÄÆ÷³ÍÆ®
-    matrix curr = 0; // ÇöÀç ÇÁ·¹ÀÓÀÇ º¯È¯ Çà·Ä
-    matrix next = 0; // ´ÙÀ½ ÇÁ·¹ÀÓÀÇ º¯È¯ Çà·Ä
-    matrix transform = 0; // ÃÖÁ¾ °è»êµÈ º¯È¯ Çà·Ä
+    float4 c0, c1, c2, c3; // í˜„ì¬ í”„ë ˆì„ì˜ ë³€í™˜ ì»´í¬ë„ŒíŠ¸
+    float4 n0, n1, n2, n3; // ë‹¤ìŒ í”„ë ˆì„ì˜ ë³€í™˜ ì»´í¬ë„ŒíŠ¸
+    matrix curr = 0; // í˜„ì¬ í”„ë ˆì„ì˜ ë³€í™˜ í–‰ë ¬
+    matrix next = 0; // ë‹¤ìŒ í”„ë ˆì„ì˜ ë³€í™˜ í–‰ë ¬
+    matrix transform = 0; // ìµœì¢… ê³„ì‚°ëœ ë³€í™˜ í–‰ë ¬
 
-	// °¢ º»¿¡ ´ëÇØ º¯È¯ Çà·ÄÀ» °è»ê
+	// ê° ë³¸ì— ëŒ€í•´ ë³€í™˜ í–‰ë ¬ì„ ê³„ì‚°
 	for (int i = 0; i < 4; i++)
 	{
-		// ÇöÀç ÇÁ·¹ÀÓÀÇ º¯È¯ ÄÄÆ÷³ÍÆ® ·Îµå
+		// í˜„ì¬ í”„ë ˆì„ì˜ ë³€í™˜ ì»´í¬ë„ŒíŠ¸ ë¡œë“œ
 		c0 = TransformMap.Load(int4(indices[i] * 4 + 0, currFrame[0], animIndex[0], 0));
 		c1 = TransformMap.Load(int4(indices[i] * 4 + 1, currFrame[0], animIndex[0], 0));
 		c2 = TransformMap.Load(int4(indices[i] * 4 + 2, currFrame[0], animIndex[0], 0));
 		c3 = TransformMap.Load(int4(indices[i] * 4 + 3, currFrame[0], animIndex[0], 0));
-		curr = matrix(c0, c1, c2, c3);	// ÇöÀç ÇÁ·¹ÀÓÀÇ º¯È¯ Çà·Ä »ı¼º
+		curr = matrix(c0, c1, c2, c3);	// í˜„ì¬ í”„ë ˆì„ì˜ ë³€í™˜ í–‰ë ¬ ìƒì„±
 
-		// ´ÙÀ½ ÇÁ·¹ÀÓÀÇ º¯È¯ ÄÄÆ÷³ÍÆ® ·Îµå
+		// ë‹¤ìŒ í”„ë ˆì„ì˜ ë³€í™˜ ì»´í¬ë„ŒíŠ¸ ë¡œë“œ
 		n0 = TransformMap.Load(int4(indices[i] * 4 + 0, nextFrame[0], animIndex[0], 0));
 		n1 = TransformMap.Load(int4(indices[i] * 4 + 1, nextFrame[0], animIndex[0], 0));
 		n2 = TransformMap.Load(int4(indices[i] * 4 + 2, nextFrame[0], animIndex[0], 0));
 		n3 = TransformMap.Load(int4(indices[i] * 4 + 3, nextFrame[0], animIndex[0], 0));
-		next = matrix(n0, n1, n2, n3); // ´ÙÀ½ ÇÁ·¹ÀÓÀÇ º¯È¯ Çà·Ä »ı¼º
+		next = matrix(n0, n1, n2, n3); // ë‹¤ìŒ í”„ë ˆì„ì˜ ë³€í™˜ í–‰ë ¬ ìƒì„±
 
-		matrix result = lerp(curr, next, ratio[0]); // ÇöÀç¿Í ´ÙÀ½ ÇÁ·¹ÀÓ »çÀÌ º¸°£
+		matrix result = lerp(curr, next, ratio[0]); // í˜„ì¬ì™€ ë‹¤ìŒ í”„ë ˆì„ ì‚¬ì´ ë³´ê°„
 
-		// ´ÙÀ½ ¾Ö´Ï¸ŞÀÌ¼Ç
+		// ë‹¤ìŒ ì• ë‹ˆë©”ì´ì…˜
 		if (animIndex[1] >= 0)
 		{
 			c0 = TransformMap.Load(int4(indices[i] * 4 + 0, currFrame[1], animIndex[1], 0));
@@ -211,10 +221,10 @@ matrix GetAnimationMatrix(InstancingVertexModel input)
             result = lerp(result, nextResult, InstancedTweenFrames[input.instanceID].tweenRatio);
         }
 
-		transform += mul(weights[i], result); // °¡ÁßÄ¡ Àû¿ëÇÏ¿© º¯È¯ Çà·Ä ´©Àû
+		transform += mul(weights[i], result); // ê°€ì¤‘ì¹˜ ì ìš©í•˜ì—¬ ë³€í™˜ í–‰ë ¬ ëˆ„ì 
 	}
 
-	return transform; // ÃÖÁ¾ º¯È¯ Çà·Ä ¹İÈ¯
+	return transform; // ìµœì¢… ë³€í™˜ í–‰ë ¬ ë°˜í™˜
 }
 
 MeshOutput VS_InstancingAnimation(InstancingVertexModel input)
@@ -223,17 +233,17 @@ MeshOutput VS_InstancingAnimation(InstancingVertexModel input)
 
 	//output.position = mul(input.position, BoneTransforms[BoneIndex]); // Model Global
 
-	matrix m = GetAnimationMatrix(input);	// ¾Ö´Ï¸ŞÀÌ¼Ç º¯È¯ Çà·Ä °è»ê
+	matrix m = GetAnimationMatrix(input);	// ì• ë‹ˆë©”ì´ì…˜ ë³€í™˜ í–‰ë ¬ ê³„ì‚°
 
-	output.position = mul(input.position, m);	// Á¤Á¡ À§Ä¡ º¯È¯
-	output.position = mul(output.position, input.world); // ¿ùµå º¯È¯ Àû¿ë
-	output.worldPosition = output.position;	// ¿ùµå ÁÂÇ¥ ¼³Á¤
-	output.position = mul(output.position, VP);	// ºä-ÇÁ·ÎÁ§¼Ç º¯È¯ Àû¿ë
-	output.uv = input.uv;	// UV ÁÂÇ¥´Â º¯°æ ¾øÀ½
-	output.normal = mul(input.normal, (float3x3)input.world);	// ¹ı¼± º¤ÅÍ º¯È¯
-	output.tangent = mul(input.tangent, (float3x3)input.world);	// ÅºÁ¨Æ® º¤ÅÍ º¯È¯
+	output.position = mul(input.position, m);	// ì •ì  ìœ„ì¹˜ ë³€í™˜
+	output.position = mul(output.position, input.world); // ì›”ë“œ ë³€í™˜ ì ìš©
+	output.worldPosition = output.position;	// ì›”ë“œ ì¢Œí‘œ ì„¤ì •
+	output.position = mul(output.position, VP);	// ë·°-í”„ë¡œì ì…˜ ë³€í™˜ ì ìš©
+	output.uv = input.uv;	// UV ì¢Œí‘œëŠ” ë³€ê²½ ì—†ìŒ
+	output.normal = mul(input.normal, (float3x3)input.world);	// ë²•ì„  ë²¡í„° ë³€í™˜
+	output.tangent = mul(input.tangent, (float3x3)input.world);	// íƒ„ì  íŠ¸ ë²¡í„° ë³€í™˜
 
-	return output;	// º¯È¯µÈ Á¤Á¡ µ¥ÀÌÆ® ¹İÈ¯
+	return output;	// ë³€í™˜ëœ ì •ì  ë°ì´íŠ¸ ë°˜í™˜
 }
 
 // ************** SingleAnimRender ****************

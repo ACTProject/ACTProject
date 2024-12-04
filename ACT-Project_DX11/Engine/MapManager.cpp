@@ -596,14 +596,19 @@ void MapManager::UpdateMapObjTransform()
 // TODO : 맵 오브젝트가 단 한개도 없으면 파일에 저장되지 않음.
 void MapManager::RemoveMapObj(shared_ptr<GameObject> obj)
 {
-	auto it = std::find(_mapObjList.begin(), _mapObjList.end(), obj);
-	if (it != _mapObjList.end())
+	if (obj != nullptr)
 	{
-		_mapObjList.erase(it);
+		auto it = std::find(_mapObjList.begin(), _mapObjList.end(), obj);
+		if (it != _mapObjList.end())
+		{
+			_mapObjList.erase(it);
+		}
+
+		SCENE->GetCurrentScene()->Remove(obj);
+		COLLISION->GetInstance()->Remove(obj);
+
+
+		obj.reset();
 	}
 
-	SCENE->GetCurrentScene()->Remove(obj);
-
-	// 여기서 리셋하기전에 컴포넌트들 전부 지워야 될 수도.
-	obj.reset();
 }

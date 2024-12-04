@@ -96,3 +96,18 @@ void CollisionManager::ApplyForce(shared_ptr<Rigidbody> rigidbody, const Vec3& t
 	rigidbody->Addforce(force);
 }
 
+void CollisionManager::Remove(shared_ptr<GameObject> obj)
+{
+	auto it = std::find(_colliders.begin(),_colliders.end(),obj->GetCollider());
+	if (it != _colliders.end())
+	{
+		_colliders.erase(it);
+	}
+
+	auto its = std::find(_rigidbodies.begin(), _rigidbodies.end(), obj->GetRigidbody());
+	if (its != _rigidbodies.end())
+	{
+		_rigidbodies.erase(its);
+	}
+}
+

@@ -8,7 +8,7 @@ void CollisionManager::Init()
 
 }
 
-// 충돌 감지 및 처리
+// 異⑸룎 媛먯? 諛?泥섎━
 void CollisionManager::Update()
 {
 	for (size_t i = 0; i < _colliders.size(); ++i)
@@ -18,11 +18,11 @@ void CollisionManager::Update()
 			auto colliderA = _colliders[i];
 			auto colliderB = _colliders[j];
 
-			// Collider가 비활성화 상태이면 충돌 검사 중단
+			// Collider媛 鍮꾪솢?깊솕 ?곹깭?대㈃ 異⑸룎 寃??以묐떒
 			if (!colliderA->IsActive() || !colliderB->IsActive())
 				continue;
 
-			// 충돌 감지
+			// 異⑸룎 媛먯?
 			if (colliderA->Intersects(colliderB))
 			{
 				HandleCollision(colliderA, colliderB);
@@ -45,36 +45,36 @@ void CollisionManager::AddRigidbody(shared_ptr<Rigidbody> rigidbody)
 
 void CollisionManager::HandleCollision(shared_ptr<BaseCollider> colliderA, shared_ptr<BaseCollider> colliderB)
 {
-	// Rigidbody 가져오기
+	// Rigidbody 媛?몄삤湲?
 	auto rigidbodyA = colliderA->GetGameObject()->GetRigidbody();
 	auto rigidbodyB = colliderB->GetGameObject()->GetRigidbody();
 
-	// Rigidbody가 없으면 처리하지 않음
+	// Rigidbody媛 ?놁쑝硫?泥섎━?섏? ?딆쓬
 	if (!rigidbodyA || !rigidbodyB)
 		return;
 
-	// Penetration Depth 계산
+	// Penetration Depth 怨꾩궛
 	Vec3 penetrationDepth;
 	if (!colliderA->CalculatePenetraionDepth(colliderB, penetrationDepth))
 	{
-		return; // 충돌이 발생하지 않음
+		return; // 異⑸룎??諛쒖깮?섏? ?딆쓬
 	}
 
-	// 충돌 방향 계산
+	// 異⑸룎 諛⑺뼢 怨꾩궛
 	penetrationDepth.Normalize();
 	Vec3 collisionNormal = penetrationDepth;
 
-	// 간격 유지 설정
-	float minimumSeparation = 0.1f; // 오브젝트 간 최소 간격
+	// 媛꾧꺽 ?좎? ?ㅼ젙
+	float minimumSeparation = 0.1f; // ?ㅻ툕?앺듃 媛?理쒖냼 媛꾧꺽
 	float penetrationLength = penetrationDepth.Length();
 
 	if (penetrationLength <= minimumSeparation)
 	{
-		// 이미 충분한 거리가 유지되면 더 이상 밀어내지 않음
+		// ?대? 異⑸텇??嫄곕━媛 ?좎??섎㈃ ???댁긽 諛?대궡吏 ?딆쓬
 		return;
 	}
 
-	// 질량 확인
+	// 吏덈웾 ?뺤씤
 	float massA = rigidbodyA->GetMass();
 	float massB = rigidbodyB->GetMass();
 
@@ -87,7 +87,7 @@ void CollisionManager::HandleCollision(shared_ptr<BaseCollider> colliderA, share
 		ApplyForce(rigidbodyA, colliderA->GetColliderCenter(), colliderB->GetColliderCenter(), rigidbodyB->GetMass() - rigidbodyA->GetMass());
 	}
 
-	// 충돌 상태 설정
+	// 異⑸룎 ?곹깭 ?ㅼ젙
 	colliderA->SetColliding(true);
 	colliderB->SetColliding(true);
 }
@@ -96,36 +96,22 @@ void CollisionManager::ApplyForce(shared_ptr<Rigidbody> rigidbody, const Vec3& t
 {
 	Vec3 collisionNormal = (target - source);
 	collisionNormal.Normalize();
-	Vec3 force = collisionNormal * massDifference * 10.0f; // 밀림 강도
+	Vec3 force = collisionNormal * massDifference * 10.0f; // 諛由?媛뺣룄
 	rigidbody->Addforce(force);
 }
 
 void CollisionManager::Remove(shared_ptr<GameObject> obj)
 {
-	auto it = std::find(_colliders.begin(),_colliders.end(),obj->GetCollider());
-	if (it != _colliders.end())
-	{
-		_colliders.erase(it);
-	}
+    auto it = std::find(_colliders.begin(), _colliders.end(), obj->GetCollider());
+    if (it != _colliders.end())
+    {
+        _colliders.erase(it);
+    }
 
-	auto its = std::find(_rigidbodies.begin(), _rigidbodies.end(), obj->GetRigidbody());
-	if (its != _rigidbodies.end())
-	{
-		_rigidbodies.erase(its);
-	}
-vector<shared_ptr<BaseCollider>> CollisionManager::GetNearbyTargets(const Vec3& playerPosition, float radius)
-{
-	vector<shared_ptr<BaseCollider>> nearbyTargets;
-	for (const auto& collider : _colliders)
-	{
-		Vec3 colliderCenter = collider->GetColliderCenter();
-		float distance = (colliderCenter - playerPosition).Length();
-
-		if (distance <= radius)
-		{
-			nearbyTargets.push_back(collider);
-		}
-	}
-	return nearbyTargets;
+    auto its = std::find(_rigidbodies.begin(), _rigidbodies.end(), obj->GetRigidbody());
+    if (its != _rigidbodies.end())
+    {
+        _rigidbodies.erase(its);
+    }
 }
 

@@ -12,12 +12,10 @@ public:
 	void Init();
 	void Update();
 
-	// Collider & Rigidbody 등록
+	// Collider & Rigidbody ?깅줉
 	void AddCollider(shared_ptr<BaseCollider> collider);
 	void AddRigidbody(shared_ptr<Rigidbody> rigidbody);
 	void ApplyForce(shared_ptr<Rigidbody> rigidbody, const Vec3& target, const Vec3& source, float massDifference);
-	vector<shared_ptr<BaseCollider>> GetNearbyTargets(const Vec3& playerPosition, float radius);
-
 	void Remove(shared_ptr<GameObject> obj);
 
 private:

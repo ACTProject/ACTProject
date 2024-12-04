@@ -18,6 +18,10 @@ void CollisionManager::Update()
 			auto colliderA = _colliders[i];
 			auto colliderB = _colliders[j];
 
+			// Collider가 비활성화 상태이면 충돌 검사 중단
+			if (!colliderA->IsActive() || !colliderB->IsActive())
+				continue;
+
 			// 충돌 감지
 			if (colliderA->Intersects(colliderB))
 			{
@@ -109,5 +113,19 @@ void CollisionManager::Remove(shared_ptr<GameObject> obj)
 	{
 		_rigidbodies.erase(its);
 	}
+vector<shared_ptr<BaseCollider>> CollisionManager::GetNearbyTargets(const Vec3& playerPosition, float radius)
+{
+	vector<shared_ptr<BaseCollider>> nearbyTargets;
+	for (const auto& collider : _colliders)
+	{
+		Vec3 colliderCenter = collider->GetColliderCenter();
+		float distance = (colliderCenter - playerPosition).Length();
+
+		if (distance <= radius)
+		{
+			nearbyTargets.push_back(collider);
+		}
+	}
+	return nearbyTargets;
 }
 

@@ -32,6 +32,7 @@
 #include "Rigidbody.h"
 #include "Slider.h"
 #include "Skybox.h"
+#include "HitBox.h"
 
 void Client::Init()
 {
@@ -218,7 +219,6 @@ void Client::Init()
 			weaponModel->ReadModel(L"Fork/Fork");
 			weaponModel->ReadMaterial(L"Fork/Fork");
 		}
-
 		ModelMesh& weaponMesh = *weaponModel->GetMeshes()[0];
 		playerModel->AddDummyBoneAndAttach(weaponMesh, L"Hand_Grip_L", L"WeaponDummy");
 	}
@@ -246,11 +246,20 @@ void Client::Init()
 	COLLISION->AddCollider(collider);
 	COLLISION->AddRigidbody(rigidBody);
 
+	// HitBox
+	shared_ptr<GameObject> hitboxGO = make_shared<GameObject>();
+	shared_ptr<HitBox> hitbox = make_shared<HitBox>();
+	hitboxGO->AddComponent(hitbox);
+	hitbox->SetOffSet(Vec3(0.f, 0.6f, 0.f));
+	hitbox->Craete(player, Vec3(1.4f));
+	CUR_SCENE->Add(hitboxGO);
+
 	// Player::PlayerScript
 	shared_ptr<PlayerScript> playerScript = make_shared<PlayerScript>();
 
 	playerScript->SetPlayer(playerModel);
 	playerScript->SetModelAnimator(ma1);
+	playerScript->SetHitBox(hitboxGO);
 
 	player->AddComponent(playerScript);
 
@@ -306,8 +315,8 @@ void Client::Init()
 		rigidBody->SetMass(2.0f);
 		enemy->AddComponent(rigidBody);
 
-		COLLISION->AddCollider(collider);
 		COLLISION->AddRigidbody(rigidBody);
+		COLLISION->AddCollider(collider);
 
 		CUR_SCENE->Add(enemy);
 	}

@@ -4,22 +4,22 @@
 class Octree
 {
 public:
-//// Octree ÃÊ±âÈ­
+//// Octree ï¿½Ê±ï¿½È­
 //Octree(const BoundingBox& worldBounds, int maxDepth);
 //~Octree();
 //
-//// Terrain µ¥ÀÌÅÍ »ğÀÔ
+//// Terrain ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 ////void InsertTerrain(const TerrainTriangle& triangle);
 //
-//// Collider »ğÀÔ
+//// Collider ï¿½ï¿½ï¿½ï¿½
 //void InsertCollider(std::shared_ptr<BaseCollider> collider);
 //
-//// ¹üÀ§ ³» Terrain µ¥ÀÌÅÍ °Ë»ö
+//// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Terrain ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
 ////std::vector<TerrainTriangle> QueryTerrain(const BaseCollider& rangeCollider);
 //
-//// ¹üÀ§ ³» Collider °Ë»ö
+//// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Collider ï¿½Ë»ï¿½
 //std::vector<std::shared_ptr<BaseCollider>> QueryColliders(const BaseCollider& rangeCollider);
 //
 //private:
-//std::unique_ptr<OctreeNode> _root; // ·çÆ® ³ëµå
+//std::unique_ptr<OctreeNode> _root; // ï¿½ï¿½Æ® ï¿½ï¿½ï¿½
 };

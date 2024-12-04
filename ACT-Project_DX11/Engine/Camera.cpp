@@ -32,7 +32,10 @@ void Camera::SortGameObject()
 		if (gameObject->GetMeshRenderer() == nullptr
 			&& gameObject->GetModelRenderer() == nullptr
 			&& gameObject->GetModelAnimator() == nullptr)
-			continue;
+		{
+			if (gameObject->GetCollider() == nullptr)
+				continue;
+		}
 
 		// 내가 그려줘야할 대상인 gameObject
 		_vecForward.push_back(gameObject);		

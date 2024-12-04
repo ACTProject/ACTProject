@@ -11,28 +11,20 @@ float4 PS(MeshOutput input) : SV_TARGET
 {
 	//float4 color = ComputeLight(input.normal, input.uv, input.worldPosition);
 
-    float4 color = DiffuseMap.Sample(LinearSampler, input.uv);
+	float4 color = DiffuseMap.Sample(LinearSampler, input.uv);
    
     float distance = length(input.worldPosition - CameraPosition());
 	
     float start = 50.f;
     float end = 70.f;
-    float fogFactor = saturate((end - distance) / (end - start));
+    float fogFactor = 0.3;
 	
     float4 fogColor = float4(0.1, 0.6, 0.9, 1.0);
-    float maxFog = 0.0;
-    if (fogFactor <= maxFog)
-    {
-        color.rgb = lerp(fogColor.rgb, color.rgb, maxFog);
-    }
-    else
-    {
-        color.rgb = lerp(fogColor.rgb, color.rgb, fogFactor);
-    }
+    color.rgb = lerp(fogColor.rgb, color.rgb, fogFactor);
     
-    return color;
+ 
+	return color;
 }
-
 
 technique11 T0 // 인스턴싱 렌더링
 {

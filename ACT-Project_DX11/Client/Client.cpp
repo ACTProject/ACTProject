@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "RawBuffer.h"
 #include "TextureBuffer.h"
 #include "Material.h"
@@ -191,7 +191,7 @@ void Client::Init()
 
 
 	// Player
-	player->GetOrAddTransform()->SetPosition(Vec3(1, 0, 1));
+	player->GetOrAddTransform()->SetPosition(Vec3(40, 0, 40));
 	player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 	player->GetOrAddTransform()->SetScale(Vec3(0.01f));
 

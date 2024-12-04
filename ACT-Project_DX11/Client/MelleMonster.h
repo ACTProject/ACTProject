@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "MonoBehaviour.h"
 #include "EnginePch.h"
 #include "A_Star.h"
@@ -8,9 +8,8 @@
 class Model;
 class ModelAnimator;
 
-class MeleeMonster : public MonoBehaviour
+class MelleMonster : public MonoBehaviour
 {
-	A_Star astar;
 	virtual void Start() override;
 	virtual void Update() override;
 
@@ -35,27 +34,26 @@ public:
 	Vec3 EnemyPos;
 	Vec3 PlayerPos;
 	Vec3 patrolTarget;
+	int atkType = 1;
+	bool _isAnimating = false;
 
 private:
 	float _speed = 10.f;
 	float _hp = 100.0f;
 	float _atk = 30.0f;
-	int atkType = 1;
+	bool onTarget = false;
+	bool onRange = false;
+	bool BackToStart = false;
 	float dt;
 	float _FPS;
+	Vec3 StartPos;
 	float rangeDis;
+	bool onAttack = false;
 	float _attackDuration[3];
 	float _aggroDuration;
-	float animPlayingTime = 0.0f;
-	Vec3 StartPos;
-
-	bool _isAnimating = false;
-	bool onAttack = false;
 	bool isFirstAggro = true;
+	float animPlayingTime = 0.0f;
 	bool hasPatrolTarget = false;
-	bool onTarget = false;
-	bool onRange = true;
-	bool BackToStart = false;
 
 	shared_ptr<Model> _enemy;
 	shared_ptr<ModelAnimator> _modelAnimator;

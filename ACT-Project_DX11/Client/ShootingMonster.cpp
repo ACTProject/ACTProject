@@ -2,275 +2,260 @@
 #include "ShootingMonster.h"
 
 #define AggroRange 30.0f
-#define AttackRange 5.0f
+#define ShootingRange 15.0f
 
 void ShootingMonster::Move(Vec3 objPos, Vec3 targetPos, float speed)
 {
-	Vec3 direction = targetPos - objPos;
-	if (direction.LengthSquared() < EPSILON) // EPSILON »ç¿ë
-	{
-		return;
-	}
+    Vec3 direction = targetPos - objPos;
+    if (direction.LengthSquared() < EPSILON) // EPSILON ì‚¬ìš©
+    {
+        return;
+    }
 
-	direction.Normalize();  // ¹æÇâ º¤ÅÍ¸¦ ´ÜÀ§ º¤ÅÍ·Î Á¤±ÔÈ­
+    direction.Normalize();  // ë°©í–¥ ë²¡í„°ë¥¼ ë‹¨ìœ„ ë²¡í„°ë¡œ ì •ê·œí™”
 
-	_transform->SetPosition(_transform->GetPosition() + direction * speed * dt);  // ÀÏÁ¤ °Å¸®¸¸Å­ ÀÌµ¿
+    _transform->SetPosition(_transform->GetPosition() + direction * speed * dt);  // ì¼ì • ê±°ë¦¬ë§Œí¼ ì´ë™
 }
 
 void ShootingMonster::Rota(Vec3 objPos, Vec3 targetPos)
 {
-	CurForward = _transform->GetLook();
-	Vec3 direction = targetPos - objPos;
-	direction.Normalize();
+    CurForward = _transform->GetLook();
+    Vec3 direction = targetPos - objPos;
+    direction.Normalize();
 
-	// ¿ÜÀûÀ» ÀÌ¿ëÇÑ È¸Àü Ãà °è»ê
-	Vec3 rotationAxis = CurForward.Cross(direction);
+    // ì™¸ì ì„ ì´ìš©í•œ íšŒì „ ì¶• ê³„ì‚°
+    Vec3 rotationAxis = CurForward.Cross(direction);
 
-	// ¿ÜÀû °á°ú°¡ ¸Å¿ì ÀÛÀ¸¸é ¹æÇâ Â÷ÀÌ°¡ °ÅÀÇ ¾øÀ¸¹Ç·Î È¸Àü ÇÊ¿ä ¾øÀ½
-	if (rotationAxis.LengthSquared() < EPSILON)
-	{
-		return;
-	}
+    // ì™¸ì  ê²°ê³¼ê°€ ë§¤ìš° ì‘ìœ¼ë©´ ë°©í–¥ ì°¨ì´ê°€ ê±°ì˜ ì—†ìœ¼ë¯€ë¡œ íšŒì „ í•„ìš” ì—†ìŒ
+    if (rotationAxis.LengthSquared() < EPSILON)
+    {
+        return;
+    }
 
-	rotationAxis.Normalize();
+    rotationAxis.Normalize();
 
-	// °¢µµ °è»ê
-	float angle = std::acos(CurForward.Dot(direction));
+    // ê°ë„ ê³„ì‚°
+    float angle = std::acos(CurForward.Dot(direction));
 
-	// ÀÛÀº °¢µµ´Â ¹«½Ã
-	if (abs(angle) < EPSILON) // 0.01 ¶óµğ¾È(¾à 0.57µµ) ÀÌÇÏ È¸Àü ¹«½Ã
-	{
-		return;
-	}
-	// ¹æÇâ¿¡ µû¶ó °¢µµ Á¶Á¤ (yÃà Áß½É È¸Àü)
-	if (rotationAxis.y < 0) {
-		angle = -angle;  // ¿ŞÂÊ È¸Àü
-	}
+    // ì‘ì€ ê°ë„ëŠ” ë¬´ì‹œ
+    if (abs(angle) < EPSILON) // 0.01 ë¼ë””ì•ˆ(ì•½ 0.57ë„) ì´í•˜ íšŒì „ ë¬´ì‹œ
+    {
+        return;
+    }
+    // ë°©í–¥ì— ë”°ë¼ ê°ë„ ì¡°ì • (yì¶• ì¤‘ì‹¬ íšŒì „)
+    if (rotationAxis.y < 0) {
+        angle = -angle;  // ì™¼ìª½ íšŒì „
+    }
 
-	// ÇöÀç È¸Àü°ª ¾÷µ¥ÀÌÆ®
-	Vec3 currentRotation = _transform->GetLocalRotation();
-	Vec3 newRotation = Vec3::Lerp(currentRotation, currentRotation + Vec3(0, angle, 0), 0.1f); // 0.1f´Â º¸°£ ¼Óµµ
-	_transform->SetRotation(newRotation);
+    // í˜„ì¬ íšŒì „ê°’ ì—…ë°ì´íŠ¸
+    Vec3 currentRotation = _transform->GetLocalRotation();
+    Vec3 newRotation = Vec3::Lerp(currentRotation, currentRotation + Vec3(0, angle, 0), 0.1f); // 0.1fëŠ” ë³´ê°„ ì†ë„
+    _transform->SetRotation(newRotation);
 
 }
 
 void ShootingMonster::Tracking(Vec3 pos, const std::vector<Node3D>& path)
 {
-	if (path.empty()) {
-		return;
-	}
+    if (path.empty()) {
+        return;
+    }
 
-	// °æ·Î »óÀÇ °¢ ³ëµå¸¦ µû¶ó ÀÌµ¿
-	for (size_t i = 0; i < path.size(); ++i) {
-		// ÇöÀç À§Ä¡°¡ ¸ñÇ¥ ³ëµå¿¡ µµ´ŞÇß´Ù¸é ´ÙÀ½ ³ëµå·Î ÀÌµ¿
-		if (i + 1 < path.size()) {
-			//Move(path[i + 1].pos);
-		}
-	}
+    // ê²½ë¡œ ìƒì˜ ê° ë…¸ë“œë¥¼ ë”°ë¼ ì´ë™
+    for (size_t i = 0; i < path.size(); ++i) {
+        // í˜„ì¬ ìœ„ì¹˜ê°€ ëª©í‘œ ë…¸ë“œì— ë„ë‹¬í–ˆë‹¤ë©´ ë‹¤ìŒ ë…¸ë“œë¡œ ì´ë™
+        if (i + 1 < path.size()) {
+            //Move(path[i + 1].pos);
+        }
+    }
 }
 
-void ShootingMonster::Attack(int type)
+void ShootingMonster::Shoot()
 {
-	_isAnimating = true;
+    _isAnimating = true;
 
-	float atkDuration = _attackDuration[atkType] / _FPS;
+    float atkDuration = _attackDuration / _FPS;
 
-	switch (type)
-	{
-	case 0:
-		SetAnimationState(AnimationState::Attack1);
-		break;
-	case 1:
-		SetAnimationState(AnimationState::Attack2);
-		break;
-	case 2:
-		SetAnimationState(AnimationState::Attack3);
-		break;
-	}
+    SetAnimationState(AnimationState::Attack1);
 
-	// ÄÚ·çÆ¾ ½ÇÇà
-	MyCoroutine attackCoroutine = EnemyCoroutine(this, atkDuration);
-	currentEnemyCoroutine = attackCoroutine.GetHandler();
-	currentEnemyCoroutine.resume();
+    bullet.Init(EnemyPos, _transform->GetLook());
+    // ì½”ë£¨í‹´ ì‹¤í–‰
+    MyCoroutine attackCoroutine = EnemyCoroutine(this, atkDuration);
+    currentEnemyCoroutine = attackCoroutine.GetHandler();
+    currentEnemyCoroutine.resume();
 
 }
 
 void ShootingMonster::Aggro()
 {
-	_isAnimating = true;
+    _isAnimating = true;
 
-	float duration = _aggroDuration / _FPS;
+    float duration = _aggroDuration / _FPS;
 
-	SetAnimationState(AnimationState::Aggro);
-	MyCoroutine aggroCoroutine = EnemyCoroutine(this, duration);
-	currentEnemyCoroutine = aggroCoroutine.GetHandler();
-	currentEnemyCoroutine.resume();
+    SetAnimationState(AnimationState::Aggro);
+    MyCoroutine aggroCoroutine = EnemyCoroutine(this, duration);
+    currentEnemyCoroutine = aggroCoroutine.GetHandler();
+    currentEnemyCoroutine.resume();
 }
 
 void ShootingMonster::Patrol()
 {
-	static float lastPatrolTime = 0.0f; // ¸¶Áö¸· ¸ñÇ¥ »ı¼º ½Ã°£
-	float currentTime = TIME->GetGameTime(); // ÇöÀç °ÔÀÓ ½Ã°£
+    static float lastPatrolTime = 0.0f; // ë§ˆì§€ë§‰ ëª©í‘œ ìƒì„± ì‹œê°„
+    float currentTime = TIME->GetGameTime(); // í˜„ì¬ ê²Œì„ ì‹œê°„
 
-	// ÀÏÁ¤ ½Ã°£ÀÌ Áö³ªÁö ¾Ê¾Ò´Ù¸é ¸ñÇ¥ »ı¼º Áß´Ü
-	if (currentTime - lastPatrolTime > 1.f) // 3~6ÃÊ °£°İ
-	{// »õ·Î¿î ·£´ı ¸ñÇ¥ ÁöÁ¡ »ı¼º
-		hasPatrolTarget = true;
-	}
+    // ì¼ì • ì‹œê°„ì´ ì§€ë‚˜ì§€ ì•Šì•˜ë‹¤ë©´ ëª©í‘œ ìƒì„± ì¤‘ë‹¨
+    if (currentTime - lastPatrolTime > 1.f) // 3~6ì´ˆ ê°„ê²©
+    {// ìƒˆë¡œìš´ ëœë¤ ëª©í‘œ ì§€ì  ìƒì„±
+        hasPatrolTarget = true;
+    }
 
 
-	if (hasPatrolTarget)
-	{
-		SetAnimationState(AnimationState::Run);
-		// ±âÁ¸ ¸ñÇ¥ ÁöÁ¡À¸·Î °è¼Ó ÀÌµ¿
-		Move(EnemyPos, patrolTarget, 10.f);
-		Rota(EnemyPos, patrolTarget);
+    if (hasPatrolTarget)
+    {
+        SetAnimationState(AnimationState::Run);
+        // ê¸°ì¡´ ëª©í‘œ ì§€ì ìœ¼ë¡œ ê³„ì† ì´ë™
+        Move(EnemyPos, patrolTarget, 10.f);
+        Rota(EnemyPos, patrolTarget);
 
-		// ¸ñÇ¥ ÁöÁ¡¿¡ µµ´ŞÇß´ÂÁö È®ÀÎ
-		if ((patrolTarget - _transform->GetPosition()).LengthSquared() < 1.f)
-		{
-			lastPatrolTime = currentTime; // Å¸ÀÌ¸Ó °»½Å
-			hasPatrolTarget = false;
-		}
-	}
-	else
-	{
-		float radius = 5.f; // ¹èÈ¸ ¹İ°æ
-		float randomX = StartPos.x + (rand() % 2000 / 1000.0f - 1.0f) * radius;
-		float randomZ = StartPos.z + (rand() % 2000 / 1000.0f - 1.0f) * radius;
-		patrolTarget = Vec3(randomX, StartPos.y, randomZ);
-		SetAnimationState(AnimationState::Idle);
-	}
+        // ëª©í‘œ ì§€ì ì— ë„ë‹¬í–ˆëŠ”ì§€ í™•ì¸
+        if ((patrolTarget - _transform->GetPosition()).LengthSquared() < 1.f)
+        {
+            lastPatrolTime = currentTime; // íƒ€ì´ë¨¸ ê°±ì‹ 
+            hasPatrolTarget = false;
+        }
+    }
+    else
+    {
+        float radius = 5.f; // ë°°íšŒ ë°˜ê²½
+        float randomX = StartPos.x + (rand() % 2000 / 1000.0f - 1.0f) * radius;
+        float randomZ = StartPos.z + (rand() % 2000 / 1000.0f - 1.0f) * radius;
+        patrolTarget = Vec3(randomX, StartPos.y, randomZ);
+        SetAnimationState(AnimationState::Idle);
+    }
 
-	// ¸ñÇ¥ ÁöÁ¡À¸·Î ÀÌµ¿
-	//Move(patrolTarget);
-	//Rota(patrolTarget);
+    // ëª©í‘œ ì§€ì ìœ¼ë¡œ ì´ë™
+    //Move(patrolTarget);
+    //Rota(patrolTarget);
 }
 
 void ShootingMonster::Start()
 {
-	_transform = GetTransform();
-	StartPos = _transform->GetPosition();
-	patrolTarget = StartPos;
-	for (int i = 0; i < 3; ++i)
-	{
-		_attackDuration[i] = _enemy->GetAnimationDuration(static_cast<AnimationState>((int)AnimationState::Attack1 + i));
-	}
-	_aggroDuration = _enemy->GetAnimationDuration(static_cast<AnimationState>((int)AnimationState::Aggro));
+    _transform = GetTransform();
+    StartPos = _transform->GetPosition();
+    patrolTarget = StartPos;
+    _attackDuration = _enemy->GetAnimationDuration(static_cast<AnimationState>((int)AnimationState::Attack1));
+    
+    _aggroDuration = _enemy->GetAnimationDuration(static_cast<AnimationState>((int)AnimationState::Aggro));
 }
 
 void ShootingMonster::Update()
 {
-	if (INPUT->GetButton(KEY_TYPE::KEY_4))
-	{
-		int a = 0;
-	}
+    if (INPUT->GetButton(KEY_TYPE::KEY_4))
+    {
+        int a = 0;
+    }
 
-	_FPS = static_cast<float>(TIME->GetFps());
-	dt = TIME->GetDeltaTime();
-	// ÇÃ·¹ÀÌ¾î À§Ä¡ °è»ê4
-	_player = SCENE->GetCurrentScene()->GetPlayer();
-	PlayerPos = _player->GetTransform()->GetPosition();
-	EnemyPos = _transform->GetPosition();
+    _FPS = static_cast<float>(TIME->GetFps());
+    dt = TIME->GetDeltaTime();
+    // í”Œë ˆì´ì–´ ìœ„ì¹˜ ê³„ì‚°4
+    _player = SCENE->GetCurrentScene()->GetPlayer();
+    PlayerPos = _player->GetTransform()->GetPosition();
+    EnemyPos = _transform->GetPosition();
 
-	if (_isAnimating)
-	{
-		animPlayingTime += dt;
-		Rota(EnemyPos, PlayerPos);
+    if (_isAnimating)
+    {
+        animPlayingTime += dt;
+        Rota(EnemyPos, PlayerPos);
 
-		if (_currentAnimationState == AnimationState::Attack1 ||
-			_currentAnimationState == AnimationState::Attack2 ||
-			_currentAnimationState == AnimationState::Attack3)
-		{
-			float atkDuration = _attackDuration[atkType] / _FPS;
+        if (_currentAnimationState == AnimationState::Attack1)
+        {
+            float atkDuration = _attackDuration / _FPS;
 
-			if (animPlayingTime >= atkDuration)
-			{
-				atkType = rand() % 3; // ´ÙÀ½ °ø°İ Å¸ÀÔ °áÁ¤
-				ResetToIdleState();
-			}
-			return;
-		}
+            if (animPlayingTime >= atkDuration)
+            {
+                ResetToIdleState();
+            }
+            return;
+        }
 
-		// Aggro ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ¿Ï·áµÇ¾ú´ÂÁö È®ÀÎ
-		if (_currentAnimationState == AnimationState::Aggro)
-		{
-			if (animPlayingTime >= _aggroDuration / _FPS)
-			{
-				isFirstAggro = false;
-				ResetToIdleState();
-			}
-			return;
-		}
-	}
+        // Aggro ì• ë‹ˆë©”ì´ì…˜ì´ ì™„ë£Œë˜ì—ˆëŠ”ì§€ í™•ì¸
+        if (_currentAnimationState == AnimationState::Aggro)
+        {
+            if (animPlayingTime >= _aggroDuration / _FPS)
+            {
+                isFirstAggro = false;
+                ResetToIdleState();
+            }
+            return;
+        }
+    }
 
-	Vec3 EnemyToPlayerdir = PlayerPos - EnemyPos;
-	float EnemyToPlayerdistance = EnemyToPlayerdir.Length();
-	rangeDis = (EnemyPos - StartPos).Length();
+    Vec3 EnemyToPlayerdir = PlayerPos - EnemyPos;
+    float EnemyToPlayerdistance = EnemyToPlayerdir.Length();
+    rangeDis = (EnemyPos - StartPos).Length();
 
-	// ¹üÀ§ °Ë»ç
-	if (rangeDis > 50.f) // ÃÊ±â À§Ä¡¿¡¼­ ³Ê¹« ¸Ö¸® ¶³¾îÁö¸é º¹±Í
-	{
-		BackToStart = true;
-		onTarget = false;
-		onAttack = false;
-		isFirstAggro = true;
-	}
-	else if (EnemyToPlayerdistance <= AggroRange)
-	{
-		onTarget = true;
-	} // Å½Áö ¹üÀ§ ¾È¿¡ ÀÖÀ» ¶§
-	else
-	{
-		onTarget = false;
-	}
+    // ë²”ìœ„ ê²€ì‚¬
+    if (rangeDis > 50.f) // ì´ˆê¸° ìœ„ì¹˜ì—ì„œ ë„ˆë¬´ ë©€ë¦¬ ë–¨ì–´ì§€ë©´ ë³µê·€
+    {
+        BackToStart = true;
+        onTarget = false;
+        onAttack = false;
+        isFirstAggro = true;
+    }
+    else if (EnemyToPlayerdistance <= AggroRange)
+    {
+        onTarget = true;
+    } // íƒì§€ ë²”ìœ„ ì•ˆì— ìˆì„ ë•Œ
+    else
+    {
+        onTarget = false;
+    }
 
-	if (EnemyToPlayerdistance < AttackRange) { onAttack = true; } // °ø°İ ¹üÀ§ ¾È¿¡ ÀÖÀ» ¶§
-	else { onAttack = false; }
-	//
+    if (EnemyToPlayerdistance < ShootingRange) { onAttack = true; } // ê³µê²© ë²”ìœ„ ì•ˆì— ìˆì„ ë•Œ
+    else { onAttack = false; }
+    //
 
-	// »óÅÂº° ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà
-	if (BackToStart)
-	{
-		SetAnimationState(AnimationState::Run);
-		Move(EnemyPos, StartPos, _speed);
-		Rota(EnemyPos, StartPos);
-		if (abs(rangeDis) < 1.f)
-		{
-			BackToStart = false;
-		}
-	}
-	else if (isFirstAggro && onTarget)
-	{
-		Aggro();
-	}
-	else if (onAttack)
-	{
-		Attack(atkType);
-	}
-	else if (onTarget)
-	{
-		SetAnimationState(AnimationState::Run);
-		Move(EnemyPos, PlayerPos, _speed);
-		Rota(EnemyPos, PlayerPos);
-	}
-	else
-	{
-		Patrol();
-	}
+    // ìƒíƒœë³„ ì• ë‹ˆë©”ì´ì…˜ ì‹¤í–‰
+    if (BackToStart)
+    {
+        //SetAnimationState(AnimationState::Run);
+        Move(EnemyPos, StartPos, _speed);
+        Rota(EnemyPos, StartPos);
+        if (abs(rangeDis) < 1.f)
+        {
+            BackToStart = false;
+        }
+    }
+    //else if (isFirstAggro && onTarget)
+    //{
+        //Aggro();
+    //}
+    else if (onAttack)
+    {
+        Shoot();
+    }
+    else if (onTarget)
+    {
+        //SetAnimationState(AnimationState::Run);
+        Move(EnemyPos, PlayerPos, _speed);
+        Rota(EnemyPos, PlayerPos);
+    }
+    else
+    {
+        Patrol();
+    }
 
 }
 
 
 void ShootingMonster::SetAnimationState(AnimationState state)
 {
-	_modelAnimator->ChangeAnimation(state);
-	_currentAnimationState = state;
+    _modelAnimator->ChangeAnimation(state);
+    _currentAnimationState = state;
 }
 
 void ShootingMonster::ResetToIdleState() {
-	_isAnimating = false;
-	animPlayingTime = 0.0f;
-	EnemyEndCoroutine();
-	SetAnimationState(AnimationState::Idle);
+    _isAnimating = false;
+    animPlayingTime = 0.0f;
+    EnemyEndCoroutine();
+    SetAnimationState(AnimationState::Idle);
 }

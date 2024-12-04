@@ -1,10 +1,10 @@
-﻿#include "pch.h"
-#include "MeleeMonster.h"
+#include "pch.h"
+#include "MelleMonster.h"
 
 #define AggroRange 30.0f
 #define AttackRange 5.0f
 
-void MeleeMonster::Move(Vec3 objPos, Vec3 targetPos, float speed)
+void MelleMonster::Move(Vec3 objPos, Vec3 targetPos, float speed)
 {
 	Vec3 direction = targetPos - objPos;
 	if (direction.LengthSquared() < EPSILON) // EPSILON 사용
@@ -17,7 +17,7 @@ void MeleeMonster::Move(Vec3 objPos, Vec3 targetPos, float speed)
 	_transform->SetPosition(_transform->GetPosition() + direction * speed * dt);  // 일정 거리만큼 이동
 }
 
-void MeleeMonster::Rota(Vec3 objPos, Vec3 targetPos)
+void MelleMonster::Rota(Vec3 objPos, Vec3 targetPos)
 {
 	CurForward = _transform->GetLook();
 	Vec3 direction = targetPos - objPos;
@@ -54,7 +54,7 @@ void MeleeMonster::Rota(Vec3 objPos, Vec3 targetPos)
 
 }
 
-void MeleeMonster::Tracking(Vec3 pos, const std::vector<Node3D>& path)
+void MelleMonster::Tracking(Vec3 pos, const std::vector<Node3D>& path)
 {
 	if (path.empty()) {
 		return;
@@ -69,7 +69,7 @@ void MeleeMonster::Tracking(Vec3 pos, const std::vector<Node3D>& path)
 	}
 }
 
-void MeleeMonster::Attack(int type)
+void MelleMonster::Attack(int type)
 {
 	_isAnimating = true;
 
@@ -95,7 +95,7 @@ void MeleeMonster::Attack(int type)
 
 }
 
-void MeleeMonster::Aggro()
+void MelleMonster::Aggro()
 {
 	_isAnimating = true;
 
@@ -107,7 +107,7 @@ void MeleeMonster::Aggro()
 	currentEnemyCoroutine.resume();
 }
 
-void MeleeMonster::Patrol()
+void MelleMonster::Patrol()
 {
 	static float lastPatrolTime = 0.0f; // 마지막 목표 생성 시간
 	float currentTime = TIME->GetGameTime(); // 현재 게임 시간
@@ -147,7 +147,7 @@ void MeleeMonster::Patrol()
 	//Rota(patrolTarget);
 }
 
-void MeleeMonster::Start()
+void MelleMonster::Start()
 {
 	_transform = GetTransform();
 	StartPos = _transform->GetPosition();
@@ -159,7 +159,7 @@ void MeleeMonster::Start()
 	_aggroDuration = _enemy->GetAnimationDuration(static_cast<AnimationState>((int)AnimationState::Aggro));
 }
 
-void MeleeMonster::Update()
+void MelleMonster::Update()
 {
 	if (INPUT->GetButton(KEY_TYPE::KEY_4))
 	{
@@ -262,13 +262,13 @@ void MeleeMonster::Update()
 }
 
 
-void MeleeMonster::SetAnimationState(AnimationState state)
+void MelleMonster::SetAnimationState(AnimationState state)
 {
 	_modelAnimator->ChangeAnimation(state);
 	_currentAnimationState = state;
 }
 
-void MeleeMonster::ResetToIdleState() {
+void MelleMonster::ResetToIdleState() {
 	_isAnimating = false;
 	animPlayingTime = 0.0f;
 	EnemyEndCoroutine();

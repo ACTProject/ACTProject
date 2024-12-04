@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Component.h"
 
 class HitBox : public Component

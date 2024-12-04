@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "OctreeManager.h"
 
 Octree::Octree(const BoundingBox& worldBounds, int maxDepth)

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "HitBox.h"
 #include "AABBBoxCollider.h"
 
@@ -17,7 +17,7 @@ void HitBox::Craete(shared_ptr<GameObject> target, Vec3 size)
 	auto go = _gameObject.lock();
 	if (!go) return;
 
-	// ÇÃ·¹ÀÌ¾î À§Ä¡¸¦ ±âÁØÀ¸·Î È÷Æ®¹Ú½º À§Ä¡ ¼³Á¤
+	// í”Œë ˆì´ì–´ ìœ„ì¹˜ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ížˆíŠ¸ë°•ìŠ¤ ìœ„ì¹˜ ì„¤ì •
 	auto targetTransform = target->GetTransform();
 	go->GetOrAddTransform()->SetPosition(targetTransform->GetPosition() +_offset + targetTransform->GetLook() * 1.8f);
 

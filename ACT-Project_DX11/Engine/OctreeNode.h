@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class BaseCollider;
 
@@ -8,11 +8,11 @@ public:
 	OctreeNode(const BoundingBox& bounds, int depth, int maxDepth);
 	~OctreeNode();
 
-	// µ¥ÀÌÅÍ »ğÀÔ
+	// ë°ì´í„° ì‚½ì…
 	//bool InsertTerrain(const TerrainTriangle& triangle);
 	bool InsertCollider(std::shared_ptr<BaseCollider> collider);
 
-	// ¹üÀ§ °Ë»ö
+	// ë²”ìœ„ ê²€ìƒ‰
 	//std::vector<TerrainTriangle> QueryTerrain(const BaseCollider& rangeCollider);
 	std::vector<std::shared_ptr<BaseCollider>> QueryColliders(const BaseCollider& rangeCollider);
 
@@ -20,11 +20,11 @@ private:
 	void Subdivide();
 
 private:
-	BoundingBox _bounds; // ³ëµåÀÇ °æ°è (AABB)
-	//std::vector<TerrainTriangle> _terrainData; // Terrain »ï°¢Çü µ¥ÀÌÅÍ
-	std::vector<std::shared_ptr<BaseCollider>> _colliders; // Collider µ¥ÀÌÅÍ
-	std::vector<std::unique_ptr<OctreeNode>> _children; // ÀÚ½Ä ³ëµå
-	int _depth; // ÇöÀç ³ëµå ±íÀÌ
-	int _maxDepth; // ÃÖ´ë ±íÀÌ
-	static const int MAX_OBJECTS = 8; // ³ëµå´ç ÃÖ´ë ¿ÀºêÁ§Æ® ¼ö
+	BoundingBox _bounds; // ë…¸ë“œì˜ ê²½ê³„ (AABB)
+	//std::vector<TerrainTriangle> _terrainData; // Terrain ì‚¼ê°í˜• ë°ì´í„°
+	std::vector<std::shared_ptr<BaseCollider>> _colliders; // Collider ë°ì´í„°
+	std::vector<std::unique_ptr<OctreeNode>> _children; // ìì‹ ë…¸ë“œ
+	int _depth; // í˜„ì¬ ë…¸ë“œ ê¹Šì´
+	int _maxDepth; // ìµœëŒ€ ê¹Šì´
+	static const int MAX_OBJECTS = 8; // ë…¸ë“œë‹¹ ìµœëŒ€ ì˜¤ë¸Œì íŠ¸ ìˆ˜
 };

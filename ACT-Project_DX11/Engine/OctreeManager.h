@@ -1,25 +1,25 @@
-#pragma once
+ï»¿#pragma once
 #include "OctreeNode.h"
 
 class Octree
 {
 public:
-	// Octree ÃÊ±âÈ­
+	// Octree ì´ˆê¸°í™”
 	Octree(const BoundingBox& worldBounds, int maxDepth);
 	~Octree();
 
-	// Terrain µ¥ÀÌÅÍ »ğÀÔ
+	// Terrain ë°ì´í„° ì‚½ì…
 	//void InsertTerrain(const TerrainTriangle& triangle);
 
-	// Collider »ğÀÔ
+	// Collider ì‚½ì…
 	void InsertCollider(std::shared_ptr<BaseCollider> collider);
 
-	// ¹üÀ§ ³» Terrain µ¥ÀÌÅÍ °Ë»ö
+	// ë²”ìœ„ ë‚´ Terrain ë°ì´í„° ê²€ìƒ‰
 	//std::vector<TerrainTriangle> QueryTerrain(const BaseCollider& rangeCollider);
 
-	// ¹üÀ§ ³» Collider °Ë»ö
+	// ë²”ìœ„ ë‚´ Collider ê²€ìƒ‰
 	std::vector<std::shared_ptr<BaseCollider>> QueryColliders(const BaseCollider& rangeCollider);
 
 private:
-	std::unique_ptr<OctreeNode> _root; // ·çÆ® ³ëµå
+	std::unique_ptr<OctreeNode> _root; // ë£¨íŠ¸ ë…¸ë“œ
 };

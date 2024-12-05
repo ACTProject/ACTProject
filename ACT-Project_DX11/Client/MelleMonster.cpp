@@ -107,44 +107,10 @@ void MelleMonster::Aggro()
 	currentEnemyCoroutine.resume();
 }
 
-void MelleMonster::Patrol()
+void MelleMonster::Patrol(Vec3 Target)
 {
-	static float lastPatrolTime = 0.0f; // 마지막 목표 생성 시간
-	float currentTime = TIME->GetGameTime(); // 현재 게임 시간
-
-	// 일정 시간이 지나지 않았다면 목표 생성 중단
-	if (currentTime - lastPatrolTime > 1.f) // 3~6초 간격
-	{// 새로운 랜덤 목표 지점 생성
-		hasPatrolTarget = true;		
-	}
-	
-
-	if (hasPatrolTarget)
-	{
-		SetAnimationState(AnimationState::Run);
-		// 기존 목표 지점으로 계속 이동
-		Move(EnemyPos, patrolTarget, 10.f);
-		Rota(EnemyPos, patrolTarget);
-
-		// 목표 지점에 도달했는지 확인
-		if ((patrolTarget - _transform->GetPosition()).LengthSquared() < 1.f)
-		{
-			lastPatrolTime = currentTime; // 타이머 갱신
-			hasPatrolTarget = false;
-		}
-	}
-	else
-	{
-		float radius = 5.f; // 배회 반경
-		float randomX = StartPos.x + (rand() % 2000 / 1000.0f - 1.0f) * radius;
-		float randomZ = StartPos.z + (rand() % 2000 / 1000.0f - 1.0f) * radius;
-		patrolTarget = Vec3(randomX, StartPos.y, randomZ);
-		SetAnimationState(AnimationState::Idle);
-	}
-
-	// 목표 지점으로 이동
-	//Move(patrolTarget);
-	//Rota(patrolTarget);
+    Move(EnemyPos, Target, _speed / 2.f);
+    Rota(EnemyPos, Target);
 }
 
 void MelleMonster::Start()
@@ -172,6 +138,9 @@ void MelleMonster::Update()
 	_player = SCENE->GetCurrentScene()->GetPlayer();
 	PlayerPos = _player->GetTransform()->GetPosition();
 	EnemyPos = _transform->GetPosition();
+
+    static float lastPatrolTime = 0.0f; // 마지막 목표 생성 시간
+    float currentTime = TIME->GetGameTime(); // 현재 게임 시간
 
 	if (_isAnimating)
 	{
@@ -256,7 +225,22 @@ void MelleMonster::Update()
 	}
 	else
 	{
-		Patrol();
+        SetAnimationState(AnimationState::Idle);
+        if (currentTime - lastPatrolTime > 2.f) // 3~6초 간격
+        {// 새로운 랜덤 목표 지점 생성
+            Patrol(patrolTarget);
+            if (sqrt(powf(EnemyPos.x - patrolTarget.x, 2) + powf(EnemyPos.z - patrolTarget.z, 2)) < 1.f)
+            {
+                lastPatrolTime = currentTime;
+            }
+        }
+        else
+        {
+            float radius = 5.f; // 배회 반경
+            float randomX = StartPos.x + (rand() % 2000 / 1000.0f - 1.0f) * radius;
+            float randomZ = StartPos.z + (rand() % 2000 / 1000.0f - 1.0f) * radius;
+            patrolTarget = Vec3(randomX, EnemyPos.y, randomZ);
+        }
 	}
 
 }

@@ -15,6 +15,7 @@ public:
     virtual void Awake() override;
     virtual void Update() override;
 
+
     // Coroutine
     std::coroutine_handle<MyCoroutine::promise_type> currentEnemyCoroutine;
 

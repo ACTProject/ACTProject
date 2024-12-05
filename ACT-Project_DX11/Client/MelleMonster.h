@@ -26,34 +26,36 @@ public:
 	void Attack(int type);
 	void Tracking(Vec3 pos, const std::vector<Node3D>& path);
 	void ResetToIdleState();
-	void Patrol();
+	void Patrol(Vec3 Target);
 
 	//float angle; 
-	float distance;
-	Vec3 CurForward;
-	Vec3 EnemyPos;
-	Vec3 PlayerPos;
-	Vec3 patrolTarget;
-	int atkType = 1;
-	bool _isAnimating = false;
 
 private:
 	float _speed = 10.f;
 	float _hp = 100.0f;
 	float _atk = 30.0f;
-	bool onTarget = false;
-	bool onRange = false;
-	bool BackToStart = false;
 	float dt;
 	float _FPS;
-	Vec3 StartPos;
 	float rangeDis;
-	bool onAttack = false;
 	float _attackDuration[3];
 	float _aggroDuration;
-	bool isFirstAggro = true;
 	float animPlayingTime = 0.0f;
+    float distance;
+    int atkType = 1;
+
 	bool hasPatrolTarget = false;
+    bool onTarget = false;
+    bool onRange = false;
+    bool BackToStart = false;
+    bool isFirstAggro = true;
+    bool onAttack = false;
+    bool _isAnimating = false;
+
+    Vec3 StartPos;
+    Vec3 CurForward;
+    Vec3 EnemyPos;
+    Vec3 PlayerPos;
+    Vec3 patrolTarget;
 
 	shared_ptr<Model> _enemy;
 	shared_ptr<ModelAnimator> _modelAnimator;

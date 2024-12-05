@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 
 class Scene
@@ -16,6 +16,7 @@ public:
 	virtual void Remove(shared_ptr<GameObject> object);
 
 	void SetPlayer(shared_ptr<GameObject> player) { _player = player; }
+	void SetEnemy(shared_ptr<GameObject> enemy) { _enemy = enemy; }
 	void SetTerrain(shared_ptr<GameObject> terrain) { _terrain = terrain; }
 
 	unordered_set<shared_ptr<GameObject>>& GetObjects() { return _objects; }
@@ -23,6 +24,7 @@ public:
 	shared_ptr<GameObject> GetUICamera();
 	shared_ptr<GameObject> GetLight() { return _lights.empty() ? nullptr : *_lights.begin(); }
 	shared_ptr<GameObject> GetPlayer() { return _player; }
+    shared_ptr<GameObject> GetEnemy() { return _enemy; }
 	shared_ptr<GameObject> GetCurrentTerrain() { return _terrain; }
 
 	void UpdateUI();
@@ -39,6 +41,7 @@ private:
 	unordered_set<shared_ptr<GameObject>> _lights;
 
 	shared_ptr<GameObject> _player;
+    shared_ptr<GameObject> _enemy;
 	shared_ptr<GameObject> _terrain;	// currentTerrain
 
 };

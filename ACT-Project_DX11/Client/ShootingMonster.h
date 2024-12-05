@@ -4,14 +4,15 @@
 #include "A_Star.h"
 #include "Model.h"
 #include "ModelAnimator.h"
-#include "Bullet.h"
+#include "BulletScript.h"
 
 class Model;
 class ModelAnimator;
 
 class ShootingMonster : public MonoBehaviour
 {
-    Bullet bullet;
+    shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
+
     virtual void Start() override;
     virtual void Update() override;
 
@@ -28,7 +29,8 @@ public:
     void Shoot();
     void Tracking(Vec3 pos, const std::vector<Node3D>& path);
     void ResetToIdleState();
-    void Patrol();
+    void Patrol(Vec3 Target);
+    void AddBullet(Vec3 Pos, Vec3 dir);
 
     //float angle; 
     float distance;
@@ -56,6 +58,9 @@ private:
     bool isFirstAggro = true;
     float animPlayingTime = 0.0f;
     bool hasPatrolTarget = false;
+    Vec3 EnemyToPlayerdir;
+    float EnemyToPlayerdistance;
+    bool shootCount = true;
 
     shared_ptr<Model> _enemy;
     shared_ptr<ModelAnimator> _modelAnimator;

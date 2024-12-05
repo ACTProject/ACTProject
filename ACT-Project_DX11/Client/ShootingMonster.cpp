@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ShootingMonster.h"
+#include <string>
 
 #define AggroRange 30.0f
 #define ShootingRange 15.0f
@@ -13,6 +14,7 @@ void ShootingMonster::Move(Vec3 objPos, Vec3 targetPos, float speed)
     }
 
     direction.Normalize();  // 방향 벡터를 단위 벡터로 정규화
+    direction.y = 0.f;
 
     _transform->SetPosition(_transform->GetPosition() + direction * speed * dt);  // 일정 거리만큼 이동
 }
@@ -77,12 +79,37 @@ void ShootingMonster::Shoot()
 
     SetAnimationState(AnimationState::Attack1);
 
-    bullet.Init(EnemyPos, _transform->GetLook());
+
     // 코루틴 실행
     MyCoroutine attackCoroutine = EnemyCoroutine(this, atkDuration);
     currentEnemyCoroutine = attackCoroutine.GetHandler();
     currentEnemyCoroutine.resume();
 
+}
+
+void ShootingMonster::AddBullet(Vec3 Pos, Vec3 dir)
+{
+    auto bullet = make_shared<GameObject>(); // bullet
+
+    bullet->GetOrAddTransform()->SetPosition({ Pos.x, Pos.y + 3.f, Pos.z });
+    bullet->GetOrAddTransform()->SetLocalRotation(dir); // XMConvertToRadians()
+    bullet->GetOrAddTransform()->SetScale(Vec3(0.0001f));
+
+    shared_ptr<Model> objModel = make_shared<Model>();
+    // Model
+    objModel->ReadModel(L"Enemy/bullet");
+    objModel->ReadMaterial(L"Enemy/bullet");
+
+    shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
+    bullet->AddComponent(ma2);
+    bullet->GetModelAnimator()->SetModel(objModel);
+    bullet->GetModelAnimator()->SetPass(0);
+
+    shared_ptr<BulletScript> BulletS = make_shared<BulletScript>();
+    BulletS->Add(objModel);
+    bullet->AddComponent(BulletS);
+
+    CUR_SCENE->Add(bullet);
 }
 
 void ShootingMonster::Aggro()
@@ -97,44 +124,10 @@ void ShootingMonster::Aggro()
     currentEnemyCoroutine.resume();
 }
 
-void ShootingMonster::Patrol()
+void ShootingMonster::Patrol(Vec3 Target)
 {
-    static float lastPatrolTime = 0.0f; // 마지막 목표 생성 시간
-    float currentTime = TIME->GetGameTime(); // 현재 게임 시간
-
-    // 일정 시간이 지나지 않았다면 목표 생성 중단
-    if (currentTime - lastPatrolTime > 1.f) // 3~6초 간격
-    {// 새로운 랜덤 목표 지점 생성
-        hasPatrolTarget = true;
-    }
-
-
-    if (hasPatrolTarget)
-    {
-        SetAnimationState(AnimationState::Run);
-        // 기존 목표 지점으로 계속 이동
-        Move(EnemyPos, patrolTarget, 10.f);
-        Rota(EnemyPos, patrolTarget);
-
-        // 목표 지점에 도달했는지 확인
-        if ((patrolTarget - _transform->GetPosition()).LengthSquared() < 1.f)
-        {
-            lastPatrolTime = currentTime; // 타이머 갱신
-            hasPatrolTarget = false;
-        }
-    }
-    else
-    {
-        float radius = 5.f; // 배회 반경
-        float randomX = StartPos.x + (rand() % 2000 / 1000.0f - 1.0f) * radius;
-        float randomZ = StartPos.z + (rand() % 2000 / 1000.0f - 1.0f) * radius;
-        patrolTarget = Vec3(randomX, StartPos.y, randomZ);
-        SetAnimationState(AnimationState::Idle);
-    }
-
-    // 목표 지점으로 이동
-    //Move(patrolTarget);
-    //Rota(patrolTarget);
+    Move(EnemyPos, Target, _speed / 2.f);
+    Rota(EnemyPos, Target);
 }
 
 void ShootingMonster::Start()
@@ -143,23 +136,20 @@ void ShootingMonster::Start()
     StartPos = _transform->GetPosition();
     patrolTarget = StartPos;
     _attackDuration = _enemy->GetAnimationDuration(static_cast<AnimationState>((int)AnimationState::Attack1));
-    
+
     _aggroDuration = _enemy->GetAnimationDuration(static_cast<AnimationState>((int)AnimationState::Aggro));
 }
 
 void ShootingMonster::Update()
 {
-    if (INPUT->GetButton(KEY_TYPE::KEY_4))
-    {
-        int a = 0;
-    }
-
     _FPS = static_cast<float>(TIME->GetFps());
     dt = TIME->GetDeltaTime();
-    // 플레이어 위치 계산4
+    // 플레이어 위치 계산
     _player = SCENE->GetCurrentScene()->GetPlayer();
     PlayerPos = _player->GetTransform()->GetPosition();
     EnemyPos = _transform->GetPosition();
+    static float lastPatrolTime = 0.0f; // 마지막 목표 생성 시간
+    float currentTime = TIME->GetGameTime(); // 현재 게임 시간
 
     if (_isAnimating)
     {
@@ -173,6 +163,15 @@ void ShootingMonster::Update()
             if (animPlayingTime >= atkDuration)
             {
                 ResetToIdleState();
+                shootCount = true;
+            }
+            else if (animPlayingTime >= atkDuration / 2)
+            {
+                if (shootCount)
+                {
+                    AddBullet(EnemyPos, EnemyToPlayerdir);
+                    shootCount = false;
+                }
             }
             return;
         }
@@ -187,10 +186,11 @@ void ShootingMonster::Update()
             }
             return;
         }
+
     }
 
-    Vec3 EnemyToPlayerdir = PlayerPos - EnemyPos;
-    float EnemyToPlayerdistance = EnemyToPlayerdir.Length();
+    EnemyToPlayerdir = PlayerPos - EnemyPos;
+    EnemyToPlayerdistance = EnemyToPlayerdir.Length();
     rangeDis = (EnemyPos - StartPos).Length();
 
     // 범위 검사
@@ -241,11 +241,24 @@ void ShootingMonster::Update()
     }
     else
     {
-        Patrol();
+        SetAnimationState(AnimationState::Idle);
+        if (currentTime - lastPatrolTime > 2.f) // 3~6초 간격
+        {// 새로운 랜덤 목표 지점 생성
+            Patrol(patrolTarget);
+            if (sqrt(powf(EnemyPos.x - patrolTarget.x, 2) + powf(EnemyPos.z - patrolTarget.z, 2)) < 1.f)
+            {
+                lastPatrolTime = currentTime;
+            }
+        }
+        else
+        {
+            float radius = 5.f; // 배회 반경
+            float randomX = StartPos.x + (rand() % 2000 / 1000.0f - 1.0f) * radius;
+            float randomZ = StartPos.z + (rand() % 2000 / 1000.0f - 1.0f) * radius;
+            patrolTarget = Vec3(randomX, EnemyPos.y, randomZ);
+        }
     }
-
 }
-
 
 void ShootingMonster::SetAnimationState(AnimationState state)
 {

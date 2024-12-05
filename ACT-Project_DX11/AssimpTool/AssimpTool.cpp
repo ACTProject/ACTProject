@@ -133,6 +133,11 @@ void AssimpTool::Init()
         }
         {
             shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"Enemy/pistol_aggro.fbx");
+            converter->ExportAnimationData(L"Enemy/pistol_aggro");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
             converter->ReadAssetFile(L"Enemy/bullet.fbx");
             converter->ExportMaterialData(L"Enemy/bullet");
             converter->ExportModelData(L"Enemy/bullet");

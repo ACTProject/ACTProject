@@ -220,15 +220,16 @@ void ShootingMonster::Update()
         //SetAnimationState(AnimationState::Run);
         Move(EnemyPos, StartPos, _speed);
         Rota(EnemyPos, StartPos);
+        _hp = 100.f;
         if (abs(rangeDis) < 1.f)
         {
             BackToStart = false;
         }
     }
-    //else if (isFirstAggro && onTarget)
-    //{
-        //Aggro();
-    //}
+    else if (isFirstAggro && onTarget)
+    {
+        Aggro();
+    }
     else if (onAttack)
     {
         Shoot();
@@ -257,6 +258,12 @@ void ShootingMonster::Update()
             float randomZ = StartPos.z + (rand() % 2000 / 1000.0f - 1.0f) * radius;
             patrolTarget = Vec3(randomX, EnemyPos.y, randomZ);
         }
+    }
+
+    if (_hp < 0.f)
+    {
+        SetAnimationState(AnimationState::Die);
+        Remove(GetGameObject());
     }
 }
 

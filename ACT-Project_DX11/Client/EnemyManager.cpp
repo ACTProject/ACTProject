@@ -47,7 +47,7 @@ void EnemyManager::CreateMeleeMonster(Vec3 SpawnPos)
         // Rigidbody
         shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
         rigidBody->SetUseGravity(true);
-        rigidBody->SetMass(2.0f);
+        rigidBody->SetMass(2.0f + (rand() % 10 * 0.1));
         rangoon->AddComponent(rigidBody);
 
         COLLISION->AddRigidbody(rigidBody);
@@ -73,7 +73,7 @@ void EnemyManager::CreateShootingMonster(Vec3 SpawnPos)
 
             enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Idle);
             enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Attack1);
-            //enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
+            enemyModel->ReadAnimation(L"Enemy/pistol_aggro", AnimationState::Aggro);
 
         }
         shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
@@ -98,7 +98,7 @@ void EnemyManager::CreateShootingMonster(Vec3 SpawnPos)
         // Rigidbody
         shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
         rigidBody->SetUseGravity(true);
-        rigidBody->SetMass(2.0f);
+        rigidBody->SetMass(2.1f);
         PistolShrimp->AddComponent(rigidBody);
 
         COLLISION->AddRigidbody(rigidBody);

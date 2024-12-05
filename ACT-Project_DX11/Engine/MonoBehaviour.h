@@ -34,5 +34,10 @@ public:
         co_await AwaitableSleep(chrono::milliseconds(static_cast<int>(animationDuration * 1000)));		// 공격 전 `atkType`을 랜덤으로 설정
         EnemyEndCoroutine();
     }
+
+    void Remove(shared_ptr<GameObject> obj)
+    {
+        CUR_SCENE->Remove(obj);
+    }
 };
 

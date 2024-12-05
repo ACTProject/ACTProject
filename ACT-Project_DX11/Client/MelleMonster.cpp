@@ -204,6 +204,7 @@ void MelleMonster::Update()
 		SetAnimationState(AnimationState::Run);
 		Move(EnemyPos, StartPos, _speed);
 		Rota(EnemyPos, StartPos);
+        _hp = 100.f;
 		if (abs(rangeDis) < 1.f)
 		{
 			BackToStart = false;
@@ -243,6 +244,11 @@ void MelleMonster::Update()
         }
 	}
 
+    if (_hp < 0.f)
+    {
+        SetAnimationState(AnimationState::Die);
+        Remove(GetGameObject());
+    }
 }
 
 

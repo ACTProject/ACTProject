@@ -59,9 +59,3 @@ void BulletScript::Shooting()
         _transform->SetPosition(pos);
     }
 }
-
-void BulletScript::Remove(shared_ptr<GameObject> obj)
-{
-    CUR_SCENE->Remove(obj);
-}
-

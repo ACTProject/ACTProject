@@ -15,7 +15,6 @@ public:
     void Add(shared_ptr<Model> bullet) { _bullet = bullet; }
 
     void Shooting();
-    void Remove(shared_ptr<GameObject> obj);
 
     Vec3 direction;   // 총알 이동 방향
     Vec3 CurForward;

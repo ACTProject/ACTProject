@@ -3,10 +3,13 @@
 
 class Octree
 {
+    DECLARE_SINGLE(Octree);
+
 public:
-    // Octree 초기화
-    Octree(const BoundingBox& worldBounds, int maxDepth);
-    ~Octree();
+    void Init(const BoundingBox& worldBounds, int maxDepth);
+
+    // 루트 노드 초기화 해제
+    void Clear();
 
     // Terrain 데이터 삽입
    // void InsertTerrain(const TerrainTriangle& triangle);
@@ -20,6 +23,7 @@ public:
     // 범위 내 Collider 검색
     std::vector<std::shared_ptr<BaseCollider>> QueryColliders(const shared_ptr<BaseCollider>& rangeCollider);
 
+    void RenderOctree();
 private:
     std::unique_ptr<OctreeNode> _root; // 루트 노드
 };

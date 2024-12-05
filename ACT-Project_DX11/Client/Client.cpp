@@ -33,6 +33,7 @@
 #include "Slider.h"
 #include "Skybox.h"
 #include "HitBox.h"
+#include "Frustum.h"
 
 void Client::Init()
 {
@@ -51,6 +52,7 @@ void Client::Init()
 		}
 		camera->AddComponent(make_shared<CameraScript>());
 		camera->GetCamera()->SetCullingMaskLayerOnOff(Layer_UI, true);
+        camera->GetCamera()->SetMainCamera(true);
 
 		CUR_SCENE->Add(camera);
 	}
@@ -235,6 +237,7 @@ void Client::Init()
 	auto collider = make_shared<SphereCollider>();
 	collider->SetRadius(5.0f);
 	collider->SetOffset(Vec3(0.f, 1.f, 0.f));
+    OCTREE->InsertCollider(collider);
 	player->AddComponent(collider);
 
 	// Rigidbody
@@ -307,6 +310,7 @@ void Client::Init()
 		auto collider = make_shared<AABBBoxCollider>();
 		collider->GetBoundingBox().Extents = Vec3(1.2f);
 		collider->SetOffset(Vec3(0.f, 1.f, 0.f));
+        OCTREE->InsertCollider(collider);
 		enemy->AddComponent(collider);
 
 		// Rigidbody

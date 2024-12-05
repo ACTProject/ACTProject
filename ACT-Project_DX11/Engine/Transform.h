@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Component.h"
 
 class Transform : public Component
@@ -43,7 +43,9 @@ public:
 	Vec3 GetUp(); 
 	Vec3 GetLook();
 
-	Matrix GetWorldMatrix() { return _matWorld; }
+    BoundingBox GenerateBoundingBox();
+
+    Matrix GetWorldMatrix() { return _matWorld; }
 	void SetWorldMatrix(Matrix matWorld) { _matWorld = matWorld; }
 
 	// 계층 관계

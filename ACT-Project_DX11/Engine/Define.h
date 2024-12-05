@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #define DECLARE_SINGLE(classname)			\
 private:									\
@@ -28,8 +28,10 @@ public:										\
 #define MAP			GET_SINGLE(MapManager)
 #define COLLISION	GET_SINGLE(CollisionManager)
 #define OCTREE		GET_SINGLE(Octree)
+#define FRUSTUM		GET_SINGLE(Frustum)
 #define CUR_SCENE	SCENE->GetCurrentScene()
 
+#define MAX_RENDER_DISTANCE 150.f
 enum LayerMask
 {
 	Layer_Default = 0,

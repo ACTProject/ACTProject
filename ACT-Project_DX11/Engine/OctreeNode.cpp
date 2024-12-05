@@ -2,6 +2,7 @@
 #include "OctreeNode.h"
 #include "BaseCollider.h"
 #include "AABBBoxCollider.h"
+#include "Camera.h"
 
 OctreeNode::OctreeNode(const BoundingBox& bounds, int depth, int maxDepth)
 	: _bounds(bounds), _depth(depth), _maxDepth(maxDepth)
@@ -169,6 +170,56 @@ std::vector<std::shared_ptr<BaseCollider>> OctreeNode::QueryColliders(const shar
 	}
 
 	return result;
+}
+
+void OctreeNode::RenderNode()
+{
+    // 1. 현재 노드의 경계 박스 생성
+    Vec3 corners[BoundingBox::CORNER_COUNT];
+    _bounds.GetCorners(corners);
+
+    // 로컬 좌표로 변환
+    Vec3 center = _bounds.Center;
+
+    std::vector<VertexPosData> vertices = {
+        { corners[0] }, { corners[1] },
+        { corners[1] }, { corners[2] },
+        { corners[2] }, { corners[3] },
+        { corners[3] }, { corners[0] },
+        { corners[4] }, { corners[5] },
+        { corners[5] }, { corners[6] },
+        { corners[6] }, { corners[7] },
+        { corners[7] }, { corners[4] },
+        { corners[0] }, { corners[4] },
+        { corners[1] }, { corners[5] },
+        { corners[2] }, { corners[6] },
+        { corners[3] }, { corners[7] }
+    };
+
+    // 2. VertexBuffer 생성
+    auto vertexBuffer = std::make_shared<VertexBuffer>();
+    vertexBuffer->Create(vertices, 0, true, false);
+    vertexBuffer->PushData();
+
+    // 3. 셰이더 설정
+    auto shader = std::make_shared<Shader>(L"23. RenderDemo.fx");
+    shader->PushGlobalData(Camera::S_MatView, Camera::S_MatProjection);
+
+    // 4. 렌더링
+    DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+    shader->Draw(5, 1, static_cast<UINT>(vertices.size()), 0);
+
+    // 기본 토폴로지 복구
+    DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    // 5. 자식 노드 렌더링
+    for (const auto& child : _children)
+    {
+        if (child)
+        {
+            child->RenderNode();
+        }
+    }
 }
 
 // 현재 노드를 8개의 자식 노드로 분할

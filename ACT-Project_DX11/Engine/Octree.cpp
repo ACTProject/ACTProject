@@ -1,13 +1,17 @@
 #include "pch.h"
-#include "OctreeManager.h"
+#include "Octree.h"
 
-Octree::Octree(const BoundingBox & worldBounds, int maxDepth)
+void Octree::Init(const BoundingBox& worldBounds, int maxDepth)
 {
+    // 기존 루트 노드 제거
+    Clear();
     _root = std::make_unique<OctreeNode>(worldBounds, 0, maxDepth);
 }
 
-Octree::~Octree()
+void Octree::Clear()
 {
+    // 루트 노드를 초기화하여 메모리 해제
+    _root.reset();
 }
 
 //void Octree::InsertTerrain(const TerrainTriangle& triangle)
@@ -42,4 +46,13 @@ std::vector<std::shared_ptr<BaseCollider>> Octree::QueryColliders(const shared_p
         return _root->QueryColliders(rangeCollider);
     }
     return {};
+}
+
+void Octree::RenderOctree()
+{
+    if (!(DEBUG->IsDebugEnabled() || INPUT->GetButton(KEY_TYPE::CAPSLOCK)))
+        return;
+
+    if (_root)
+        _root->RenderNode();
 }

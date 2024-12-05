@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Component.h"
 
 enum class ProjectionType
@@ -45,6 +45,11 @@ public:
 	float GetHeight() { return _height; }
 
 	Vec3 GetCameraOffset() { return _cameraOffset; }
+    Vec3 GetCameraPosition() { return _cameraPosition; }
+
+    // 메인 카메라인지 여부 설정 및 확인
+    void SetMainCamera(bool isMain) { _isMainCamera = isMain; }
+    bool IsMainCamera() const { return _isMainCamera; }
 
 public:
 	void SortGameObject();
@@ -62,7 +67,12 @@ public:
 	void SetCullingMask(uint32 mask) { _cullingMask = mask; }
 	bool IsCulled(uint8 layer) { return (_cullingMask & (1 << layer)) != 0; }
 
+    vector<shared_ptr<GameObject>>& GetVecForward() { return _vecForward; }
+
 private:
+    // 메인 카메라인지 여부
+    bool _isMainCamera = false;
+
 	uint32 _cullingMask = 0;
 	vector<shared_ptr<GameObject>> _vecForward;
 	shared_ptr<GameObject> _player = nullptr;

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 enum PLANE_TYPE : uint8
 {
@@ -14,11 +14,13 @@ enum PLANE_TYPE : uint8
 
 class Frustum
 {
+    DECLARE_SINGLE(Frustum);
 public:
 	void FinalUpdate();
 	bool ContainsSphere(const Vec3& pos, float radius);
+    bool ContainsAABB(const BoundingBox& box) const;
 
 private:
-	array<Vec4, PLANE_END> _planes;
+	array<Vec4, PLANE_END> _planes; // 프러스텀의 6개 평면
 };
 

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "CollisionManager.h"
 #include "BaseCollider.h"
 #include "Rigidbody.h"
@@ -8,7 +8,7 @@ void CollisionManager::Init()
 
 }
 
-// 異⑸룎 媛먯? 諛?泥섎━
+// 충돌 감지 및 처리
 void CollisionManager::Update()
 {
 	for (size_t i = 0; i < _colliders.size(); ++i)
@@ -18,11 +18,11 @@ void CollisionManager::Update()
 			auto colliderA = _colliders[i];
 			auto colliderB = _colliders[j];
 
-			// Collider媛 鍮꾪솢?깊솕 ?곹깭?대㈃ 異⑸룎 寃??以묐떒
+            // Collider가 비활성화 상태이면 충돌 검사 중단
 			if (!colliderA->IsActive() || !colliderB->IsActive())
 				continue;
 
-			// 異⑸룎 媛먯?
+            // 충돌 감지
 			if (colliderA->Intersects(colliderB))
 			{
 				HandleCollision(colliderA, colliderB);
@@ -45,36 +45,36 @@ void CollisionManager::AddRigidbody(shared_ptr<Rigidbody> rigidbody)
 
 void CollisionManager::HandleCollision(shared_ptr<BaseCollider> colliderA, shared_ptr<BaseCollider> colliderB)
 {
-	// Rigidbody 媛?몄삤湲?
+	// Rigidbody 가져오기
 	auto rigidbodyA = colliderA->GetGameObject()->GetRigidbody();
 	auto rigidbodyB = colliderB->GetGameObject()->GetRigidbody();
 
-	// Rigidbody媛 ?놁쑝硫?泥섎━?섏? ?딆쓬
+	// Rigidbody가 없으면 처리하지 않음
 	if (!rigidbodyA || !rigidbodyB)
 		return;
 
-	// Penetration Depth 怨꾩궛
+	// Penetration Depth 계산
 	Vec3 penetrationDepth;
 	if (!colliderA->CalculatePenetraionDepth(colliderB, penetrationDepth))
 	{
-		return; // 異⑸룎??諛쒖깮?섏? ?딆쓬
+		return; // 충돌이 발생하지 않음
 	}
 
-	// 異⑸룎 諛⑺뼢 怨꾩궛
+	// 충돌 방향 계산
 	penetrationDepth.Normalize();
 	Vec3 collisionNormal = penetrationDepth;
 
-	// 媛꾧꺽 ?좎? ?ㅼ젙
-	float minimumSeparation = 0.1f; // ?ㅻ툕?앺듃 媛?理쒖냼 媛꾧꺽
+	// 간격 유지 설정
+	float minimumSeparation = 0.1f; // 오브젝트 간 최소 간격
 	float penetrationLength = penetrationDepth.Length();
 
 	if (penetrationLength <= minimumSeparation)
 	{
-		// ?대? 異⑸텇??嫄곕━媛 ?좎??섎㈃ ???댁긽 諛?대궡吏 ?딆쓬
+		// 이미 충분한 거리가 유지되면 더 이상 밀어내지 않음
 		return;
 	}
 
-	// 吏덈웾 ?뺤씤
+	// 질량 확인
 	float massA = rigidbodyA->GetMass();
 	float massB = rigidbodyB->GetMass();
 
@@ -87,7 +87,7 @@ void CollisionManager::HandleCollision(shared_ptr<BaseCollider> colliderA, share
 		ApplyForce(rigidbodyA, colliderA->GetColliderCenter(), colliderB->GetColliderCenter(), rigidbodyB->GetMass() - rigidbodyA->GetMass());
 	}
 
-	// 異⑸룎 ?곹깭 ?ㅼ젙
+	// 충돌 상태 설정
 	colliderA->SetColliding(true);
 	colliderB->SetColliding(true);
 }
@@ -96,7 +96,7 @@ void CollisionManager::ApplyForce(shared_ptr<Rigidbody> rigidbody, const Vec3& t
 {
 	Vec3 collisionNormal = (target - source);
 	collisionNormal.Normalize();
-	Vec3 force = collisionNormal * massDifference * 10.0f; // 諛由?媛뺣룄
+	Vec3 force = collisionNormal * massDifference * 10.0f; // 밀림 강도
 	rigidbody->Addforce(force);
 }
 

@@ -25,6 +25,13 @@ VSOutput VS_Collision(InstnaceingVertex input)
     return output;
 }
 
+VSOutput VS_Octree(Vertex input)
+{
+    VSOutput output;
+    output.position = mul(input.position, VP);
+    return output;
+}
+
 // ************** InstancingMeshRender ****************
 
 struct InstancingVertexMesh

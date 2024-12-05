@@ -19,7 +19,6 @@ void InstancingManager::Render(vector<shared_ptr<GameObject>>& gameObjects)
 	RenderMeshRenderer(gameObjects);
 	RenderModelRenderer(gameObjects);
 	RenderAnimRenderer(gameObjects);
-	RenderCollider(gameObjects);
 }
 
 void InstancingManager::RenderMeshRenderer(vector<shared_ptr<GameObject>>& gameObjects)
@@ -164,6 +163,13 @@ void InstancingManager::RenderCollider(vector<shared_ptr<GameObject>>& gameObjec
     {
         shared_ptr<BaseCollider> collider = gameObject->GetCollider();
         if (!collider || !collider->IsActive())
+            continue;
+
+        // 거리 필터링: 카메라와 너무 먼 객체는 제외
+        Vec3 colliderCenter = collider->GetColliderCenter();
+        Vec3 cameraPosition = CUR_SCENE->GetMainCamera()->GetCamera()->GetCameraPosition();
+        float distanceToCamera = (colliderCenter - cameraPosition).Length();
+        if (distanceToCamera > MAX_RENDER_DISTANCE)
             continue;
 
         const InstanceID instanceId = collider->GetInstanceID();

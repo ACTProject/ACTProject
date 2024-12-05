@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Component.h"
 class MonoBehaviour;
 class Transform;
@@ -52,10 +52,12 @@ public:
 	void SetLayerIndex(uint8 layer) { _layerIndex = layer; }
 	uint8 GetLayerIndex() { return _layerIndex; }
 
+    bool IsActive() { return _isActive; }
 protected:
 	array<shared_ptr<Component>, FIXED_COMPONENT_COUNT> _components;
 	vector<shared_ptr<MonoBehaviour>> _scripts;
 
 	uint8 _layerIndex = 0;
+    bool _isActive = true;
 };
 

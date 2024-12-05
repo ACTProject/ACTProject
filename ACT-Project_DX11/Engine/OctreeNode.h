@@ -1,4 +1,5 @@
 #pragma once
+#include "VertexData.h"
 /*
     **경계(Box)**를 기준으로 3D 공간을 정의.
     Collider 데이터를 저장하고 관리.
@@ -17,14 +18,14 @@ public:
     // 데이터 삽입
    // bool InsertTerrain(const TerrainTriangle& triangle);
     bool InsertCollider(shared_ptr<BaseCollider>& collider);
-
     // 범위 검색
    // std::vector<TerrainTriangle> QueryTerrain(const BaseCollider& rangeCollider);
     std::vector<std::shared_ptr<BaseCollider>> QueryColliders(const shared_ptr<BaseCollider>& rangeCollider);
 
+    void RenderNode(); // 노드 렌더링
+
 private:
     void Subdivide();
-
 private:
     BoundingBox _bounds; // 현재 노드가 관리하는 공간
   //  std::vector<TerrainTriangle> _terrainData; // Terrain 삼각형 데이터

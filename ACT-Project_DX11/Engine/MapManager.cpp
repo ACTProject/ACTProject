@@ -182,12 +182,10 @@ shared_ptr<GameObject> MapManager::Create(Vec3& pos)
 
 		if (_mapSelectDesc->isCollision == true)
 		{
-			auto collider = make_shared<AABBBoxCollider>();
-			collider->SetOffset(_mapSelectDesc->offset);
-			collider->GetBoundingBox().Extents = _mapSelectDesc->extent;
+            auto collider = make_shared<AABBBoxCollider>();
+            collider->GetBoundingBox() = obj->GetTransform()->GenerateBoundingBox();
 			obj->AddComponent(collider);
-
-
+            OCTREE->InsertCollider(collider);
 			COLLISION->AddCollider(collider);
 		}
 	}
@@ -220,7 +218,7 @@ shared_ptr<GameObject> MapManager::Create(MapObjDesc& desc)
 			obj->AddComponent(collider);
 			collider->SetOffset(desc.offset);
 			collider->GetBoundingBox().Extents = desc.extent;
-
+            OCTREE->InsertCollider(collider);
 
 			COLLISION->AddCollider(collider);
 		}
@@ -533,6 +531,7 @@ void MapManager::UpdateMapDescTransform()
 		ImGui::DragFloat("scaleX", &_mapSelectDesc->scale.x, 0.001f);
 		ImGui::DragFloat("scaleY", &_mapSelectDesc->scale.y, 0.001f);
 		ImGui::DragFloat("scaleZ", &_mapSelectDesc->scale.z, 0.001f);
+
 		break;
 	}
 	case 3:
@@ -589,6 +588,7 @@ void MapManager::UpdateMapObjTransform()
 		ImGui::DragFloat("scaleY", &scale.y, 0.001f);
 		ImGui::DragFloat("scaleZ", &scale.z, 0.001f);
 		_mapSelectObj->GetTransform()->SetLocalScale(scale);
+
 		break;
 	}
 	case 3:
@@ -609,7 +609,6 @@ void MapManager::UpdateMapObjTransform()
 	default:
 		break;
 	}
-
 	ImGui::End();
 }
 

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #define DECLARE_SINGLE(classname)			\
 private:									\
@@ -29,6 +29,7 @@ public:										\
 #define COLLISION	GET_SINGLE(CollisionManager)
 #define OCTREE		GET_SINGLE(Octree)
 #define CUR_SCENE	SCENE->GetCurrentScene()
+#define UIMANAGER       GET_SINGLE(UIManager)
 
 enum LayerMask
 {

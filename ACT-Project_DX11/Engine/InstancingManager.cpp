@@ -32,6 +32,14 @@ void InstancingManager::RenderMeshRenderer(vector<shared_ptr<GameObject>>& gameO
 		if (gameObject->GetMeshRenderer() == nullptr)
 			continue;
 
+        if (gameObject->GetUI() != nullptr)
+        {
+            if (gameObject->GetUI()->GetActive() != true)
+            {
+                continue;
+            }
+        }
+
 		const InstanceID instanceId = gameObject->GetMeshRenderer()->GetInstanceID();
 		cache[instanceId].push_back(gameObject);
 	}

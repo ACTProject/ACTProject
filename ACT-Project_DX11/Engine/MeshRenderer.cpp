@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "MeshRenderer.h"
 #include "Camera.h"
 #include "Game.h"
@@ -62,6 +62,12 @@ void MeshRenderer::RenderSingle()
 	_shader = _material->GetShader();
 	if (_shader == nullptr)
 		return;
+
+    if (GetGameObject()->GetUI() != nullptr )
+    {
+        if (GetGameObject()->GetUI()->GetActive() != true)
+            return; 
+    }
 
 	// GlobalData
 	if (GetGameObject()->GetLayerIndex() == LayerMask::Layer_UI)

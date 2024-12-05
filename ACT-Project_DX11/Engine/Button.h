@@ -1,10 +1,10 @@
-﻿#pragma once
-#include "Component.h"
+#pragma once
+#include "Ui.h"
 
 
-class Button : public Component
+class Button : public Ui
 {
-	using Super = Component;
+	using Super = Ui;
 
 public:
 	Button();
@@ -12,7 +12,7 @@ public:
 
 	bool Picked(POINT screenPos);
 
-	void Create(Vec2 screenPos, Vec2 size, shared_ptr<class Material> material);
+	virtual void Create(Vec3 screenPos, Vec2 size, shared_ptr<class Material> material) override;
 	void AddOnClickedEvent(std::function<void(void)> func);
 	void InvokeOnClicked();
 

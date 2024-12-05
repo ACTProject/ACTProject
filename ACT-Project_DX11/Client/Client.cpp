@@ -112,7 +112,7 @@ void Client::Init()
 
 		// MeshHealBar
 		{
-			auto obj = make_shared<GameObject>();
+			auto obj = make_shared<GameObject>(GameObjectType::UI);
 			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-230.f, -260.f, 0.1f));
 			obj->GetOrAddTransform()->SetScale(Vec3(180, 30, 100));
 			obj->AddComponent(make_shared<MeshRenderer>());
@@ -133,7 +133,7 @@ void Client::Init()
 		}
 		// MeshArmorBar
 		{
-			auto obj = make_shared<GameObject>();
+			auto obj = make_shared<GameObject>(GameObjectType::UI);
 			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-210.f, -230.f, 0.1f));
 			obj->GetOrAddTransform()->SetScale(Vec3(200, 30, 100));
 			obj->AddComponent(make_shared<MeshRenderer>());
@@ -155,9 +155,9 @@ void Client::Init()
 		// RedBar HPMesh
 		{
 			// 슬라이더 컴포넌트 추가.
-			auto obj = make_shared<GameObject>();
+			auto obj = make_shared<GameObject>(GameObjectType::UI);
 			obj->AddComponent(make_shared<Slider>());
-			obj->GetSlider()->Create(Vec2(-290.f, -261.f), Vec2(126, 8), RESOURCES->Get<Material>(L"RedBar"));
+			obj->GetUI()->Create(Vec3(-290.f, -261.f, 0.0f), Vec2(126, 8), RESOURCES->Get<Material>(L"RedBar"));
 
 			CUR_SCENE->Add(obj);
 		}
@@ -165,9 +165,9 @@ void Client::Init()
 		// RedBar ARmor Mesh
 		{
 			// 슬라이더 컴포넌트 추가.
-			auto obj = make_shared<GameObject>();
+			auto obj = make_shared<GameObject>(GameObjectType::UI);
 			obj->AddComponent(make_shared<Slider>());
-			obj->GetSlider()->Create(Vec2(-290.f, -234.f), Vec2(164, 7), RESOURCES->Get<Material>(L"RedBar"));
+			obj->GetUI()->Create(Vec3(-290.f, -234.f, 0.0f), Vec2(164, 7), RESOURCES->Get<Material>(L"RedBar"));
 
 			CUR_SCENE->Add(obj);
 		}
@@ -187,13 +187,15 @@ void Client::Init()
 	}
 
 	// Player
-	auto player = make_shared<GameObject>();
+	auto player = make_shared<GameObject>(GameObjectType::PLAYER);
 
 
 	// Player
 	player->GetOrAddTransform()->SetPosition(Vec3(40, 0, 40));
 	player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 	player->GetOrAddTransform()->SetScale(Vec3(0.01f));
+
+    player->AddComponent(make_shared<Slider>());
 
 	shared_ptr<Model> playerModel = make_shared<Model>();
 	// Player::Model
@@ -268,7 +270,7 @@ void Client::Init()
 
 
 	// Enemy
-	auto enemy = make_shared<GameObject>();
+	auto enemy = make_shared<GameObject>(GameObjectType::ENEMY);
 	{
 		enemy->GetOrAddTransform()->SetPosition(Vec3(20, 0, 20));
 		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
@@ -452,7 +454,7 @@ void Client::Init()
 		RESOURCES->Add(L"Sand", material);
 
 
-		auto obj = make_shared<GameObject>();
+		auto obj = make_shared<GameObject>(GameObjectType::TERRAIN);
 		obj->AddComponent(make_shared<Terrain>());
 		obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
 		{

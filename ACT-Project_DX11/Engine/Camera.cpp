@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Camera.h"
 #include "Scene.h"
 
@@ -47,6 +47,7 @@ void Camera::Render_Forward()
 	// 내가 이제 그릴 카메라니까 나의 정보들로 갱신 
 	S_MatView = _matView;
 	S_MatProjection = _matProjection;
+
 
 	GET_SINGLE(InstancingManager)->Render(_vecForward);
 }

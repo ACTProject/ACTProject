@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Scene.h"
 #include "GameObject.h"
 #include "BaseCollider.h"
@@ -39,6 +39,7 @@ void Scene::Update()
 	UpdateUI();
 
 	MAP->Update();
+
 }
 
 void Scene::FixedUpdate()
@@ -123,12 +124,14 @@ void Scene::UpdateUI()
 	if (GetUICamera() == nullptr)
 		return;
 
+
+    UIMANAGER->Update();
 	// Slider
 	const auto gameObjects = GetObjects();
 
 	for (auto& gameObject : gameObjects)
 	{
-		if (gameObject->GetSlider() == nullptr)
+		if (gameObject->GetUI() == nullptr)
 			continue;
 	}
 

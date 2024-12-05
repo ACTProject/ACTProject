@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 class GameObject;
 class Transform;
@@ -17,7 +17,7 @@ enum class ComponentType : uint8
 	BillBoard,
 	SnowBillBoard,
 	Rigidbody,
-	Slider,
+	UI,
 	Skybox,
 	HitBox,
 	// ...

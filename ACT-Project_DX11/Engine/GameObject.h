@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Component.h"
 class MonoBehaviour;
 class Transform;
@@ -16,11 +16,24 @@ class Rigidbody;
 class Slider;
 class Skybox;
 class HitBox;
+class Ui;
+
+enum class GameObjectType : uint8
+{
+    NONE,
+    PLAYER,
+    ENEMY,
+    TERRAIN,
+    ENVIRONMENT,
+    UI,
+    End
+};
+
 
 class GameObject : public enable_shared_from_this<GameObject>
 {
 public:
-	GameObject();
+    GameObject(GameObjectType type = GameObjectType::NONE);
 	~GameObject();
 
 	void Awake();
@@ -42,7 +55,7 @@ public:
 	shared_ptr<Billboard> GetBillboard();
 	shared_ptr<SnowBillboard> GetSnowBillboard();
 	shared_ptr<Rigidbody> GetRigidbody();
-	shared_ptr<Slider> GetSlider();
+	shared_ptr<Ui> GetUI();
 	shared_ptr<Skybox> GetSkybox();
 	shared_ptr<HitBox> GetHitBox();
 
@@ -52,10 +65,12 @@ public:
 	void SetLayerIndex(uint8 layer) { _layerIndex = layer; }
 	uint8 GetLayerIndex() { return _layerIndex; }
 
+    GameObjectType GetGameObjectType() { return _type; };
 protected:
 	array<shared_ptr<Component>, FIXED_COMPONENT_COUNT> _components;
 	vector<shared_ptr<MonoBehaviour>> _scripts;
 
+    GameObjectType _type;
 	uint8 _layerIndex = 0;
 };
 

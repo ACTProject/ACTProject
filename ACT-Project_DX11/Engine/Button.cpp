@@ -1,10 +1,10 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Button.h"
 #include "MeshRenderer.h"
 #include "Material.h"
 
 
-Button::Button() : Super(ComponentType::Button)
+Button::Button() : Super(UiType::BUTTON)
 {
 
 }
@@ -19,7 +19,7 @@ bool Button::Picked(POINT screenPos)
 	return ::PtInRect(&_rect, screenPos);
 }
 
-void Button::Create(Vec2 screenPos, Vec2 size, shared_ptr<class Material> material)
+void Button::Create(Vec3 screenPos, Vec2 size, shared_ptr<class Material> material)
 {
 	auto go = _gameObject.lock();
 

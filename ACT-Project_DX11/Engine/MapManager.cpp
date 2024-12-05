@@ -164,7 +164,7 @@ void MapManager::Update()
 
 shared_ptr<GameObject> MapManager::Create(Vec3& pos)
 {
-	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	shared_ptr<GameObject> obj = make_shared<GameObject>(GameObjectType::ENVIRONMENT);
 	{
 		obj->GetOrAddTransform()->SetPosition(pos);
 		obj->GetOrAddTransform()->SetLocalRotation(_mapSelectDesc->rotation);
@@ -198,7 +198,7 @@ shared_ptr<GameObject> MapManager::Create(Vec3& pos)
 
 shared_ptr<GameObject> MapManager::Create(MapObjDesc& desc)
 {
-	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	shared_ptr<GameObject> obj = make_shared<GameObject>(GameObjectType::ENVIRONMENT);
 	{
 		obj->GetOrAddTransform()->SetPosition(desc.pos);
 		obj->GetOrAddTransform()->SetLocalRotation(desc.rotation); // XMConvertToRadians()

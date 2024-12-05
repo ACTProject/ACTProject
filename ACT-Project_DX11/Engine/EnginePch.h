@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -75,6 +75,7 @@ using namespace Microsoft::WRL;
 #include "MapManager.h"
 #include "CollisionManager.h"
 #include "OctreeManager.h"
+#include "UIManager.h"
 
 // Engine
 #include "VertexData.h"

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "GameObject.h"
 #include "MonoBehaviour.h"
 #include "Transform.h"
@@ -16,8 +16,9 @@
 #include "Slider.h"
 #include "Skybox.h"
 #include "HitBox.h"
+#include "Ui.h"
 
-GameObject::GameObject()
+GameObject::GameObject(GameObjectType type) : _type(type)
 {
 	
 }
@@ -176,10 +177,10 @@ std::shared_ptr<Rigidbody> GameObject::GetRigidbody()
 	return static_pointer_cast<Rigidbody>(component);
 }
 
-std::shared_ptr<Slider> GameObject::GetSlider()
+std::shared_ptr<Ui> GameObject::GetUI()
 {
-	shared_ptr<Component> component = GetFixedComponent(ComponentType::Slider);
-	return static_pointer_cast<Slider>(component);
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::UI);
+	return static_pointer_cast<Ui>(component);
 }
 
 std::shared_ptr<Skybox> GameObject::GetSkybox()

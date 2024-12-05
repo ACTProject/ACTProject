@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "RawBuffer.h"
 #include "TextureBuffer.h"
 #include "Material.h"
@@ -86,7 +86,7 @@ void ButtonDemo::Init()
 		auto obj = make_shared<GameObject>();
 		obj->AddComponent(make_shared<Button>());
 
-		obj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"Veigar"));
+		obj->GetButton()->Create(Vec3(100, 100, 0), Vec2(100, 100), RESOURCES->Get<Material>(L"Veigar"));
 
 		obj->GetButton()->AddOnClickedEvent([obj]() { CUR_SCENE->Remove(obj); });
 

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Transform.h"
 
 Transform::Transform() : Super(ComponentType::Transform)
@@ -169,4 +169,25 @@ Vec3 Transform::GetLook()
 	backward.z = std::abs(backward.z) < 1e-5 ? 0.0f : backward.z;
 	backward.Normalize();
 	return backward;
+}
+
+BoundingBox Transform::GenerateBoundingBox()
+{
+    // Transform 정보 가져오기
+    const Vec3 position = GetPosition();
+    const Vec3 scale = GetScale();
+
+    // 로컬 공간의 기본 Bound 크기 (단위 큐브)
+    Vec3 localMin = Vec3(-0.5f, -0.5f, -0.5f);
+    Vec3 localMax = Vec3(0.5f, 0.5f, 0.5f);
+
+    // 스케일 적용
+    localMin *= (scale * 100);
+    localMax *= (scale * 100);
+
+    // 월드 좌표계에서 AABB의 중심과 Extents 계산
+    Vec3 worldCenter = position;
+    Vec3 worldExtents = (localMax - localMin) * 0.5f;
+
+    return BoundingBox(worldCenter, worldExtents);
 }

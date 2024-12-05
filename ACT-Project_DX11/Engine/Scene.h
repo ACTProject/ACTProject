@@ -33,6 +33,7 @@ public:
 
 	void CheckCollision();
 
+    vector<shared_ptr<GameObject>> FrustumCulling(const vector<shared_ptr<GameObject>>& allObjects);
 private:
 	unordered_set<shared_ptr<GameObject>> _objects;
 	// Cache Camera

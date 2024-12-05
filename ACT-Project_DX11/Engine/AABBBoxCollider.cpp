@@ -1,8 +1,9 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "AABBBoxCollider.h"
 #include "SphereCollider.h"
 #include "OBBBoxCollider.h"
 #include "Geometry.h"
+#include "Camera.h"
 
 AABBBoxCollider::AABBBoxCollider() : BaseCollider(ColliderType::AABB)
 {
@@ -28,7 +29,7 @@ bool AABBBoxCollider::Intersects(Ray& ray, OUT float& distance)
 	return _boundingBox.Intersects(ray.position, ray.direction, OUT distance);
 }
 
-bool AABBBoxCollider::Intersects(shared_ptr<BaseCollider>& other)
+bool AABBBoxCollider::Intersects(const shared_ptr<BaseCollider>& other)
 {
 	// Collider가 비활성화 상태이면 충돌 검사 중단
 	if (!this->IsActive() || !other->IsActive())
@@ -47,32 +48,70 @@ bool AABBBoxCollider::Intersects(shared_ptr<BaseCollider>& other)
 	}
 }
 
-void AABBBoxCollider::RenderCollider(shared_ptr<class Shader> shader)
+void AABBBoxCollider::RenderCollider(shared_ptr<class InstancingBuffer>& buffer)
+{
+    vector<VertexPosData> vertexData; // 각 Collider의 정점 데이터
+    shared_ptr<BaseCollider> collider = GetGameObject()->GetCollider();
+
+    // 각 Collider의 정점 데이터를 추가
+    collider->AppendVertices(vertexData);
+
+    auto vertexBuffer = std::make_shared<VertexBuffer>();
+    vertexBuffer->Create(vertexData, 0, true, false);
+    vertexBuffer->PushData();  
+
+    // 셰이더 설정
+    shared_ptr<Shader> shader = make_shared<Shader>(L"23. RenderDemo.fx");
+
+    // GlobalData
+    if (GetGameObject()->GetLayerIndex() == LayerMask::Layer_UI)
+        shader->PushGlobalData(Camera::S_UIMatView, Camera::S_UIMatProjection);
+    else
+        shader->PushGlobalData(Camera::S_MatView, Camera::S_MatProjection);
+
+    // 버퍼 바인딩
+    vertexBuffer->PushData();
+    buffer->PushData();
+
+    // 인스턴싱 렌더링
+    DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+    shader->DrawInstanced(5, 0, static_cast<UINT>(vertexData.size()), buffer->GetCount());
+}
+
+void AABBBoxCollider::AppendVertices(vector<VertexPosData>& vertexData) const
 {
     Vec3 corners[BoundingBox::CORNER_COUNT];
     _boundingBox.GetCorners(corners);
 
-	vector<VertexPosData> vertices = {
-		{ corners[0] }, { corners[1] },
-		{ corners[1] }, { corners[2] },
-		{ corners[2] }, { corners[3] },
-		{ corners[3] }, { corners[0] },
-		{ corners[4] }, { corners[5] },
-		{ corners[5] }, { corners[6] },
-		{ corners[6] }, { corners[7] },
-		{ corners[7] }, { corners[4] },
-		{ corners[0] }, { corners[4] },
-		{ corners[1] }, { corners[5] },
-		{ corners[2] }, { corners[6] },
-		{ corners[3] }, { corners[7] }
-	};
-    shared_ptr<VertexBuffer> vertexBuffer = make_shared<VertexBuffer>();
-    vertexBuffer->Create(vertices, 0, true, false);
-    vertexBuffer->PushData();
+    // AABB 중심 계산
+    Vec3 center = _boundingBox.Center;
 
-    DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-    shader->Draw(5, 0, static_cast<UINT>(vertices.size()), 0);
+    // 모든 정점에서 중심을 빼서 로컬 좌표로 변환
+    Vec3 localCorners[BoundingBox::CORNER_COUNT];
+    for (int i = 0; i < BoundingBox::CORNER_COUNT; ++i)
+    {
+        localCorners[i] = corners[i] - center; // 로컬 좌표 계산
+    }
+
+    // 로컬 좌표를 사용하여 정점 데이터 생성
+    vector<VertexPosData> vertices = {
+        { localCorners[0] }, { localCorners[1] },
+        { localCorners[1] }, { localCorners[2] },
+        { localCorners[2] }, { localCorners[3] },
+        { localCorners[3] }, { localCorners[0] },
+        { localCorners[4] }, { localCorners[5] },
+        { localCorners[5] }, { localCorners[6] },
+        { localCorners[6] }, { localCorners[7] },
+        { localCorners[7] }, { localCorners[4] },
+        { localCorners[0] }, { localCorners[4] },
+        { localCorners[1] }, { localCorners[5] },
+        { localCorners[2] }, { localCorners[6] },
+        { localCorners[3] }, { localCorners[7] }
+    };
+
+    vertexData.insert(vertexData.end(), vertices.begin(), vertices.end());
 }
+
 
 bool AABBBoxCollider::CalculatePenetraionDepth(shared_ptr<BaseCollider> other, Vec3& penetrationDepth)
 {

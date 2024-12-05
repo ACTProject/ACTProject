@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Component.h"
 
 class Mesh;
@@ -13,6 +13,8 @@ class MeshRenderer : public Component
 public:
 	MeshRenderer();
 	virtual ~MeshRenderer();
+    
+    shared_ptr<Shader> GetShader() { return _shader; }
 
 	void SetMesh(shared_ptr<Mesh> mesh) { _mesh = mesh; }
 	void SetMaterial(shared_ptr<Material> material) { _material = material; }

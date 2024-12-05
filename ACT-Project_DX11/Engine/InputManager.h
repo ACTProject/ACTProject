@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 enum class KEY_TYPE
 {
@@ -33,6 +33,7 @@ enum class KEY_TYPE
 	KEY_4 = '4',
 
 	KEY_F1 = VK_F1,
+	KEY_F2 = VK_F2,
 
 	LBUTTON = VK_LBUTTON,
 	RBUTTON = VK_RBUTTON,

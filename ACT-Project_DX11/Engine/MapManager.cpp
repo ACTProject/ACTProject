@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "MapManager.h"
 #include "MeshRenderer.h"
 #include "ModelRenderer.h"
@@ -67,7 +67,7 @@ void MapManager::Init()
 		src = make_shared<MapObjDesc>(L"MapObject/rock2", L"23. RenderDemo.fx");
 		MAP->AddMapObj(src);
 		//
-		src = make_shared<MapObjDesc>(L"MapObject/Urock01", L"23. RenderDemo.fx");
+		src = make_shared<MapObjDesc>(L"MapObject/Urock01", L"23. RenderDemo.fx", false);
 		MAP->AddMapObj(src);
 		src = make_shared<MapObjDesc>(L"MapObject/Urock02", L"23. RenderDemo.fx");
 		MAP->AddMapObj(src);
@@ -81,7 +81,7 @@ void MapManager::Init()
 		MAP->AddMapObj(src);
 		src = make_shared<MapObjDesc>(L"MapObject/Udrock02", L"23. RenderDemo.fx");
 		MAP->AddMapObj(src);
-		src = make_shared<MapObjDesc>(L"MapObject/Udrock04", L"23. RenderDemo.fx");
+		src = make_shared<MapObjDesc>(L"MapObject/Udrock04", L"23. RenderDemo.fx", false);
 		MAP->AddMapObj(src);
 
 		// ImGui용 함수.
@@ -182,12 +182,10 @@ shared_ptr<GameObject> MapManager::Create(Vec3& pos)
 
 		if (_mapSelectDesc->isCollision == true)
 		{
-			auto collider = make_shared<AABBBoxCollider>();
-			collider->SetOffset(_mapSelectDesc->offset);
-			collider->GetBoundingBox().Extents = _mapSelectDesc->extent;
+            auto collider = make_shared<AABBBoxCollider>();
+            collider->GetBoundingBox() = obj->GetTransform()->GenerateBoundingBox();
 			obj->AddComponent(collider);
-
-
+            OCTREE->InsertCollider(collider);
 			COLLISION->AddCollider(collider);
 		}
 	}
@@ -220,7 +218,7 @@ shared_ptr<GameObject> MapManager::Create(MapObjDesc& desc)
 			obj->AddComponent(collider);
 			collider->SetOffset(desc.offset);
 			collider->GetBoundingBox().Extents = desc.extent;
-
+            OCTREE->InsertCollider(collider);
 
 			COLLISION->AddCollider(collider);
 		}
@@ -385,12 +383,15 @@ bool MapManager::ExportMapObj()
 		fwrite(&dec.isCollision, sizeof(bool), 1, fp);
 
 		//AABBBoxCollider* collider = dynamic_cast<AABBBoxCollider*>(_mapObjList[i]->GetCollider().get());
-		shared_ptr<AABBBoxCollider> collider = dynamic_pointer_cast<AABBBoxCollider>(_mapObjList[i]->GetCollider());
-		Vec3 extents = collider->GetBoundingBox().Extents;
-		dec.extent = extents;
-		fwrite(&dec.extent, sizeof(Vec3), 1, fp);
-		dec.offset = _mapObjList[i]->GetCollider()->GetOffset();
-		fwrite(&dec.offset, sizeof(Vec3), 1, fp);
+        if (dec.isCollision == true)
+        {
+            shared_ptr<AABBBoxCollider> collider = dynamic_pointer_cast<AABBBoxCollider>(_mapObjList[i]->GetCollider());
+            Vec3 extents = collider->GetBoundingBox().Extents;
+            dec.extent = extents;
+            fwrite(&dec.extent, sizeof(Vec3), 1, fp);
+            dec.offset = _mapObjList[i]->GetCollider()->GetOffset();
+            fwrite(&dec.offset, sizeof(Vec3), 1, fp);
+        }
 
 		dec.pos = _mapObjList[i]->GetTransform()->GetLocalPosition();
 		fwrite(&dec.pos, sizeof(Vec3), 1, fp);
@@ -432,8 +433,11 @@ bool MapManager::ImportMapObj()
 	for (int i = 0; i < lengths; i++)
 	{
 		fread(&dec.isCollision, sizeof(bool), 1, fp);
-		fread(&dec.extent, sizeof(Vec3), 1, fp);
-		fread(&dec.offset, sizeof(Vec3), 1, fp);
+        if (dec.isCollision == true)
+        {
+            fread(&dec.extent, sizeof(Vec3), 1, fp);
+            fread(&dec.offset, sizeof(Vec3), 1, fp);
+        }
 
 		fread(&dec.pos, sizeof(Vec3), 1, fp);
 		fread(&dec.scale, sizeof(Vec3), 1, fp);
@@ -527,6 +531,7 @@ void MapManager::UpdateMapDescTransform()
 		ImGui::DragFloat("scaleX", &_mapSelectDesc->scale.x, 0.001f);
 		ImGui::DragFloat("scaleY", &_mapSelectDesc->scale.y, 0.001f);
 		ImGui::DragFloat("scaleZ", &_mapSelectDesc->scale.z, 0.001f);
+
 		break;
 	}
 	case 3:
@@ -583,6 +588,7 @@ void MapManager::UpdateMapObjTransform()
 		ImGui::DragFloat("scaleY", &scale.y, 0.001f);
 		ImGui::DragFloat("scaleZ", &scale.z, 0.001f);
 		_mapSelectObj->GetTransform()->SetLocalScale(scale);
+
 		break;
 	}
 	case 3:
@@ -603,7 +609,6 @@ void MapManager::UpdateMapObjTransform()
 	default:
 		break;
 	}
-
 	ImGui::End();
 }
 

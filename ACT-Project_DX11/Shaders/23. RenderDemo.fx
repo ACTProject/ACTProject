@@ -7,6 +7,11 @@ float4 PS_Collision() : SV_TARGET
     return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
+float4 PS_Octree() : SV_TARGET
+{
+    return float4(1.0f, 0.0f, 0.0f, 1.0f);
+}
+
 float4 PS(MeshOutput input) : SV_TARGET
 {
 	//float4 color = ComputeLight(input.normal, input.uv, input.worldPosition);
@@ -75,4 +80,5 @@ technique11 T4 // 매쉬 알파블렌딩
 technique11 T5 // Debug Collider Rendering
 {
 	PASS_VP(P0, VS_Collision, PS_Collision)
+    PASS_VP(P1, VS_Octree, PS_Octree)
 };

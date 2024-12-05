@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <windows.h>
 #include "DirectXMath.h"
 #include "SimpleMath.h"
@@ -23,6 +23,9 @@ using Ray = DirectX::SimpleMath::Ray;
 
 // MeshID / MaterialID
 using InstanceID = std::pair<uint64, uint64>;
+
+constexpr uint64_t DEFAULT_MESH_ID = 0;       // Mesh가 없는 Collider의 기본 ID
+constexpr uint64_t DEFAULT_MATERIAL_ID = 0;  // Material이 없는 Collider의 기본 ID
 
 enum class AnimationState
 {

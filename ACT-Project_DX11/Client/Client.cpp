@@ -35,6 +35,7 @@
 #include "Slider.h"
 #include "Skybox.h"
 #include "HitBox.h"
+#include "Frustum.h"
 
 void Client::Init()
 {
@@ -53,6 +54,7 @@ void Client::Init()
 		}
 		camera->AddComponent(make_shared<CameraScript>());
 		camera->GetCamera()->SetCullingMaskLayerOnOff(Layer_UI, true);
+        camera->GetCamera()->SetMainCamera(true);
 
 		CUR_SCENE->Add(camera);
 	}
@@ -193,7 +195,7 @@ void Client::Init()
 
 
 	// Player
-	player->GetOrAddTransform()->SetPosition(Vec3(1, 0, 1));
+	player->GetOrAddTransform()->SetPosition(Vec3(40, 0, 40));
 	player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 	player->GetOrAddTransform()->SetScale(Vec3(0.01f));
 
@@ -237,6 +239,7 @@ void Client::Init()
 	auto collider = make_shared<SphereCollider>();
 	collider->SetRadius(5.0f);
 	collider->SetOffset(Vec3(0.f, 1.f, 0.f));
+    OCTREE->InsertCollider(collider);
 	player->AddComponent(collider);
 
 	// Rigidbody
@@ -342,6 +345,7 @@ void Client::Init()
 		//material->SetShader(tessellationShader);
 		auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height4.png");
 		auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
+		auto textureNormal = RESOURCES->Load<Texture>(L"SandNormal", L"..\\Resources\\Textures\\Terrain\\SandNormalMap.png");
 		//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
 
 		const int32 width = heightMap->GetSize().x;
@@ -378,10 +382,11 @@ void Client::Init()
 
 
 		material->SetDiffuseMap(texture);
+		material->SetNormalMap(textureNormal);
 		MaterialDesc& desc = material->GetMaterialDesc();
 		desc.ambient = Vec4(1.f);
 		desc.diffuse = Vec4(1.f);
-		desc.specular = Vec4(1.f);
+        desc.specular = Vec4(1.f);
 		RESOURCES->Add(L"Sand", material);
 
 

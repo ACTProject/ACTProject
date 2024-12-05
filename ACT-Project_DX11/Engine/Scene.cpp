@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Scene.h"
 #include "GameObject.h"
 #include "BaseCollider.h"
@@ -65,11 +65,29 @@ void Scene::LateUpdate()
 
 void Scene::Render()
 {
+    shared_ptr<Camera> mainCamera = make_shared<Camera>();
+
 	for (auto& camera : _cameras)
 	{
+        if (camera->GetCamera()->IsMainCamera() == true)
+            mainCamera = camera->GetCamera();
+
 		camera->GetCamera()->SortGameObject();
 		camera->GetCamera()->Render_Forward();
 	}
+    if (DEBUG->IsDebugEnabled() || INPUT->GetButton(KEY_TYPE::CAPSLOCK))
+    {
+        Camera::S_MatView = mainCamera->GetViewMatrix();
+        Camera::S_MatProjection = mainCamera->GetProjectionMatrix();
+        FRUSTUM->FinalUpdate();
+        vector<std::shared_ptr<GameObject>> visibleObjects = FrustumCulling(mainCamera->GetVecForward());
+        INSTANCING->RenderCollider(visibleObjects);
+        
+        if (INPUT->GetButton(KEY_TYPE::KEY_F2))
+        {
+            OCTREE->RenderOctree();
+        }
+    }
 }
 
 void Scene::Add(shared_ptr<GameObject> object)
@@ -252,3 +270,65 @@ void Scene::CheckCollision()
 	COLLISION->Update();
 }
 
+vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<GameObject>>& allObjects)
+{
+    vector<shared_ptr<GameObject>> visibleObjects;
+
+    for (const auto& object : allObjects)
+    {
+        // Terrain은 무조건 보이게
+        if (object->GetTerrain())
+        {
+            visibleObjects.push_back(object);
+            break;
+        }
+
+        // 객체가 비활성화되어 있으면 무시
+        if (!object->IsActive())
+            continue;
+
+        // Collider 또는 Bound 정보가 없으면 무시
+        auto collider = object->GetCollider();
+
+        if (!collider || !collider->IsActive())
+            continue;
+
+        // Collider 타입에 따라 프러스텀 안에 있는지 확인
+        switch (collider->GetColliderType())
+        {
+            case ColliderType::Sphere:
+            {
+                // Sphere의 중심과 반경 계산
+                Vec3 sphereCenter = collider->GetColliderCenter();
+                float sphereRadius = collider->GetBoundingSphere().Radius;
+
+                if (FRUSTUM->ContainsSphere(sphereCenter, sphereRadius))
+                {
+                    visibleObjects.push_back(object);
+                }
+                break;
+            }
+            case ColliderType::AABB:
+            {
+                // AABB 경계 정보 가져오기
+                const BoundingBox& aabb = collider->GetBoundingBox();
+
+                if (FRUSTUM->ContainsAABB(aabb))
+                {
+                    visibleObjects.push_back(object);
+                }
+                break;
+            }
+            case ColliderType::OBB:
+            {
+                // TODO
+                break;
+            }
+            default:
+                // 다른 Collider 타입은 무시
+                break;
+        }
+    }
+
+    return visibleObjects;
+}

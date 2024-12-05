@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <d3d11.h>
 
 class BaseCollider;
@@ -12,7 +12,7 @@ public:
 	void Init();
 	void Update();
 
-	// Collider & Rigidbody ?깅줉
+    // Collider & Rigidbody 등록
 	void AddCollider(shared_ptr<BaseCollider> collider);
 	void AddRigidbody(shared_ptr<Rigidbody> rigidbody);
 	void ApplyForce(shared_ptr<Rigidbody> rigidbody, const Vec3& target, const Vec3& source, float massDifference);

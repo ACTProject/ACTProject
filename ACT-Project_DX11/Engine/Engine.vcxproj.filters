@@ -223,7 +223,7 @@
     <ClCompile Include="OctreeNode.cpp">
       <Filter>02. Manager</Filter>
     </ClCompile>
-    <ClCompile Include="OctreeManager.cpp">
+    <ClCompile Include="Octree.cpp">
       <Filter>02. Manager</Filter>
     </ClCompile>
   </ItemGroup>
@@ -462,7 +462,7 @@
     <ClInclude Include="OctreeNode.h">
       <Filter>02. Manager</Filter>
     </ClInclude>
-    <ClInclude Include="OctreeManager.h">
+    <ClInclude Include="Octree.h">
       <Filter>02. Manager</Filter>
     </ClInclude>
   </ItemGroup>

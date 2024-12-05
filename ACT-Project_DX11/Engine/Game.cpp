@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Game.h"
 #include "IExecute.h"
 
@@ -15,7 +15,15 @@ WPARAM Game::Run(GameDesc& desc)
 	// 2) 윈도우 창 생성
 	if (!InitInstance(SW_SHOWNORMAL))
 		return FALSE;
-		
+	
+    // Octree
+    {
+        // 전체 월드 공간 옥트리
+        BoundingBox worldBounds(Vec3(300.f, 100.f, 300.f), Vec3(300.f, 100.f, 300.f));
+        int maxDepth = 6;
+        OCTREE->Init(worldBounds, maxDepth);
+    }
+
 	GRAPHICS->Init(_desc.hWnd);
 	TIME->Init();
 	INPUT->Init(_desc.hWnd);

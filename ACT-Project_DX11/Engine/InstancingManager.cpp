@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "InstancingManager.h"
 #include "InstancingBuffer.h"
 #include "GameObject.h"
@@ -9,6 +9,8 @@
 #include "Camera.h"
 #include "BaseCollider.h"
 #include "Shader.h"
+#include "AABBBoxCollider.h"
+#include "SphereCollider.h"
 
 void InstancingManager::Render(vector<shared_ptr<GameObject>>& gameObjects)
 {
@@ -17,7 +19,6 @@ void InstancingManager::Render(vector<shared_ptr<GameObject>>& gameObjects)
 	RenderMeshRenderer(gameObjects);
 	RenderModelRenderer(gameObjects);
 	RenderAnimRenderer(gameObjects);
-	RenderCollider(gameObjects);
 }
 
 void InstancingManager::RenderMeshRenderer(vector<shared_ptr<GameObject>>& gameObjects)
@@ -152,31 +153,73 @@ void InstancingManager::RenderAnimRenderer(vector<shared_ptr<GameObject>>& gameO
 
 void InstancingManager::RenderCollider(vector<shared_ptr<GameObject>>& gameObjects)
 {
-	for (shared_ptr<GameObject>& gameObject : gameObjects)
-	{
-		if (DEBUG->IsDebugEnabled() || INPUT->GetButton(KEY_TYPE::CAPSLOCK))
-		{
-			shared_ptr<BaseCollider> collider = gameObject->GetCollider();
-			if (collider)
-			{
-				// Collider가 비활성화 상태이면 렌더링 x
-				if (!collider->IsActive())
-					continue;
+    if (!(DEBUG->IsDebugEnabled() || INPUT->GetButton(KEY_TYPE::CAPSLOCK)))
+        return;
 
-				shared_ptr<Shader> shader = make_shared<Shader>(L"23. RenderDemo.fx");
+    // InstanceID를 기반으로 Collider 그룹화
+    map<InstanceID, vector<shared_ptr<GameObject>>> colliderGroups;
 
-				// GlobalData
-				if (gameObject->GetLayerIndex() == LayerMask::Layer_UI)
-					shader->PushGlobalData(Camera::S_UIMatView, Camera::S_UIMatProjection);
-				else
-					shader->PushGlobalData(Camera::S_MatView, Camera::S_MatProjection);
+    for (shared_ptr<GameObject>& gameObject : gameObjects)
+    {
+        shared_ptr<BaseCollider> collider = gameObject->GetCollider();
+        if (!collider || !collider->IsActive())
+            continue;
 
-				collider->RenderCollider(shader);
-				// 기본 토폴로지 복구
-				DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			}
-		}
-	}
+        // 거리 필터링: 카메라와 너무 먼 객체는 제외
+        Vec3 colliderCenter = collider->GetColliderCenter();
+        Vec3 cameraPosition = CUR_SCENE->GetMainCamera()->GetCamera()->GetCameraPosition();
+        float distanceToCamera = (colliderCenter - cameraPosition).Length();
+        if (distanceToCamera > MAX_RENDER_DISTANCE)
+            continue;
+
+        const InstanceID instanceId = collider->GetInstanceID();
+        colliderGroups[instanceId].push_back(gameObject);
+    }
+
+    // 렌더링 단계
+    for (auto& pair : colliderGroups)
+    {
+        const vector<shared_ptr<GameObject>>& objects = pair.second;
+
+        const InstanceID instanceId = pair.first;
+
+        for (int32 i = 0; i < objects.size(); i++)
+        {
+            const shared_ptr<GameObject>& gameObject = objects[i];
+            InstancingData data;
+            // 월드 행렬 가져오기
+            Matrix worldMatrix = gameObject->GetTransform()->GetWorldMatrix();
+
+            // 스케일, 회전, 위치 분리
+            Vec3 scale, translation;
+            Quaternion q_rotation;
+            worldMatrix.Decompose(scale, q_rotation, translation);
+
+            // 스케일을 1.0으로 변경
+            Vec3 adjustedScale = Vec3(1.0f, 1.0f, 1.0f);
+
+            Matrix adjustedWorldMatrix;
+            Vec3 rotation = gameObject->GetTransform()->ToEulerAngles(q_rotation);
+            translation += gameObject->GetCollider()->GetOffset();
+
+            Matrix matScale = Matrix::CreateScale(adjustedScale);
+            adjustedWorldMatrix *= matScale;
+            Matrix matRotation = Matrix::CreateRotationX(rotation.x);
+            matRotation *= Matrix::CreateRotationY(rotation.y);
+            matRotation *= Matrix::CreateRotationZ(rotation.z);
+            adjustedWorldMatrix *= matRotation;
+            Matrix matTranslation = Matrix::CreateTranslation(translation);
+            adjustedWorldMatrix *= matTranslation;
+
+            data.world = adjustedWorldMatrix;
+
+            AddData(instanceId, data);
+        }
+        shared_ptr<InstancingBuffer>& buffer = _buffers[instanceId];
+        objects[0]->GetCollider()->RenderCollider(buffer);
+        // 기본 토폴로지 복구
+        DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    }
 }
 
 void InstancingManager::AddData(InstanceID instanceId, InstancingData& data)

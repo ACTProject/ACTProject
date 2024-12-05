@@ -44,11 +44,21 @@ void Camera::SortGameObject()
 
 void Camera::Render_Forward()
 {
-	// 내가 이제 그릴 카메라니까 나의 정보들로 갱신 
-	S_MatView = _matView;
-	S_MatProjection = _matProjection;
+    if (IsMainCamera())
+    {
+        S_MatView = _matView;
+        S_MatProjection = _matProjection;
+        FRUSTUM->FinalUpdate();
+        vector<std::shared_ptr<GameObject>> visibleObjects = CUR_SCENE->FrustumCulling(_vecForward);
+        GET_SINGLE(InstancingManager)->Render(visibleObjects);
+    }
+    else 
+    {
+        S_UIMatView = _matView;
+        S_UIMatProjection = _matProjection;
+        GET_SINGLE(InstancingManager)->Render(_vecForward);
+    }
 
-	GET_SINGLE(InstancingManager)->Render(_vecForward);
 }
 
 Camera::Camera() : Super(ComponentType::Camera)
@@ -77,7 +87,6 @@ void Camera::Update()
 			_pitch = -XM_PIDIV4;                        // 아래를 45도 바라봄
 
 			UpdateMatrix();
-
 			return;
 		}
 		FreeCameraMovement();

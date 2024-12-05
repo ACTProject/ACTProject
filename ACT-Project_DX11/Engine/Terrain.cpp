@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Terrain.h"
 #include "MeshRenderer.h"
 #include "Camera.h"

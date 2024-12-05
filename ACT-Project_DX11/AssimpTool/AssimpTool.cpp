@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "AssimpTool.h"
 #include "Converter.h"
 
@@ -115,6 +115,33 @@ void AssimpTool::Init()
 			converter->ReadAssetFile(L"Enemy/Rangoon_run.fbx");
 			converter->ExportAnimationData(L"Enemy/Rangoon_run");
 		}
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"Enemy/pistol_mesh.fbx");
+            converter->ExportMaterialData(L"Enemy/pistol");
+            converter->ExportModelData(L"Enemy/pistol");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"Enemy/pistol_idle.fbx");
+            converter->ExportAnimationData(L"Enemy/pistol_idle");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"Enemy/pistol_shoot.fbx");
+            converter->ExportAnimationData(L"Enemy/pistol_shoot");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"Enemy/pistol_aggro.fbx");
+            converter->ExportAnimationData(L"Enemy/pistol_aggro");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"Enemy/bullet.fbx");
+            converter->ExportMaterialData(L"Enemy/bullet");
+            converter->ExportModelData(L"Enemy/bullet");
+        }
 	}
 	// MapObject
 	{

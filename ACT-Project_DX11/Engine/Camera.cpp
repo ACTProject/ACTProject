@@ -145,7 +145,7 @@ void Camera::FreeCameraMovement()	// WASD 키로 이동, 마우스로 회전
 		_pitch -= dy * _sensitivity;
 
 		// pitch 값의 범위를 제한하여 카메라가 뒤집히지 않도록 조정 (-90도 ~ 90도 사이)
-		_pitch = std::clamp(_pitch, -XM_PIDIV2 + 0.1f, XM_PIDIV2 - 0.1f);
+		_pitch = std::clamp(_pitch, -XM_PIDIV4, XM_PIDIV4);
 	}	
 	// 카메라 초점 갱신
 	forward = Vec3(
@@ -169,12 +169,34 @@ void Camera::UpdateCameraWithMouseInput()
 	_pitch += dy * _sensitivity;
 
 	// pitch 값의 범위를 제한하여 카메라가 뒤집히지 않도록 조정 (-90도 ~ 90도 사이)
-	_pitch = std::clamp(_pitch, -XM_PIDIV2 + 0.1f, XM_PIDIV2 - 0.1f);
+    _pitch = std::clamp(_pitch, 0.08f, XM_PIDIV2 - 0.1f);
 
 	// 카메라 위치 계산
 	float x = _cameraDistance * cosf(_pitch) * sinf(_yaw);
 	float y = _cameraDistance * sinf(_pitch);
 	float z = _cameraDistance * cosf(_pitch) * cosf(_yaw);
+
+
+
+    if (_pitch < 0.09f)
+    {
+        if (_player != nullptr)
+        {
+            Vec3 playerPosition = _player->GetTransform()->GetPosition();
+
+            Vec3 forward(
+                sinf(_yaw),
+                0.0f,
+                cosf(_yaw)
+            );
+            forward.Normalize();
+
+            
+            _cameraPosition = playerPosition + forward * _cameraDistance + Vec3(0.f, y, 0.f);
+            _focusPosition = playerPosition;
+            return;
+        }
+    }
 
 	// 카메라 위치를 플레이어 위치 기준으로 설정
 	if (_player == nullptr)

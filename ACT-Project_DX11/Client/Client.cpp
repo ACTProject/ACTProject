@@ -28,7 +28,9 @@
 #include "Camera.h"
 #include "Button.h"
 #include "Billboard.h"
-#include "RangoonScript.h"
+#include "MelleMonster.h"
+#include "ShootingMonster.h"
+#include "EnemyManager.h"
 #include "Rigidbody.h"
 #include "Slider.h"
 #include "Skybox.h"
@@ -271,85 +273,17 @@ void Client::Init()
 
 
 	// Enemy
-	auto enemy = make_shared<GameObject>();
-	{
-		enemy->GetOrAddTransform()->SetPosition(Vec3(20, 0, 20));
-		enemy->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
-		enemy->GetOrAddTransform()->SetScale(Vec3(0.0001f));
+    {
+        EnemyManager enemyManager;
 
-		shared_ptr<Model> enemyModel = make_shared<Model>();
-		// Model
-		{
-			enemyModel->ReadModel(L"Enemy/Rangoon");
-			enemyModel->ReadMaterial(L"Enemy/Rangoon");
+        enemyManager.CreateMeleeMonster({ 30.f, 0.f, 30.f });
+        enemyManager.CreateMeleeMonster({ 30.f, 0.f, 20.f });
+        enemyManager.CreateMeleeMonster({ 20.f, 0.f, 30.f });
 
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_idle", AnimationState::Idle);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_run", AnimationState::Run);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_aggro", AnimationState::Aggro);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_atkBigSnippy", AnimationState::Attack1);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_atkSmallSnippy", AnimationState::Attack2);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_atkSmash", AnimationState::Attack3);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_die", AnimationState::Die);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_hit", AnimationState::Hit);
-			enemyModel->ReadAnimation(L"Enemy/Rangoon_roar", AnimationState::Roar);
-		}
-		shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
-		enemy->AddComponent(ma2);
-		{
-			enemy->GetModelAnimator()->SetModel(enemyModel);
-			enemy->GetModelAnimator()->SetPass(2);
-		}
-		shared_ptr<RangoonScript> rangoon = make_shared<RangoonScript>();
-
-		rangoon->SetEnemy(enemyModel);
-		rangoon->SetModelAnimator(ma2);
-
-		enemy->AddComponent(rangoon);
-
-		// Collider
-		auto collider = make_shared<AABBBoxCollider>();
-		collider->GetBoundingBox().Extents = Vec3(1.2f);
-		collider->SetOffset(Vec3(0.f, 1.f, 0.f));
-        OCTREE->InsertCollider(collider);
-		enemy->AddComponent(collider);
-
-		// Rigidbody
-		shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
-		rigidBody->SetUseGravity(true);
-		rigidBody->SetMass(2.0f);
-		enemy->AddComponent(rigidBody);
-
-		COLLISION->AddRigidbody(rigidBody);
-		COLLISION->AddCollider(collider);
-
-		CUR_SCENE->Add(enemy);
-	}
-
-	//auto enemy2 = make_shared<GameObject>();
-	//{
-	//	enemy2->GetOrAddTransform()->SetPosition(Vec3(5, 0, 10));
-	//	enemy2->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
-	//	enemy2->GetOrAddTransform()->SetScale(Vec3(0.0001f));
-
-	//	shared_ptr<Model> enemyModel = make_shared<Model>();
-	//	// Model
-	//	{
-	//		enemyModel->ReadModel(L"Enemy/pistol");
-	//		enemyModel->ReadMaterial(L"Enemy/pistol");
-
-	//		enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Idle);
-	//		//enemyModel->ReadAnimation(L"Enemy/pistol_shoot", AnimationState::Hit);
-	//		//enemyModel->ReadAnimation(L"Enemy/pistol_Idle", AnimationState::Atk);*/
-
-	//	}
-	//	shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
-	//	enemy2->AddComponent(ma2);
-	//	{
-	//		enemy2->GetModelAnimator()->SetModel(enemyModel);
-	//		enemy2->GetModelAnimator()->SetPass(2);
-	//	}
-	//	CUR_SCENE->Add(enemy2);
-	//}
+        enemyManager.CreateShootingMonster({ 40.f, 0.f, 40.f });
+        enemyManager.CreateShootingMonster({ 70.f, 0.f, 40.f });
+        enemyManager.CreateShootingMonster({ 40.f, 0.f, 70.f });
+    }
 
 	// Skybox
 	{

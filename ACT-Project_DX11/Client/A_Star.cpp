@@ -1,7 +1,5 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "A_Star.h"
-
-A_Star::A_Star() {}
 
 std::vector<Node3D> A_Star::findPath(Node3D start, Node3D goal) {
     std::priority_queue<Node3D> openSet;

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ShootingMonster.h"
 #include <string>
+#include "Bullet.h"
 
 #define AggroRange 30.0f
 #define ShootingRange 15.0f
@@ -105,9 +106,16 @@ void ShootingMonster::AddBullet(Vec3 Pos, Vec3 dir)
     bullet->GetModelAnimator()->SetModel(objModel);
     bullet->GetModelAnimator()->SetPass(0);
 
-    shared_ptr<BulletScript> BulletS = make_shared<BulletScript>();
-    BulletS->Add(objModel);
-    bullet->AddComponent(BulletS);
+    //// Collider
+    //auto collider = make_shared<AABBBoxCollider>();
+    //collider->SetBoundingBox(BoundingBox(Vec3(0.f), Vec3(1.5f)));
+    //collider->SetOffset(Vec3(0.f, 1.f, 0.f));
+    //OCTREE->InsertCollider(collider);
+    //bullet->AddComponent(collider);
+
+    shared_ptr<Bullet> bulletComponent = make_shared<Bullet>();
+    bulletComponent->Add(objModel);
+    bullet->AddComponent(bulletComponent);
 
     CUR_SCENE->Add(bullet);
 }

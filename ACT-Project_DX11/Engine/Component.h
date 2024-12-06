@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 class GameObject;
 class Transform;
@@ -20,6 +20,7 @@ enum class ComponentType : uint8
 	Slider,
 	Skybox,
 	HitBox,
+    Bullet,
 	// ...
 	Script,
 

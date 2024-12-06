@@ -1,15 +1,22 @@
 #include "pch.h"
-#include "BulletScript.h"
+#include "Bullet.h"
 
-void BulletScript::Start()
+Bullet::Bullet() : Super(ComponentType::Bullet)
 {
+
 }
-void BulletScript::Update()
+
+Bullet::~Bullet()
+{
+
+}
+
+void Bullet::Update()
 {
     Shooting();
 }
 
-void BulletScript::Shooting()
+void Bullet::Shooting()
 {
     if (FirstTime)
     {
@@ -28,7 +35,8 @@ void BulletScript::Shooting()
 
     if (distance < 0.5f)
     {
-        Remove(GetGameObject());
+        CUR_SCENE->Remove(GetGameObject());
+        OCTREE->RemoveCollider(GetGameObject()->GetCollider());
         return;
     }
 

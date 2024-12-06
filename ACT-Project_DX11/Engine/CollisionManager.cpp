@@ -11,6 +11,8 @@ void CollisionManager::Init()
 // 충돌 감지 및 처리
 void CollisionManager::Update()
 {
+
+    // Rigidbody 있을 때 충돌 처리
 	for (size_t i = 0; i < _colliders.size(); ++i)
 	{
 		for (size_t j = i + 1; j < _colliders.size(); ++j)

@@ -68,7 +68,6 @@ void Client::Init()
 		camera->GetCamera()->SetNear(1.f);
 		camera->GetCamera()->SetFar(100.f);
 
-
 		camera->GetCamera()->SetCullingMaskAll();
 		camera->GetCamera()->SetCullingMaskLayerOnOff(Layer_UI, false);
 		CUR_SCENE->Add(camera);

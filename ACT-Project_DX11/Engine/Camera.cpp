@@ -48,9 +48,10 @@ void Camera::Render_Forward()
     {
         S_MatView = _matView;
         S_MatProjection = _matProjection;
-        FRUSTUM->FinalUpdate();
-        vector<std::shared_ptr<GameObject>> visibleObjects = CUR_SCENE->FrustumCulling(_vecForward);
-        GET_SINGLE(InstancingManager)->Render(visibleObjects);
+        //FRUSTUM->FinalUpdate();
+        //vector<std::shared_ptr<GameObject>> visibleObjects = CUR_SCENE->FrustumCulling(_vecForward);
+        //GET_SINGLE(InstancingManager)->Render(visibleObjects);
+        GET_SINGLE(InstancingManager)->Render(_vecForward);
     }
     else 
     {

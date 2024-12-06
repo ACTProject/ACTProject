@@ -1,16 +1,17 @@
 #pragma once
-#include "Model.h"
-#include "GameObject.h"
-#include "ModelAnimator.h"
-#include "EnginePch.h"
-#include "MonoBehaviour.h"
+class Model;
+class Transform;
+class GameObject;
 
-class BulletScript : public MonoBehaviour
+class Bullet: public Component
 {
-    virtual void Start() override;
-    virtual void Update() override;
+    using Super = Component;
 
 public:
+    Bullet();
+    virtual ~Bullet();
+
+    void Update();
     shared_ptr<Model> GetObjects () { return _bullet; }
     void Add(shared_ptr<Model> bullet) { _bullet = bullet; }
 

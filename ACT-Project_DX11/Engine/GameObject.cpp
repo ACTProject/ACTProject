@@ -16,6 +16,7 @@
 #include "Slider.h"
 #include "Skybox.h"
 #include "HitBox.h"
+#include "Bullet.h"
 
 GameObject::GameObject()
 {
@@ -192,6 +193,12 @@ std::shared_ptr<HitBox> GameObject::GetHitBox()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::HitBox);
 	return static_pointer_cast<HitBox>(component);
+}
+
+std::shared_ptr<Bullet> GameObject::GetBullet()
+{
+    shared_ptr<Component> component = GetFixedComponent(ComponentType::Bullet);
+    return static_pointer_cast<Bullet>(component);
 }
 
 std::shared_ptr<Transform> GameObject::GetOrAddTransform()

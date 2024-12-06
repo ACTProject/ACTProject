@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="A_Star.h" />
     <ClInclude Include="BillBoardDemo.h" />
-    <ClInclude Include="BulletScript.h" />
     <ClInclude Include="ButtonDemo.h" />
     <ClInclude Include="CameraScript.h" />
     <ClInclude Include="Main.h" />
@@ -36,7 +35,6 @@
   <ItemGroup>
     <ClCompile Include="A_Star.cpp" />
     <ClCompile Include="BillBoardDemo.cpp" />
-    <ClCompile Include="BulletScript.cpp" />
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />
     <ClCompile Include="Main.cpp" />

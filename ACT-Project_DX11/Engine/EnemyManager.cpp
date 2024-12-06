@@ -40,8 +40,9 @@ void EnemyManager::CreateMeleeMonster(Vec3 SpawnPos)
 
         // Collider
         auto collider = make_shared<AABBBoxCollider>();
-        collider->SetBoundingBox(BoundingBox(Vec3(0.f), Vec3(1.2f)));
+        collider->SetBoundingBox(BoundingBox(Vec3(0.f), Vec3(1.5f)));
         collider->SetOffset(Vec3(0.f, 1.f, 0.f));
+        OCTREE->InsertCollider(collider);
         rangoon->AddComponent(collider);
 
         // Rigidbody
@@ -91,8 +92,9 @@ void EnemyManager::CreateShootingMonster(Vec3 SpawnPos)
 
         // Collider
         auto collider = make_shared<AABBBoxCollider>();
-        collider->SetBoundingBox(BoundingBox(Vec3(0.f), Vec3(1.2f)));
+        collider->SetBoundingBox(BoundingBox(Vec3(0.f), Vec3(1.5f)));
         collider->SetOffset(Vec3(0.f, 1.f, 0.f));
+        OCTREE->InsertCollider(collider);
         PistolShrimp->AddComponent(collider);
 
         // Rigidbody

@@ -4,7 +4,7 @@
 #include "A_Star.h"
 #include "Model.h"
 #include "ModelAnimator.h"
-#include "BulletScript.h"
+#include "Bullet.h"
 
 class Model;
 class ModelAnimator;

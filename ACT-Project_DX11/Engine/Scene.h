@@ -31,7 +31,7 @@ public:
 	shared_ptr<class GameObject> Pick(int32 screenX, int32 screenY);
 	Vec3 Picking(int32 screenX, int32 screenY);
 
-	void CheckCollision();
+	void CheckPhysicCollision();
 
     vector<shared_ptr<GameObject>> FrustumCulling(const vector<shared_ptr<GameObject>>& allObjects);
 private:

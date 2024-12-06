@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "PlayerScript.h"
 #include "Model.h"
 #include "Camera.h"
@@ -101,7 +101,39 @@ void PlayerScript::Update()
 	{
 		moveDir.Normalize();
 		float speed = isRunning ? _speed * 2 : _speed;
-		_transform->SetPosition(_transform->GetPosition() + moveDir * speed * dt);
+        Vec3 oldPosition = GetTransform()->GetPosition();
+        Vec3 newPosition = oldPosition + moveDir * speed * dt;
+
+        //// 충돌 검사에 사용할 AABB 생성 (플레이어의 이동 영역)
+        //shared_ptr<AABBBoxCollider> tempCollider = make_shared<AABBBoxCollider>();
+        //tempCollider->SetBoundingBox(BoundingBox(newPosition, Vec3(0.1f)));
+
+        //// 옥트리에서 충돌 가능한 객체 가져오기
+        //vector<shared_ptr<BaseCollider>> nearbyColliders = OCTREE->QueryColliders(tempCollider);
+
+        bool canMove = true;
+
+        //// 충돌 검사
+        //for (const auto& collider : nearbyColliders)
+        //{
+        //    if (tempCollider->Intersects(collider))
+        //    {
+        //        // 충돌 방향 계산
+        //        Vec3 penetrationDepth;
+        //        if (tempCollider->CalculatePenetraionDepth(collider, penetrationDepth))
+        //        {
+        //            penetrationDepth.Normalize();
+        //            if (moveDir.Dot(penetrationDepth) < 0) // 이동 방향과 충돌 방향이 반대라면
+        //            {
+        //                canMove = false;
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
+        if (canMove)
+        // 플레이어의 이동 영역에 해당하는 
+		_transform->SetPosition(newPosition);
 
 		targetAnimationState = isRunning ? AnimationState::Run : AnimationState::Walk;
 

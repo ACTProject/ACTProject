@@ -60,7 +60,7 @@ void Scene::LateUpdate()
 		object->LateUpdate();
 	}
 
-	CheckCollision();
+	CheckPhysicCollision();
 }
 
 void Scene::Render()
@@ -265,7 +265,7 @@ Vec3 Scene::Picking(int32 screenX, int32 screenY)
 	return pickPos;
 }
 
-void Scene::CheckCollision()
+void Scene::CheckPhysicCollision()
 {
 	COLLISION->Update();
 }
@@ -276,6 +276,12 @@ vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<Gam
 
     for (const auto& object : allObjects)
     {
+        if (object->GetBullet())
+        {
+            visibleObjects.push_back(object);
+            break;
+        }
+
         // Terrain은 무조건 보이게
         if (object->GetTerrain())
         {

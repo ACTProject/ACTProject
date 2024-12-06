@@ -18,8 +18,8 @@ public:
     Ui(UiType type) : Super(ComponentType::UI), _type(type) {};
     virtual ~Ui() = default;
 public:
-    void SetOwner(shared_ptr<GameObject> obj);
-    const shared_ptr<GameObject> GetOwner() { return _owner; };
+    void SetOwner(weak_ptr<GameObject> obj);
+    const shared_ptr<GameObject> GetOwner() { return _owner.lock(); };
     void SetActive(bool active) { _isVisible = active; };
     const bool GetActive() { return _isVisible; };
 
@@ -29,9 +29,9 @@ protected:
     void PreUpdate();
 protected:
     UiType _type = UiType::NONE;
-    bool _isVisible = true;
+    bool _isVisible = false;
 
     // 오너가 있으면 active=false로 시작.
-    shared_ptr<GameObject> _owner;
+    weak_ptr<GameObject> _owner;
 };
 

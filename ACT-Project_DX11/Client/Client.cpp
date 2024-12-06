@@ -195,8 +195,6 @@ void Client::Init()
 	player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 	player->GetOrAddTransform()->SetScale(Vec3(0.01f));
 
-    player->AddComponent(make_shared<Slider>());
-
 	shared_ptr<Model> playerModel = make_shared<Model>();
 	// Player::Model
 	{

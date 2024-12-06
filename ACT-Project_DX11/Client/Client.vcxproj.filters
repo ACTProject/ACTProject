@@ -81,9 +81,6 @@
     <ClCompile Include="BulletScript.cpp">
       <Filter>Main\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="EnemyManager.cpp">
-      <Filter>Main\Enemy</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -123,9 +120,6 @@
       <Filter>Main\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="BulletScript.h">
-      <Filter>Main\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyManager.h">
       <Filter>Main\Enemy</Filter>
     </ClInclude>
   </ItemGroup>

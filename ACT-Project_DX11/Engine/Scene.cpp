@@ -298,9 +298,10 @@ vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<Gam
         {
             case ColliderType::Sphere:
             {
+                shared_ptr<SphereCollider> sphere = dynamic_pointer_cast<SphereCollider>(collider);
                 // Sphere의 중심과 반경 계산
-                Vec3 sphereCenter = collider->GetColliderCenter();
-                float sphereRadius = collider->GetBoundingSphere().Radius;
+                Vec3 sphereCenter = sphere->GetColliderCenter();
+                float sphereRadius = sphere->GetBoundingSphere().Radius;
 
                 if (FRUSTUM->ContainsSphere(sphereCenter, sphereRadius))
                 {
@@ -311,9 +312,10 @@ vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<Gam
             case ColliderType::AABB:
             {
                 // AABB 경계 정보 가져오기
-                const BoundingBox& aabb = collider->GetBoundingBox();
+                shared_ptr<AABBBoxCollider> aabb = dynamic_pointer_cast<AABBBoxCollider>(collider);
+                BoundingBox box = aabb->GetBoundingBox();
 
-                if (FRUSTUM->ContainsAABB(aabb))
+                if (FRUSTUM->ContainsAABB(box))
                 {
                     visibleObjects.push_back(object);
                 }

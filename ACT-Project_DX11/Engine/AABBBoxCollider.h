@@ -16,7 +16,7 @@ public:
 	virtual void AppendVertices(vector<VertexPosData>& vertexData) const override;
 	virtual bool CalculatePenetraionDepth(shared_ptr<BaseCollider> other, Vec3& penetraionDepth) override;
 
-    BoundingBox GetBoundingBox() const override { return _boundingBox; }
+    BoundingBox GetBoundingBox() { return _boundingBox; }
     void SetBoundingBox(BoundingBox box) { _boundingBox = box; }
 
 private:

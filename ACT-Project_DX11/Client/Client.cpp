@@ -274,15 +274,13 @@ void Client::Init()
 
 	// Enemy
     {
-        EnemyManager enemyManager;
+        ENEMY->CreateMeleeMonster({ 30.f, 0.f, 30.f });
+        ENEMY->CreateMeleeMonster({ 30.f, 0.f, 20.f });
+        ENEMY->CreateMeleeMonster({ 20.f, 0.f, 30.f });
 
-        enemyManager.CreateMeleeMonster({ 30.f, 0.f, 30.f });
-        enemyManager.CreateMeleeMonster({ 30.f, 0.f, 20.f });
-        enemyManager.CreateMeleeMonster({ 20.f, 0.f, 30.f });
-
-        enemyManager.CreateShootingMonster({ 40.f, 0.f, 40.f });
-        enemyManager.CreateShootingMonster({ 70.f, 0.f, 40.f });
-        enemyManager.CreateShootingMonster({ 40.f, 0.f, 70.f });
+        ENEMY->CreateShootingMonster({ 40.f, 0.f, 40.f });
+        ENEMY->CreateShootingMonster({ 70.f, 0.f, 40.f });
+        ENEMY->CreateShootingMonster({ 40.f, 0.f, 70.f });
     }
 
 	// Skybox

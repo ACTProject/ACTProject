@@ -27,10 +27,6 @@ public:
 
     InstanceID GetInstanceID();
 
-    // AABB와 Sphere를 위한 가상 메서드
-    virtual BoundingBox GetBoundingBox() const { return BoundingBox(); }
-    virtual BoundingSphere GetBoundingSphere() const { return BoundingSphere(); }
-
     ColliderType GetColliderType() { return _colliderType; }
 	void SetOffset(const Vec3& offset) { _offset = offset; }
 	Vec3 GetOffset() const { return _offset; }

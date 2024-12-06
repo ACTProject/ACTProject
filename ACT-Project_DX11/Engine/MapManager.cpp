@@ -217,7 +217,7 @@ shared_ptr<GameObject> MapManager::Create(MapObjDesc& desc)
 			auto collider = make_shared<AABBBoxCollider>();
 			obj->AddComponent(collider);
 			collider->SetOffset(desc.offset);
-			collider->GetBoundingBox().Extents = desc.extent;
+            collider->SetBoundingBox(BoundingBox(collider->GetBoundingBox().Center, desc.extent));
             OCTREE->InsertCollider(collider);
 
 			COLLISION->AddCollider(collider);
@@ -560,8 +560,8 @@ void MapManager::UpdateMapObjTransform()
 	Vec3 position = _mapSelectObj->GetTransform()->GetLocalPosition();
 	Vec3 rotation = _mapSelectObj->GetTransform()->GetLocalRotation();
 	Vec3 scale = _mapSelectObj->GetTransform()->GetLocalScale();
-	AABBBoxCollider* collider = dynamic_cast<AABBBoxCollider*>(_mapSelectObj->GetCollider().get());
-	Vec3 extent = collider->GetBoundingBox().Extents;
+	shared_ptr<AABBBoxCollider> collider = dynamic_pointer_cast<AABBBoxCollider>(_mapSelectObj->GetCollider());
+    Vec3 extent = collider->GetBoundingBox().Extents;
 	Vec3 offset = _mapSelectObj->GetCollider()->GetOffset();
 
 	switch (_transformSelect)
@@ -602,8 +602,10 @@ void MapManager::UpdateMapObjTransform()
 		ImGui::DragFloat("offsetY", &offset.y, 0.01f);
 		ImGui::DragFloat("offsetZ", &offset.z, 0.01f);
 
-		collider->GetBoundingBox().Extents = extent;
+        collider->SetBoundingBox(BoundingBox({collider->GetBoundingBox().Center}, extent));
 		_mapSelectObj->GetCollider()->SetOffset(offset);
+        OCTREE->UpdateCollider(collider);
+
 		break;
 	}
 	default:

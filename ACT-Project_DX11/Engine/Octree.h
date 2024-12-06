@@ -8,6 +8,7 @@ class Octree
 public:
     void Init(const BoundingBox& worldBounds, int maxDepth);
 
+    void UpdateCollider(shared_ptr<BaseCollider> collider);
     // 루트 노드 초기화 해제
     void Clear();
 
@@ -17,6 +18,7 @@ public:
     // Collider 삽입
     void InsertCollider(std::shared_ptr<BaseCollider> collider);
 
+    void RemoveCollider(std::shared_ptr<BaseCollider> collider);
     // 범위 내 Terrain 데이터 검색
    // std::vector<TerrainTriangle> QueryTerrain(const BaseCollider& rangeCollider);
 

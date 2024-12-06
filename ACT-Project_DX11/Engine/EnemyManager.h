@@ -1,11 +1,13 @@
 #pragma once
-#include "ShootingMonster.h"
-#include "MelleMonster.h"
+#include "../Client/ShootingMonster.h"
+#include "../Client/MelleMonster.h"
 #include "Rigidbody.h"
 #include "AABBBoxCollider.h"
 
 class EnemyManager
 {
+    DECLARE_SINGLE(EnemyManager);
+
     shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
 
 public:

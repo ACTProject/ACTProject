@@ -18,6 +18,7 @@ public:
     // 데이터 삽입
    // bool InsertTerrain(const TerrainTriangle& triangle);
     bool InsertCollider(shared_ptr<BaseCollider>& collider);
+    bool RemoveCollider(shared_ptr<BaseCollider>& collider);
     // 범위 검색
    // std::vector<TerrainTriangle> QueryTerrain(const BaseCollider& rangeCollider);
     std::vector<std::shared_ptr<BaseCollider>> QueryColliders(const shared_ptr<BaseCollider>& rangeCollider);

@@ -16,7 +16,7 @@ public:
 	virtual bool CalculatePenetraionDepth(shared_ptr<BaseCollider> other, Vec3& penetrationDepth) override;
 
     void SetRadius(float radius) { _radius = radius; }
-    BoundingSphere GetBoundingSphere() const override { return _boundingSphere; }
+    BoundingSphere GetBoundingSphere() { return _boundingSphere; }
 
 private:
 	float _radius = 1.f;

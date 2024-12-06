@@ -108,6 +108,24 @@ bool OctreeNode::InsertCollider(shared_ptr<BaseCollider>& collider)
 	return true;
 }
 
+bool OctreeNode::RemoveCollider(shared_ptr<BaseCollider>& collider)
+{
+    auto it = std::find(_colliders.begin(), _colliders.end(), collider);
+    if (it != _colliders.end())
+    {
+        _colliders.erase(it);
+        return true;
+    }
+
+    for (auto& child : _children)
+    {
+        if (child->RemoveCollider(collider))
+            return true;
+    }
+
+    return false;
+}
+
 //std::vector<TerrainTriangle> OctreeNode::QueryTerrain(const BaseCollider& rangeCollider)
 //{
 //	std::vector<TerrainTriangle> result;

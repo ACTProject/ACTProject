@@ -1,11 +1,18 @@
 #include "pch.h"
 #include "Octree.h"
+#include "BaseCollider.h"
 
 void Octree::Init(const BoundingBox& worldBounds, int maxDepth)
 {
     // 기존 루트 노드 제거
     Clear();
     _root = std::make_unique<OctreeNode>(worldBounds, 0, maxDepth);
+}
+
+void Octree::UpdateCollider(shared_ptr<BaseCollider> collider)
+{
+    RemoveCollider(collider); // 기존 노드에서 제거
+    InsertCollider(collider); // 새로운 위치로 삽입
 }
 
 void Octree::Clear()
@@ -27,6 +34,14 @@ void Octree::InsertCollider(std::shared_ptr<BaseCollider> collider)
     if (_root)
     {
         _root->InsertCollider(collider);
+    }
+}
+
+void Octree::RemoveCollider(std::shared_ptr<BaseCollider> collider)
+{
+    if (_root)
+    {
+        _root->RemoveCollider(collider);
     }
 }
 

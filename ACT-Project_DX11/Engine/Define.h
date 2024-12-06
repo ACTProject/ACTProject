@@ -27,6 +27,7 @@ public:										\
 #define DEBUG		GET_SINGLE(DebugManager)
 #define MAP			GET_SINGLE(MapManager)
 #define COLLISION	GET_SINGLE(CollisionManager)
+#define ENEMY   	GET_SINGLE(EnemyManager)
 #define OCTREE		GET_SINGLE(Octree)
 #define FRUSTUM		GET_SINGLE(Frustum)
 #define CUR_SCENE	SCENE->GetCurrentScene()

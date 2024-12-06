@@ -24,7 +24,6 @@
     <ClInclude Include="BulletScript.h" />
     <ClInclude Include="ButtonDemo.h" />
     <ClInclude Include="CameraScript.h" />
-    <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="OrthographicDemo.h" />
     <ClInclude Include="pch.h" />
@@ -40,7 +39,6 @@
     <ClCompile Include="BulletScript.cpp" />
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />
-    <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="OrthographicDemo.cpp" />
     <ClCompile Include="pch.cpp">

@@ -159,6 +159,7 @@ void Client::Init()
 			obj->AddComponent(make_shared<Slider>());
 			obj->GetUI()->Create(Vec3(-290.f, -261.f, 0.0f), Vec2(126, 8), RESOURCES->Get<Material>(L"RedBar"));
 
+            //obj->GetUI()->SetOwner();
 			CUR_SCENE->Add(obj);
 		}
 
@@ -314,6 +315,12 @@ void Client::Init()
 		rigidBody->SetUseGravity(true);
 		rigidBody->SetMass(2.0f);
 		enemy->AddComponent(rigidBody);
+
+        auto ui = make_shared<GameObject>(GameObjectType::UI);
+        ui->AddComponent(make_shared<Slider>());
+        ui->GetUI()->Create(Vec3(0, 0, 0.0f), Vec2(30, 8), RESOURCES->Get<Material>(L"RedBar"));
+        ui->GetUI()->SetOwner(enemy);
+        CUR_SCENE->Add(ui);
 
 		COLLISION->AddRigidbody(rigidBody);
 		COLLISION->AddCollider(collider);

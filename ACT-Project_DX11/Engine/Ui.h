@@ -29,7 +29,7 @@ protected:
     void PreUpdate();
 protected:
     UiType _type = UiType::NONE;
-    bool _isVisible = false;
+    bool _isVisible = true;
 
     // 오너가 있으면 active=false로 시작.
     weak_ptr<GameObject> _owner;

@@ -17,13 +17,17 @@ void Ui::PreUpdate()
         // 오너 트랜스폼을 화면 좌표계로 변환해서 뿌려야함.
         //Vec3 pos = owner->GetTransform()->GetLocalPosition();
         //pos.y = {pos.y + 3.0f};
-        Matrix world = owner->GetTransform()->GetWorldMatrix();
-        world._42 = {world._42 + 3.0f};
-        // 월드 -> 뷰
-        Matrix viewMat = world * Camera::S_MatView;
-        Matrix ProjMat = viewMat * Camera::S_UIMatProjection;
+        Vec3 pos;
 
-        int a = 10;
-       // GetGameObject()->GetTransform()->SetLocalPosition();
+        Matrix worldMat = owner->GetTransform()->GetWorldMatrix();
+        Matrix viewMat = worldMat * Camera::S_MatView;
+        Matrix projMat = viewMat * Camera::S_MatProjection;
+
+
+
+
+
+        GetGameObject()->GetTransform()->SetLocalPosition(pos);
+        int a = 0;
     }
 }

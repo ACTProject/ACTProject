@@ -29,8 +29,8 @@ void Slider::Update()
                 // 그냥 owner hp랑 공유를 시킬까.
 
                 // 움직임은 직교투영에 xy값만 계속 바꾸면 될 듯.
-                Vec3 pos = GetOwner()->GetTransform()->GetLocalPosition();
-                GetGameObject()->GetTransform()->SetLocalPosition(pos);
+                //Vec3 pos = GetOwner()->GetTransform()->GetLocalPosition();
+                //GetGameObject()->GetTransform()->SetLocalPosition(pos);
             }
         }
         UpdateScale();

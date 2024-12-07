@@ -318,7 +318,7 @@ void Client::Init()
 
         auto ui = make_shared<GameObject>(GameObjectType::UI);
         ui->AddComponent(make_shared<Slider>());
-        ui->GetUI()->Create(Vec3(0, 0, 0.0f), Vec2(30, 8), RESOURCES->Get<Material>(L"RedBar"));
+        ui->GetUI()->Create(Vec3(0, 0, 0.0f), Vec2(60, 8), RESOURCES->Get<Material>(L"RedBar"));
         ui->GetUI()->SetOwner(enemy);
         CUR_SCENE->Add(ui);
 

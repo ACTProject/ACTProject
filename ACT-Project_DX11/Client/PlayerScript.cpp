@@ -107,15 +107,15 @@ void PlayerScript::Update()
 
         Ray ray(oldPosition, moveDir);
 
-        auto a = OCTREE->GetTotalColliderCount();
-        auto b = CUR_SCENE->GetObjects();
         // 옥트리에서 충돌 가능한 객체 가져오기
         vector<shared_ptr<BaseCollider>> nearbyColliders = OCTREE->QueryColliders(ray);
-
         bool canMove = true;
 
         for (const auto& collider : nearbyColliders)
         {
+            if (collider->GetGameObject()->GetRigidbody() != nullptr)
+                continue;
+
             float distance = 0.0f;
             if (collider->Intersects(ray, distance))
             {

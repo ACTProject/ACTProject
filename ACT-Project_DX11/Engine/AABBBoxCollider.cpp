@@ -17,7 +17,15 @@ AABBBoxCollider::~AABBBoxCollider()
 
 void AABBBoxCollider::Update()
 {
-	_boundingBox.Center = GetColliderCenter();
+    if (Vec3(_boundingBox.Center) == GetColliderCenter())
+    {
+        return;
+    }
+    else
+    {
+        _boundingBox.Center = GetColliderCenter();
+        OCTREE->UpdateCollider(GetGameObject()->GetCollider());
+    }
 }
 
 bool AABBBoxCollider::Intersects(const Ray& ray, OUT float& distance)

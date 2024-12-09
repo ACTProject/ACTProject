@@ -80,7 +80,7 @@ void Scene::Render()
         Camera::S_MatView = mainCamera->GetViewMatrix();
         Camera::S_MatProjection = mainCamera->GetProjectionMatrix();
         FRUSTUM->FinalUpdate();
-        vector<std::shared_ptr<GameObject>> visibleObjects = FrustumCulling(mainCamera->GetVecForward());
+        vector<std::shared_ptr<GameObject>> visibleObjects = FrustumCulling(mainCamera->GetVecForward(), 0.f);
         INSTANCING->RenderCollider(visibleObjects);
         
         if (INPUT->GetButton(KEY_TYPE::KEY_F2))
@@ -270,7 +270,7 @@ void Scene::CheckPhysicCollision()
 	COLLISION->Update();
 }
 
-vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<GameObject>>& allObjects)
+vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<GameObject>>& allObjects, float padding = 5.0f)
 {
     vector<shared_ptr<GameObject>> visibleObjects;
 
@@ -309,7 +309,7 @@ vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<Gam
                 Vec3 sphereCenter = sphere->GetColliderCenter();
                 float sphereRadius = sphere->GetBoundingSphere().Radius;
 
-                if (FRUSTUM->ContainsSphere(sphereCenter, sphereRadius))
+                if (FRUSTUM->ContainsSphere(sphereCenter, sphereRadius, padding))
                 {
                     visibleObjects.push_back(object);
                 }
@@ -321,7 +321,7 @@ vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<Gam
                 shared_ptr<AABBBoxCollider> aabb = dynamic_pointer_cast<AABBBoxCollider>(collider);
                 BoundingBox box = aabb->GetBoundingBox();
 
-                if (FRUSTUM->ContainsAABB(box))
+                if (FRUSTUM->ContainsAABB(box, padding))
                 {
                     visibleObjects.push_back(object);
                 }

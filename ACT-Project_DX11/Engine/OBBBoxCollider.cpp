@@ -16,7 +16,7 @@ OBBBoxCollider::~OBBBoxCollider()
 
 void OBBBoxCollider::Update()
 {
-	_boundingOrientedBox.Center = GetColliderCenter();
+	//_boundingOrientedBox.Center = GetColliderCenter();
 }
 
 bool OBBBoxCollider::Intersects(const Ray& ray, OUT float& distance)

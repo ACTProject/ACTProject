@@ -17,7 +17,13 @@ SphereCollider::~SphereCollider()
 
 void SphereCollider::Update()
 {
-	_boundingSphere.Center = GetColliderCenter();
+    if (Vec3(_boundingSphere.Center) == GetColliderCenter())
+        return;
+    else
+    {
+        _boundingSphere.Center = GetColliderCenter();
+        OCTREE->UpdateCollider(GetGameObject()->GetCollider());
+    }
 }
 
 bool SphereCollider::Intersects(const Ray& ray, OUT float& distance)

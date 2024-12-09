@@ -20,7 +20,7 @@ void AABBBoxCollider::Update()
 	_boundingBox.Center = GetColliderCenter();
 }
 
-bool AABBBoxCollider::Intersects(Ray& ray, OUT float& distance)
+bool AABBBoxCollider::Intersects(const Ray& ray, OUT float& distance)
 {
 	// Collider가 비활성화 상태이면 충돌 검사 중단
 	if (!this->IsActive())

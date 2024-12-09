@@ -63,6 +63,15 @@ std::vector<std::shared_ptr<BaseCollider>> Octree::QueryColliders(const shared_p
     return {};
 }
 
+std::vector<std::shared_ptr<BaseCollider>> Octree::QueryColliders(const Ray& ray)
+{
+    if (_root)
+    {
+        return _root->QueryColliders(ray);
+    }
+    return {};
+}
+
 void Octree::RenderOctree()
 {
     if (!(DEBUG->IsDebugEnabled() || INPUT->GetButton(KEY_TYPE::CAPSLOCK)))
@@ -70,4 +79,13 @@ void Octree::RenderOctree()
 
     if (_root)
         _root->RenderNode();
+}
+
+size_t Octree::GetTotalColliderCount() const
+{
+    if (_root)
+    {
+        return _root->GetTotalColliderCount();
+    }
+    return 0;
 }

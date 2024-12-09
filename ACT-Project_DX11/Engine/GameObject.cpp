@@ -17,6 +17,7 @@
 #include "Skybox.h"
 #include "HitBox.h"
 #include "Bullet.h"
+#include "Raycast.h"
 
 GameObject::GameObject()
 {
@@ -199,6 +200,12 @@ std::shared_ptr<Bullet> GameObject::GetBullet()
 {
     shared_ptr<Component> component = GetFixedComponent(ComponentType::Bullet);
     return static_pointer_cast<Bullet>(component);
+}
+
+std::shared_ptr<Raycast> GameObject::GetRaycast()
+{
+    shared_ptr<Component> component = GetFixedComponent(ComponentType::Raycast);
+    return static_pointer_cast<Raycast>(component);
 }
 
 std::shared_ptr<Transform> GameObject::GetOrAddTransform()

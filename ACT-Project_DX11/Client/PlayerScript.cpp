@@ -97,6 +97,7 @@ void PlayerScript::Update()
 	// 이동 방향의 크기를 기준으로 애니메이션 상태 결정
 	AnimationState targetAnimationState;
 
+    // Move
 	if (moveDir.LengthSquared() > 0.0f)  // 이동 벡터가 0이 아니라면 이동 중으로 간주
 	{
 		moveDir.Normalize();
@@ -104,33 +105,29 @@ void PlayerScript::Update()
         Vec3 oldPosition = GetTransform()->GetPosition();
         Vec3 newPosition = oldPosition + moveDir * speed * dt;
 
-        //// 충돌 검사에 사용할 AABB 생성 (플레이어의 이동 영역)
-        //shared_ptr<AABBBoxCollider> tempCollider = make_shared<AABBBoxCollider>();
-        //tempCollider->SetBoundingBox(BoundingBox(newPosition, Vec3(0.1f)));
+        Ray ray(oldPosition, moveDir);
 
-        //// 옥트리에서 충돌 가능한 객체 가져오기
-        //vector<shared_ptr<BaseCollider>> nearbyColliders = OCTREE->QueryColliders(tempCollider);
+        auto a = OCTREE->GetTotalColliderCount();
+        auto b = CUR_SCENE->GetObjects();
+        // 옥트리에서 충돌 가능한 객체 가져오기
+        vector<shared_ptr<BaseCollider>> nearbyColliders = OCTREE->QueryColliders(ray);
 
         bool canMove = true;
 
-        //// 충돌 검사
-        //for (const auto& collider : nearbyColliders)
-        //{
-        //    if (tempCollider->Intersects(collider))
-        //    {
-        //        // 충돌 방향 계산
-        //        Vec3 penetrationDepth;
-        //        if (tempCollider->CalculatePenetraionDepth(collider, penetrationDepth))
-        //        {
-        //            penetrationDepth.Normalize();
-        //            if (moveDir.Dot(penetrationDepth) < 0) // 이동 방향과 충돌 방향이 반대라면
-        //            {
-        //                canMove = false;
-        //                break;
-        //            }
-        //        }
-        //    }
-        //}
+        for (const auto& collider : nearbyColliders)
+        {
+            float distance = 0.0f;
+            if (collider->Intersects(ray, distance))
+            {
+                // Ray 길이와 충돌 거리를 비교하여 충돌 여부 확인
+                if (distance <= speed * dt)
+                {
+                    // 충돌이 발생했으므로 이동 취소
+                    canMove = false;
+                }
+            }
+        }
+
         if (canMove)
         // 플레이어의 이동 영역에 해당하는 
 		_transform->SetPosition(newPosition);

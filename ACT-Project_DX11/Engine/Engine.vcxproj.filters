@@ -232,6 +232,9 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>04. Component</Filter>
     </ClCompile>
+    <ClCompile Include="Raycast.cpp">
+      <Filter>04. Component\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModelMesh.h">
@@ -476,6 +479,9 @@
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>04. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Raycast.h">
+      <Filter>04. Component\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

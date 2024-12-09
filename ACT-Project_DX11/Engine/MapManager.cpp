@@ -92,6 +92,7 @@ void MapManager::Init()
 
 }
 
+// 맵 오브젝트 피킹했는지 체크
 bool MapManager::ChekMapObjectSelect(shared_ptr<GameObject> obj)
 {
 	for (auto& go : _mapObjList)
@@ -260,6 +261,7 @@ void MapManager::InitMapText()
 	}
 }
 
+// IMGUI 초기화 (변수값)
 void MapManager::ImGuiSelectMapObject()
 {
 	ImGui::Begin("SelectMapObject");
@@ -505,6 +507,7 @@ shared_ptr<GameObject> MapManager::CreatePreViewObj(Vec3 pickPos)
 	return obj;
 }
 
+// 설치하기전 맵 정보 수정
 void MapManager::UpdateMapDescTransform()
 {
 	ImGui::Begin("MapDesc Inspector");

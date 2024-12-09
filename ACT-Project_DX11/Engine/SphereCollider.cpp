@@ -20,7 +20,7 @@ void SphereCollider::Update()
 	_boundingSphere.Center = GetColliderCenter();
 }
 
-bool SphereCollider::Intersects(Ray& ray, OUT float& distance)
+bool SphereCollider::Intersects(const Ray& ray, OUT float& distance)
 {
 	return _boundingSphere.Intersects(ray.position, ray.direction, OUT distance);
 }

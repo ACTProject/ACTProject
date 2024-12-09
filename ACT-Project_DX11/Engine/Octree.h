@@ -24,8 +24,10 @@ public:
 
     // 범위 내 Collider 검색
     std::vector<std::shared_ptr<BaseCollider>> QueryColliders(const shared_ptr<BaseCollider>& rangeCollider);
+    std::vector<std::shared_ptr<BaseCollider>> QueryColliders(const Ray& ray);
 
     void RenderOctree();
+    size_t GetTotalColliderCount() const;
 private:
     std::unique_ptr<OctreeNode> _root; // 루트 노드
 };

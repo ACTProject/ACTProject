@@ -20,7 +20,7 @@ WPARAM Game::Run(GameDesc& desc)
     {
         // 전체 월드 공간 옥트리
         BoundingBox worldBounds(Vec3(300.f, 100.f, 300.f), Vec3(300.f, 100.f, 300.f));
-        int maxDepth = 6;
+        int maxDepth = 4;
         OCTREE->Init(worldBounds, maxDepth);
     }
 

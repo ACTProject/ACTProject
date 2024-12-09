@@ -277,7 +277,12 @@ void AssimpTool::Init()
 			converter->ExportMaterialData(L"MapObject/Udrock04");
 			converter->ExportModelData(L"MapObject/Udrock04");
 		}
-
+		{
+			shared_ptr<Converter> converter = make_shared<Converter>();
+			converter->ReadAssetFile(L"MapObject/grass.fbx");
+			converter->ExportMaterialData(L"MapObject/grass");
+			converter->ExportModelData(L"MapObject/grass");
+		}
 
 
 	}

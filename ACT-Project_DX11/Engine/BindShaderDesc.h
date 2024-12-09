@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "ConstantBuffer.h"
 
 class Shader;
@@ -14,6 +14,12 @@ struct GlobalDesc
 struct TransformDesc
 {
 	Matrix W = Matrix::Identity;
+};
+
+struct TimeDesc
+{
+    float gameTime;
+    float padding[3];
 };
 
 // Light

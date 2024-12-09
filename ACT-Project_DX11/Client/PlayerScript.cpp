@@ -150,6 +150,8 @@ void PlayerScript::Update()
 	{
 		Camera::S_IsWireFrame = true;
 	}
+
+	float currentTime = TIME->GetGameTime();
 }
 
 void PlayerScript::SetAnimationState(AnimationState state)

@@ -45,7 +45,7 @@ MeshOutput VS_InstancingMesh(InstancingVertexMesh input)
 	output.position = mul(input.position, input.world); // W
 	output.worldPosition = output.position;
 	output.position = mul(output.position, VP);
-	output.uv = input.uv;
+    output.uv = input.uv;
 	output.normal = input.normal;
 
 	return output;

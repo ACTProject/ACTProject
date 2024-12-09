@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Shader.h"
 #include "Utils.h"
 
@@ -435,4 +435,18 @@ void Shader::PushSnowData(const SnowBillboardDesc& desc)
 	_snowDesc = desc;
 	_snowBuffer->CopyData(_snowDesc);
 	_snowEffectBuffer->SetConstantBuffer(_snowBuffer->GetComPtr().Get());
+}
+
+void Shader::PushTimeData(const TimeDesc& desc)
+{
+    if (_timeEffectBuffer == nullptr)
+    {
+        _timeBuffer = make_shared<ConstantBuffer<TimeDesc>>();
+        _timeBuffer->Create();
+        _timeEffectBuffer = GetConstantBuffer("TimeBuffer");
+    }
+
+    _timeDesc = desc;
+    _timeBuffer->CopyData(_timeDesc);
+    _timeEffectBuffer->SetConstantBuffer(_timeBuffer->GetComPtr().Get());
 }

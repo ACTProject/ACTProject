@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Materials>
+    <Material>
+        <Name>Material.002</Name>
+        <DiffuseFile></DiffuseFile>
+        <SpecularFile></SpecularFile>
+        <NormalFile></NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.41253859" G="0.30055079" B="0.012983156" A="1"/>
+        <Specular R="0.41253859" G="0.30055079" B="0.012983156" A="25"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Material.001</Name>
+        <DiffuseFile></DiffuseFile>
+        <SpecularFile></SpecularFile>
+        <NormalFile></NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.25015786" G="0.34670937" B="0.0091340654" A="1"/>
+        <Specular R="0.25015786" G="0.34670937" B="0.0091340654" A="25"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Material.003</Name>
+        <DiffuseFile></DiffuseFile>
+        <SpecularFile></SpecularFile>
+        <NormalFile></NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.37626296" G="0.31855452" B="0.010960327" A="1"/>
+        <Specular R="0.37626296" G="0.31855452" B="0.010960327" A="25"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Material.005</Name>
+        <DiffuseFile></DiffuseFile>
+        <SpecularFile></SpecularFile>
+        <NormalFile></NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.41253859" G="0.30055079" B="0.012983156" A="1"/>
+        <Specular R="0.41253859" G="0.30055079" B="0.012983156" A="25"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Material.006</Name>
+        <DiffuseFile></DiffuseFile>
+        <SpecularFile></SpecularFile>
+        <NormalFile></NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.25015786" G="0.34670937" B="0.0091340654" A="1"/>
+        <Specular R="0.25015786" G="0.34670937" B="0.0091340654" A="25"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Material.004</Name>
+        <DiffuseFile></DiffuseFile>
+        <SpecularFile></SpecularFile>
+        <NormalFile></NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.37626296" G="0.31855452" B="0.010960327" A="1"/>
+        <Specular R="0.37626296" G="0.31855452" B="0.010960327" A="25"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+</Materials>

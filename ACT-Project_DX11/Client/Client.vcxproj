@@ -91,6 +91,7 @@
     <FxCompile Include="..\Shaders\27. StructuredBufferDemo.fx" />
     <FxCompile Include="..\Shaders\28. BillBoardDemo.fx" />
     <FxCompile Include="..\Shaders\29. SnowDemo.fx" />
+    <FxCompile Include="..\Shaders\SeaGrass.fx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">

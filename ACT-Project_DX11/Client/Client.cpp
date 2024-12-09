@@ -505,8 +505,35 @@ void Client::Init()
 		CUR_SCENE->Add(obj);
 	}
 
+    //// Test
+    //{
+    //    //shared_ptr<Shader> grassShader = make_shared<Shader>(L"SeaGrass.fx");
+    //    shared_ptr<Material> material = make_shared<Material>();
+    //    material->SetShader(renderShader);
+    //    auto texture = RESOURCES->Load<Texture>(L"Grass", L"..\\Resources\\Textures\\MapObject\\grass.png");
+    //    material->SetDiffuseMap(texture);
 
+    //    MaterialDesc& desc = material->GetMaterialDesc();
+    //    desc.ambient = Vec4(1.f);
+    //    desc.diffuse = Vec4(1.f);
+    //    desc.specular = Vec4(1.f);
 
+    //    RESOURCES->Add(L"Grass", material);
+
+    //    auto obj = make_shared<GameObject>();
+    //    obj->GetOrAddTransform()->SetLocalPosition(Vec3(42.f, 8.f, 42.f));
+    //    obj->GetOrAddTransform()->SetScale(Vec3(2.f));
+    //    obj->AddComponent(make_shared<MeshRenderer>());
+
+    //    obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Grass"));
+    //    
+    //    auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+    //    obj->GetMeshRenderer()->SetMesh(mesh);
+    //    obj->GetMeshRenderer()->SetAlphaBlend(true);
+    //    obj->GetMeshRenderer()->SetPass(0);
+
+    //    CUR_SCENE->Add(obj);
+    //}
 }
 
 void Client::Update()

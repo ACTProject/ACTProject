@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "ModelRenderer.h"
 #include "Material.h"
 #include "ModelMesh.h"
@@ -44,6 +44,9 @@ void ModelRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 	if (lightObj)
 		_shader->PushLightData(lightObj->GetLight()->GetLightDesc());
 
+    TimeDesc timeDesc;
+    timeDesc.gameTime = TIME->GetGameTime();
+    _shader->PushTimeData(timeDesc);
 	// Bones
 	BoneDesc boneDesc;
 

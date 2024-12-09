@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 
 class TimeManager
@@ -24,5 +24,6 @@ private:
 	uint32	_frameCount = 0;
 	float	_fps = 0;
 	float _targetFrameTime = 0.f;
+
 };
 

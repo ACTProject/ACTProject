@@ -83,7 +83,8 @@ void MapManager::Init()
 		MAP->AddMapObj(src);
 		src = make_shared<MapObjDesc>(L"MapObject/Udrock04", L"23. RenderDemo.fx", false);
 		MAP->AddMapObj(src);
-
+		src = make_shared<MapObjDesc>(L"MapObject/grass", L"SeaGrass.fx");
+		MAP->AddMapObj(src);
 		// ImGui용 함수.
 		MAP->InitMapText();
 	}

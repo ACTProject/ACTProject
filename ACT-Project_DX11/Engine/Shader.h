@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Pass.h"
 #include "Technique.h"
 #include "BindShaderDesc.h"
@@ -65,6 +65,7 @@ public:
 	void PushTweenData(const TweenDesc& desc);
 	void PushInstancedTweenData(const InstancedTweenDesc& desc);
 	void PushSnowData(const SnowBillboardDesc& desc);
+    void PushTimeData(const TimeDesc& desc);
 
 private:
 	GlobalDesc _globalDesc;
@@ -74,6 +75,10 @@ private:
 	TransformDesc _transformDesc;
 	shared_ptr<ConstantBuffer<TransformDesc>> _transformBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> _transformEffectBuffer;
+
+    TimeDesc _timeDesc;
+    shared_ptr<ConstantBuffer<TimeDesc>> _timeBuffer;
+    ComPtr<ID3DX11EffectConstantBuffer> _timeEffectBuffer;
 
 	LightDesc _lightDesc;
 	shared_ptr<ConstantBuffer<LightDesc>> _lightBuffer;

@@ -30,6 +30,7 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="RangoonScript.h" />
     <ClInclude Include="StaticMeshDemo.h" />
+    <ClInclude Include="Title.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="A_Star.cpp" />
@@ -46,6 +47,7 @@
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="RangoonScript.cpp" />
     <ClCompile Include="StaticMeshDemo.cpp" />
+    <ClCompile Include="Title.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\00. Global.fx" />

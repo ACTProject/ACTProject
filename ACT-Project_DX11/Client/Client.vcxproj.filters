@@ -75,6 +75,9 @@
     <ClCompile Include="A_Star.cpp">
       <Filter>Main\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -109,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="A_Star.h">
       <Filter>Main\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -21,6 +21,7 @@
 #include "Camera.h"
 #include "Billboard.h"
 #include "CameraScript.h"
+#include "Client.h"
 
 
 void Title::Init()
@@ -41,7 +42,7 @@ void Title::Init()
         CUR_SCENE->Add(camera);
     }
 
-    // Material
+    // BackGround Material
     {
         shared_ptr<Material> material = make_shared<Material>();
         material->SetShader(shader);
@@ -54,7 +55,7 @@ void Title::Init()
         RESOURCES->Add(L"Background", material);
     }
 
-    // Material
+    // Logo Material
     {
         shared_ptr<Material> material = make_shared<Material>();
         material->SetShader(shader);
@@ -67,35 +68,57 @@ void Title::Init()
         RESOURCES->Add(L"Logo", material);
     }
 
-    // Material
+    // Button Material
     {
-        shared_ptr<Material> material = make_shared<Material>();
-        material->SetShader(shader);
-        auto texture = RESOURCES->Load<Texture>(L"StardBtn", L"..\\Resources\\Textures\\UI\\Start_1.png");
-        material->SetDiffuseMap(texture);
-        MaterialDesc& desc = material->GetMaterialDesc();
-        desc.ambient = Vec4(1.f);
-        desc.diffuse = Vec4(1.f);
-        desc.specular = Vec4(1.f);
-        RESOURCES->Add(L"StardBtn", material);
-    }
-
-    // Material
-    {
-        shared_ptr<Material> material = make_shared<Material>();
-        material->SetShader(shader);
-        auto texture = RESOURCES->Load<Texture>(L"EndBtn", L"..\\Resources\\Textures\\UI\\End_0.png");
-        material->SetDiffuseMap(texture);
-        MaterialDesc& desc = material->GetMaterialDesc();
-        desc.ambient = Vec4(1.f);
-        desc.diffuse = Vec4(1.f);
-        desc.specular = Vec4(1.f);
-        RESOURCES->Add(L"EndBtn", material);
+        {
+            shared_ptr<Material> material = make_shared<Material>();
+            material->SetShader(shader);
+            auto texture = RESOURCES->Load<Texture>(L"StartBtn", L"..\\Resources\\Textures\\UI\\Start_0.png");
+            material->SetDiffuseMap(texture);
+            MaterialDesc& desc = material->GetMaterialDesc();
+            desc.ambient = Vec4(1.f);
+            desc.diffuse = Vec4(1.f);
+            desc.specular = Vec4(1.f);
+            RESOURCES->Add(L"StartBtn", material);
+        }
+        {
+            shared_ptr<Material> material = make_shared<Material>();
+            material->SetShader(shader);
+            auto texture = RESOURCES->Load<Texture>(L"StartBtn_Hover", L"..\\Resources\\Textures\\UI\\Start_1.png");
+            material->SetDiffuseMap(texture);
+            MaterialDesc& desc = material->GetMaterialDesc();
+            desc.ambient = Vec4(1.f);
+            desc.diffuse = Vec4(1.f);
+            desc.specular = Vec4(1.f);
+            RESOURCES->Add(L"StartBtn_Hover", material);
+        }
+        {
+            shared_ptr<Material> material = make_shared<Material>();
+            material->SetShader(shader);
+            auto texture = RESOURCES->Load<Texture>(L"EndBtn", L"..\\Resources\\Textures\\UI\\End_0.png");
+            material->SetDiffuseMap(texture);
+            MaterialDesc& desc = material->GetMaterialDesc();
+            desc.ambient = Vec4(1.f);
+            desc.diffuse = Vec4(1.f);
+            desc.specular = Vec4(1.f);
+            RESOURCES->Add(L"EndBtn", material);
+        }
+        {
+            shared_ptr<Material> material = make_shared<Material>();
+            material->SetShader(shader);
+            auto texture = RESOURCES->Load<Texture>(L"EndBtn_Hover", L"..\\Resources\\Textures\\UI\\End_1.png");
+            material->SetDiffuseMap(texture);
+            MaterialDesc& desc = material->GetMaterialDesc();
+            desc.ambient = Vec4(1.f);
+            desc.diffuse = Vec4(1.f);
+            desc.specular = Vec4(1.f);
+            RESOURCES->Add(L"EndBtn_Hover", material);
+        }
     }
     // Mesh
     {
         auto obj = make_shared<GameObject>();
-        obj->GetOrAddTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.2f));
+        obj->GetOrAddTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.5f));
         obj->GetOrAddTransform()->SetScale(Vec3(800.f,600.f,0.f));
         obj->AddComponent(make_shared<MeshRenderer>());
 
@@ -115,7 +138,7 @@ void Title::Init()
     // Mesh
     {
         auto obj = make_shared<GameObject>();
-        obj->GetOrAddTransform()->SetLocalPosition(Vec3(-180.f, 170.f, 0.1f));
+        obj->GetOrAddTransform()->SetLocalPosition(Vec3(-180.f, 170.f, 0.4f));
         obj->GetOrAddTransform()->SetScale(Vec3(400.f, 225.f, 0.f));
         obj->AddComponent(make_shared<MeshRenderer>());
 
@@ -139,9 +162,25 @@ void Title::Init()
         auto obj = make_shared<GameObject>();
         obj->AddComponent(make_shared<Button>());
 
-        obj->GetButton()->Create(Vec3(100, 100, 0), Vec2(100, 100), RESOURCES->Get<Material>(L"Logo"));
+        obj->GetButton()->Create(Vec3(250, 300, 0.3), Vec2(166, 44), RESOURCES->Get<Material>(L"StartBtn"));
+        obj->GetMeshRenderer()->SetAlphaBlend(true);
+        obj->GetButton()->AddOnHoverEvent([obj]() { obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"StartBtn_Hover")); });
+        obj->GetButton()->AddOnHoverEndEvent([obj]() { obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"StartBtn")); });
+        
+        obj->GetButton()->AddOnClickedEvent([]() { GAME->ChangeScene(1); });
+     
+        CUR_SCENE->Add(obj);
+    }
+    // Mesh
+    {
+        auto obj = make_shared<GameObject>();
+        obj->AddComponent(make_shared<Button>());
 
-        obj->GetButton()->AddOnClickedEvent([obj]() { CUR_SCENE->Remove(obj); });
+        obj->GetButton()->Create(Vec3(250, 360, 0.3), Vec2(166, 44), RESOURCES->Get<Material>(L"EndBtn"));
+        obj->GetMeshRenderer()->SetAlphaBlend(true);
+        obj->GetButton()->AddOnHoverEvent([obj]() { obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"EndBtn_Hover")); });
+        obj->GetButton()->AddOnHoverEndEvent([obj]() { obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"EndBtn")); });
+        obj->GetButton()->AddOnClickedEvent([]() { GAME->GameEnd(); });
 
         CUR_SCENE->Add(obj);
     }

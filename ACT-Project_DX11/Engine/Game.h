@@ -1,4 +1,6 @@
-﻿#pragma once
+#pragma once
+
+class Iexecute;
 
 struct GameDesc
 {
@@ -15,22 +17,29 @@ struct GameDesc
 
 class Game
 {
-	DECLARE_SINGLE(Game);
+    DECLARE_SINGLE(Game);
 public:
-	WPARAM Run(GameDesc& desc);
+    WPARAM Run(uint32 num);
 
-	GameDesc& GetGameDesc() { return _desc; }
+    GameDesc& GetGameDesc() { return _scenes[_num]; }
+    void GameEnd() { _msg.message = WM_QUIT; }
+    void AddScene(GameDesc desc) { _scenes.push_back(desc); }
+    void ChangeScene(uint32 num);
 
 private:
-	ATOM MyRegisterClass();
-	BOOL InitInstance(int cmdShow);
+    ATOM MyRegisterClass();
+    BOOL InitInstance(int cmdShow);
 
-	void Update();
-	void ShowFps();
+    void Update(uint32 num);
+    void ShowFps();
 
-	static LRESULT CALLBACK WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
-	
+    static LRESULT CALLBACK WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
+
 private:
-	GameDesc _desc;
+    GameDesc _desc;
+    vector<GameDesc> _scenes;
+    MSG _msg = { 0 };
+    bool _changeScene = false;
+    uint32 _num = 0;
 };
 

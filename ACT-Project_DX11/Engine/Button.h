@@ -2,9 +2,9 @@
 #include "Ui.h"
 
 
-class Button : public Ui
+class Button : public Component
 {
-	using Super = Ui;
+	using Super = Component;
 
 public:
 	Button();
@@ -12,12 +12,19 @@ public:
 
 	bool Picked(POINT screenPos);
 
-	virtual void Create(Vec3 screenPos, Vec2 size, shared_ptr<class Material> material) override;
+	void Create(Vec3 screenPos, Vec2 size, shared_ptr<class Material> material);
 	void AddOnClickedEvent(std::function<void(void)> func);
 	void InvokeOnClicked();
 
+    void AddOnHoverEvent(std::function<void(void)> func);
+    void AddOnHoverEndEvent(std::function<void(void)> func);
+    void CheckHover(POINT screenPos);
+
 private:
 	std::function<void(void)> _onClicked;
+    std::function<void(void)> _onHover;
+    std::function<void(void)> _onHoverEnd;
+    bool _isHoverd = false;
 	RECT _rect;
 };
 

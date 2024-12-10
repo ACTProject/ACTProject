@@ -4,7 +4,7 @@
 #include "Material.h"
 
 
-Button::Button() : Super(UiType::BUTTON)
+Button::Button() : Super(ComponentType::Button)
 {
 
 }
@@ -60,4 +60,33 @@ void Button::InvokeOnClicked()
 {
 	if (_onClicked)
 		_onClicked();
+}
+
+void Button::AddOnHoverEvent(std::function<void(void)> func)
+{
+    _onHover = func;
+}
+
+void Button::AddOnHoverEndEvent(std::function<void(void)> func)
+{
+    _onHoverEnd = func;
+}
+
+void Button::CheckHover(POINT screenPos)
+{
+    if (Picked(screenPos))
+    {
+        if (!_isHoverd)
+        {
+            _isHoverd = true;
+            if (_onHover)
+                _onHover();
+        }
+    }
+    else if (_isHoverd)
+    {
+        _isHoverd = false;
+        if (_onHoverEnd)
+            _onHoverEnd();
+    }
 }

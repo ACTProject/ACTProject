@@ -10,17 +10,33 @@
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-	GameDesc desc;
-	desc.appName = L"GameCoding";
-	desc.hInstance = hInstance;
-	desc.vsync = false;
-	desc.hWnd = NULL;
-	desc.width = 800;
-	desc.height = 600;
-	desc.clearColor = Color(0.f, 0.5f, 1.0f, 0.5f);
-	desc.app = make_shared<ButtonDemo>();
+    {
+        GameDesc desc;
+        desc.appName = L"GameCoding";
+        desc.hInstance = hInstance;
+        desc.vsync = false;
+        desc.hWnd = NULL;
+        desc.width = 800;
+        desc.height = 600;
+        desc.clearColor = Color(0.f, 0.5f, 1.0f, 0.5f);
+        desc.app = make_shared<Title>();
+        GAME->AddScene(desc);
+    }
+	
+    {
+        GameDesc desc;
+        desc.appName = L"GameCoding";
+        desc.hInstance = hInstance;
+        desc.vsync = false;
+        desc.hWnd = NULL;
+        desc.width = 800;
+        desc.height = 600;
+        desc.clearColor = Color(0.f, 0.5f, 1.0f, 0.5f);
+        desc.app = make_shared<Client>();
+        GAME->AddScene(desc);
+    }
 
-	GAME->Run(desc);
+	GAME->Run(0);
 
 	return 0;
 }

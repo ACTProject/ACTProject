@@ -81,17 +81,7 @@ void ButtonDemo::Init()
 		RESOURCES->Add(L"Veigar", material);
 	}
 
-	//// Mesh
-	//{
-	//	auto obj = make_shared<GameObject>();
-	//	obj->AddComponent(make_shared<Button>());
-
-	//	obj->GetButton()->Create(Vec3(100, 100, 1), Vec2(100, 100), RESOURCES->Get<Material>(L"Veigar"));
-
-	//	obj->GetButton()->AddOnClickedEvent([obj]() { CUR_SCENE->Remove(obj); });
-
-	//	CUR_SCENE->Add(obj);
-	//}
+	
 
 	// Mesh
 	{
@@ -110,6 +100,18 @@ void ButtonDemo::Init()
 
 		CUR_SCENE->Add(obj);
 	}
+
+    // Mesh
+    {
+    	auto obj = make_shared<GameObject>();
+    	obj->AddComponent(make_shared<Button>());
+
+    	obj->GetButton()->Create(Vec3(100, 100, 1), Vec2(100, 100), RESOURCES->Get<Material>(L"Veigar"));
+
+    	obj->GetButton()->AddOnClickedEvent([obj]() { CUR_SCENE->Remove(obj); });
+
+    	CUR_SCENE->Add(obj);
+    }
 }
 
 void ButtonDemo::Update()

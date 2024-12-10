@@ -274,12 +274,10 @@ void Client::Init()
 	// Enemy
     {
         ENEMY->CreateMeleeMonster({ 30.f, 0.f, 30.f });
-        ENEMY->CreateMeleeMonster({ 30.f, 0.f, 20.f });
-        ENEMY->CreateMeleeMonster({ 20.f, 0.f, 30.f });
 
         ENEMY->CreateShootingMonster({ 40.f, 0.f, 40.f });
-        ENEMY->CreateShootingMonster({ 70.f, 0.f, 40.f });
-        ENEMY->CreateShootingMonster({ 40.f, 0.f, 70.f });
+
+        ENEMY->CreateFinalBoss({ 35.f,0.f,35.f });
     }
 
 	// Skybox

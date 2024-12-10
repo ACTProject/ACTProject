@@ -1,6 +1,7 @@
 #pragma once
 #include "../Client/ShootingMonster.h"
 #include "../Client/MelleMonster.h"
+#include "../Client/FinalBossMonster.h"
 #include "Rigidbody.h"
 #include "AABBBoxCollider.h"
 
@@ -13,6 +14,7 @@ class EnemyManager
 public:
     void CreateMeleeMonster(Vec3 SpawnPos);
     void CreateShootingMonster(Vec3 SpawnPos);
+    void CreateFinalBoss(Vec3 SpawnPos);
 
     Vec3 Spawnpos;
 };

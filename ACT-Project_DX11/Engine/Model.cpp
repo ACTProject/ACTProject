@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Model.h"
 #include "Utils.h"
 #include "FileUtils.h"
@@ -347,15 +347,31 @@ string Model::AnimationStateToString(AnimationState state)
 	case AnimationState::Idle:   return "Idle";
 	case AnimationState::Walk:   return "Walk";
 	case AnimationState::Run:    return "Run";
+	case AnimationState::Run2:    return "Run2";
+	case AnimationState::Run3:    return "Run3";
 	case AnimationState::Attack1: return "Attack1";
 	case AnimationState::Attack2: return "Attack2";
 	case AnimationState::Attack3: return "Attack3";
 	case AnimationState::Attack4: return "Attack4";
+	case AnimationState::Combat: return "Combat";
 	case AnimationState::Jump:   return "Jump";
-	case AnimationState::Hit:   return "Hit";
+	case AnimationState::Hit1:   return "Hit1";
+	case AnimationState::Hit2:   return "Hit2";
 	case AnimationState::Die:   return "Die";
 	case AnimationState::Roar:   return "Roar";
 	case AnimationState::Aggro:   return "Aggro";
+	case AnimationState::GetUP1:   return "GetUP1";
+	case AnimationState::GetUP2:   return "GetUP2";
+	case AnimationState::Skill1:   return "Skill1";
+	case AnimationState::Skill2:   return "Skill2";
+	case AnimationState::Skill3:   return "Skill3";
+	case AnimationState::Skill4:   return "Skill4";
+	case AnimationState::Skill5:   return "Skill5";
+	case AnimationState::Skill6:   return "Skill6";
+	case AnimationState::Skill7:   return "Skill7";
+	case AnimationState::Skill8:   return "Skill8";
+	case AnimationState::Skill9:   return "Skill9";
+	case AnimationState::Skill10:   return "Skill10";
 		// 다른 상태 추가 가능
 	default: return "Unknown";
 	}

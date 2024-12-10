@@ -26,7 +26,7 @@ void ShootingMonster::Rota(Vec3 objPos, Vec3 targetPos)
     Vec3 direction = targetPos - objPos;
     direction.Normalize();
 
-    // 외적을 이용한 회전 축 계산
+    // 외적을 이용한 회전 축 Mov계산
     Vec3 rotationAxis = CurForward.Cross(direction);
 
     // 외적 결과가 매우 작으면 방향 차이가 거의 없으므로 회전 필요 없음
@@ -101,17 +101,17 @@ void ShootingMonster::AddBullet(Vec3 Pos, Vec3 dir)
     objModel->ReadModel(L"Enemy/bullet");
     objModel->ReadMaterial(L"Enemy/bullet");
 
-    shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
-    bullet->AddComponent(ma2);
-    bullet->GetModelAnimator()->SetModel(objModel);
-    bullet->GetModelAnimator()->SetPass(0);
-
     //// Collider
     //auto collider = make_shared<AABBBoxCollider>();
     //collider->SetBoundingBox(BoundingBox(Vec3(0.f), Vec3(1.5f)));
     //collider->SetOffset(Vec3(0.f, 1.f, 0.f));
     //OCTREE->InsertCollider(collider);
     //bullet->AddComponent(collider);
+    bullet->AddComponent(make_shared<ModelRenderer>(renderShader));
+    {
+        bullet->GetModelRenderer()->SetModel(objModel);
+        bullet->GetModelRenderer()->SetPass(1);
+    }
 
     shared_ptr<Bullet> bulletComponent = make_shared<Bullet>();
     bulletComponent->Add(objModel);

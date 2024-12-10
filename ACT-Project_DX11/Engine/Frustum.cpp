@@ -23,27 +23,15 @@ void Frustum::FinalUpdate()
 	};
 
     // 프러스텀 평면 설정
-	_planes[PLANE_FRONT] =   ::XMPlaneFromPoints(worldCorners[0], worldCorners[1], worldCorners[2]); // Near CW
-	_planes[PLANE_BACK]  =   ::XMPlaneFromPoints(worldCorners[4], worldCorners[7], worldCorners[5]); // Far CCW
-	_planes[PLANE_UP]    =   ::XMPlaneFromPoints(worldCorners[4], worldCorners[5], worldCorners[1]); // Top CW
-	_planes[PLANE_DOWN]  =   ::XMPlaneFromPoints(worldCorners[7], worldCorners[3], worldCorners[6]); // Bottom CCW
-	_planes[PLANE_LEFT]  =   ::XMPlaneFromPoints(worldCorners[4], worldCorners[0], worldCorners[7]); // Left CW
-	_planes[PLANE_RIGHT] =   ::XMPlaneFromPoints(worldCorners[5], worldCorners[6], worldCorners[1]); // Right CCW
-
-    // 패딩 적용 (10 유닛)
-    ExpandFrustum(1.0f);
+    _planes[PLANE_FRONT] =   ::XMPlaneFromPoints(worldCorners[0], worldCorners[2], worldCorners[1]); // Near CW
+    _planes[PLANE_BACK]  =   ::XMPlaneFromPoints(worldCorners[4], worldCorners[5], worldCorners[7]); // Far CCW
+    _planes[PLANE_UP]    =   ::XMPlaneFromPoints(worldCorners[4], worldCorners[1], worldCorners[5]); // Top CW
+    _planes[PLANE_DOWN]  =   ::XMPlaneFromPoints(worldCorners[7], worldCorners[6], worldCorners[3]); // Bottom CCW
+    _planes[PLANE_LEFT]  =   ::XMPlaneFromPoints(worldCorners[4], worldCorners[7], worldCorners[0]); // Left CW
+    _planes[PLANE_RIGHT] =   ::XMPlaneFromPoints(worldCorners[5], worldCorners[1], worldCorners[6]); // Right CCW
 }
 
-void Frustum::ExpandFrustum(float padding)
-{
-    for (Vec4& plane : _planes)
-    {
-        Vec3 normal(plane.x, plane.y, plane.z);
-        plane.w -= normal.Length() * padding; // 평면의 법선 방향으로 패딩 추가
-    }
-}
-
-bool Frustum::ContainsAABB(const BoundingBox& box, float threshold) const
+bool Frustum::ContainsAABB(const BoundingBox& box) const
 {
     Vec3 corners[BoundingBox::CORNER_COUNT];
     box.GetCorners(corners); // AABB 코너 가져오기
@@ -60,7 +48,7 @@ bool Frustum::ContainsAABB(const BoundingBox& box, float threshold) const
             float distance = normal.Dot(corner) + plane.w;
 
             // 한 점이라도 안쪽이면 프러스텀에 포함
-            if (distance >= -threshold)
+            if (distance >= 0)
             {
                 allOutside = false;
                 insideCount++;
@@ -68,6 +56,8 @@ bool Frustum::ContainsAABB(const BoundingBox& box, float threshold) const
             }
         }
 
+        if (insideCount > 0)
+            return true;  // 한 점이라도 안에 있음
         if (allOutside)
             return false; // 완전히 바깥에 있음
     }
@@ -75,18 +65,32 @@ bool Frustum::ContainsAABB(const BoundingBox& box, float threshold) const
     return insideCount > 0; // 일부라도 포함되어 있으면 true
 }
 
-bool Frustum::ContainsSphere(const Vec3& pos, float radius, float threshold) const
+bool Frustum::ContainsSphere(const Vec3& pos, float radius) const
 {
+    bool isPartiallyInside = false;
+
     for (const Vec4& plane : _planes)
     {
         Vec3 normal = Vec3(plane.x, plane.y, plane.z);
         float distanceToPlane = normal.Dot(pos) + plane.w;
 
-        // 반지름과 threshold를 고려
-        if (distanceToPlane < -(radius + threshold))
-            return false; // 완전히 밖에 있음
+        // 구체가 현재 평면 기준으로 일부라도 안쪽에 있음
+        if (distanceToPlane >= -radius)
+        {
+            isPartiallyInside = true;
+            break;
+        }
+
+        // 구체가 현재 평면 바깥에 완전히 있는지 확인
+        if (distanceToPlane < -(radius))
+        {
+            return false; // 구체가 완전히 바깥에 있음
+        }
+
+
     }
 
-    return true; // 일부라도 포함
+    return isPartiallyInside;
 }
+
 

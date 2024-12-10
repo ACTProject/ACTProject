@@ -18,8 +18,8 @@ class Frustum
 public:
 	void FinalUpdate();
     void ExpandFrustum(float padding);
-    bool ContainsSphere(const Vec3& pos, float radius, float threshold) const;
-    bool ContainsAABB(const BoundingBox& box, float threshold) const;
+    bool ContainsSphere(const Vec3& pos, float radius) const;
+    bool ContainsAABB(const BoundingBox& box) const;
 
 private:
 	array<Vec4, PLANE_END> _planes; // 프러스텀의 6개 평면

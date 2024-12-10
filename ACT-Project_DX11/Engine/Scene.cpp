@@ -309,7 +309,7 @@ vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<Gam
                 Vec3 sphereCenter = sphere->GetColliderCenter();
                 float sphereRadius = sphere->GetBoundingSphere().Radius;
 
-                if (FRUSTUM->ContainsSphere(sphereCenter, sphereRadius, padding))
+                if (FRUSTUM->ContainsSphere(sphereCenter, sphereRadius))
                 {
                     visibleObjects.push_back(object);
                 }
@@ -321,7 +321,7 @@ vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<Gam
                 shared_ptr<AABBBoxCollider> aabb = dynamic_pointer_cast<AABBBoxCollider>(collider);
                 BoundingBox box = aabb->GetBoundingBox();
 
-                if (FRUSTUM->ContainsAABB(box, padding))
+                if (FRUSTUM->ContainsAABB(box))
                 {
                     visibleObjects.push_back(object);
                 }

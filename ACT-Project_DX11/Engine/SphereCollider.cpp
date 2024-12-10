@@ -18,7 +18,9 @@ SphereCollider::~SphereCollider()
 void SphereCollider::Update()
 {
     if (Vec3(_boundingSphere.Center) == GetColliderCenter())
+    {
         return;
+    }
     else
     {
         _boundingSphere.Center = GetColliderCenter();

@@ -9,6 +9,7 @@
 
 class Model;
 class ModelRenderer;
+class ModelAnimator;
 
 class ShootingMonster : public MonoBehaviour
 {
@@ -35,7 +36,6 @@ public:
     void Patrol(Vec3 Target);
     void AddBullet(Vec3 Pos, Vec3 dir);
 
-    //float angle; 
     float distance;
     Vec3 CurForward;
     Vec3 EnemyPos;

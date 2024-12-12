@@ -31,22 +31,25 @@ enum class AnimationState
 {
 	Idle,
 	Walk,
+    Appear, //등장
 	Run,
 	Run2,
 	Run3,
+    Down1, //뒤로 넘어짐
+    Down2, //앞으로 넘어짐
 	Attack1,
 	Attack2,
 	Attack3,
 	Attack4,
-    Combat,
+    Combat, //전투 상태의 Idle
 	Jump,
 	Hit1, //피격
 	Hit2, //피격
 	Die, //죽음
 	Roar, //울음,포효
 	Aggro,
-    GetUP1,
-    GetUP2,
+    GetUP1, //뒤로 일어남
+    GetUP2, //앞으로 일어남
     Skill1,
     Skill2,
     Skill3,

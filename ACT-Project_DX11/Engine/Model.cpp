@@ -345,6 +345,7 @@ string Model::AnimationStateToString(AnimationState state)
 	switch (state)
 	{
 	case AnimationState::Idle:   return "Idle";
+	case AnimationState::Appear:   return "Appear";
 	case AnimationState::Walk:   return "Walk";
 	case AnimationState::Run:    return "Run";
 	case AnimationState::Run2:    return "Run2";
@@ -362,6 +363,8 @@ string Model::AnimationStateToString(AnimationState state)
 	case AnimationState::Aggro:   return "Aggro";
 	case AnimationState::GetUP1:   return "GetUP1";
 	case AnimationState::GetUP2:   return "GetUP2";
+	case AnimationState::Down1:   return "Down1";
+	case AnimationState::Down2:   return "Down2";
 	case AnimationState::Skill1:   return "Skill1";
 	case AnimationState::Skill2:   return "Skill2";
 	case AnimationState::Skill3:   return "Skill3";

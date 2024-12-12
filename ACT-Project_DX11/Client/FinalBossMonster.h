@@ -20,12 +20,31 @@ public:
     void SetModelAnimator(shared_ptr<ModelAnimator> modelAnimator) { _modelAnimator = modelAnimator; }
     void SetAnimationState(AnimationState state);
 
+    bool PlayCheckAnimating(AnimationState state);
+    void Phase_1();
+    void Phase_2();
+    void Appear();
+    void Walk(Vec3 objPos, Vec3 targetPos, float speed);
+    void Rota(Vec3 objPos, Vec3 targetPos);
+
+    float currentTime = 0.f;
+    float lastTime = 0.f;
+    Vec3 bossPos;
+    Vec3 playerPos;
+    float animPlayingTime = 0.0f;
+    int myPhase = 1;
+    float hp = 1000.f;
+    float _FPS;
+    float dt;
+    bool isAnimating = false;
+    bool isFirstTime = true;
+    bool postpone = false;
 
 private:
     shared_ptr<Model> _enemy;
     shared_ptr<ModelAnimator> _modelAnimator;
     shared_ptr<Transform> _transform;
     shared_ptr<GameObject> _player;
-    AnimationState _currentAnimationState = AnimationState::Idle;
+    AnimationState _currentAnimationState = AnimationState::Combat;
 };
 

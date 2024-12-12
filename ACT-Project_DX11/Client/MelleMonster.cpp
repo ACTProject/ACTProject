@@ -51,7 +51,6 @@ void MelleMonster::Rota(Vec3 objPos, Vec3 targetPos)
 	Vec3 currentRotation = _transform->GetLocalRotation();
 	Vec3 newRotation = Vec3::Lerp(currentRotation, currentRotation + Vec3(0, angle, 0), 0.1f); // 0.1f는 보간 속도
 	_transform->SetRotation(newRotation);
-
 }
 
 void MelleMonster::Tracking(Vec3 pos, const std::vector<Node3D>& path)
@@ -127,11 +126,6 @@ void MelleMonster::Start()
 
 void MelleMonster::Update()
 {
-	if (INPUT->GetButton(KEY_TYPE::KEY_4))
-	{
-		int a = 0;
-	}
-
 	_FPS = static_cast<float>(TIME->GetFps());
 	dt = TIME->GetDeltaTime();
 	// 플레이어 위치 계산4

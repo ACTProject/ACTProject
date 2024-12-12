@@ -273,9 +273,9 @@ void Client::Init()
 
 	// Enemy
     {
-        ENEMY->CreateMeleeMonster({ 30.f, 0.f, 30.f });
+        //ENEMY->CreateMeleeMonster({ 30.f, 0.f, 30.f });
 
-        ENEMY->CreateShootingMonster({ 40.f, 0.f, 40.f });
+        //ENEMY->CreateShootingMonster({ 40.f, 0.f, 40.f });
 
         ENEMY->CreateFinalBoss({ 35.f,0.f,35.f });
     }

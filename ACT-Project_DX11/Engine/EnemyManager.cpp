@@ -112,11 +112,11 @@ void EnemyManager::CreateShootingMonster(Vec3 SpawnPos)
 
 void EnemyManager::CreateFinalBoss(Vec3 SpawnPos)
 {
-    auto FinalBoss = make_shared<GameObject>(); // Pistol_Shrimp
+    auto FinalBoss = make_shared<GameObject>(); // MR_Krab
     {
         FinalBoss->GetOrAddTransform()->SetPosition(SpawnPos);
-        FinalBoss->GetOrAddTransform()->SetLocalRotation(Vec3(0, XMConvertToRadians(180), 0)); // XMConvertToRadians()
-        FinalBoss->GetOrAddTransform()->SetScale(Vec3(0.001f));
+        FinalBoss->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
+        FinalBoss->GetOrAddTransform()->SetScale(Vec3(0.0005f));
 
         shared_ptr<Model> enemyModel = make_shared<Model>();
         // Model
@@ -125,30 +125,34 @@ void EnemyManager::CreateFinalBoss(Vec3 SpawnPos)
             enemyModel->ReadMaterial(L"Enemy/FinalBoss/mrKrab");
 
             enemyModel->ReadAnimation(L"Enemy/FinalBoss/mrKRAB_idle", AnimationState::Idle);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/boss_walk", AnimationState::Walk);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/boss_roar", AnimationState::Roar);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/warming_up", AnimationState::Appear);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/fight_idle", AnimationState::Combat);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/run_forward", AnimationState::Run);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/sprint", AnimationState::Run2);
             enemyModel->ReadAnimation(L"Enemy/FinalBoss/back_sprint", AnimationState::Run3);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/jumping", AnimationState::Jump);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/hit_1", AnimationState::Hit1);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/hit_2", AnimationState::Hit2);
             enemyModel->ReadAnimation(L"Enemy/FinalBoss/boxing_1", AnimationState::Attack1);
             enemyModel->ReadAnimation(L"Enemy/FinalBoss/boxing_2", AnimationState::Attack2);
             enemyModel->ReadAnimation(L"Enemy/FinalBoss/boxing_3", AnimationState::Attack3);
             enemyModel->ReadAnimation(L"Enemy/FinalBoss/boxing_4", AnimationState::Attack4);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/choke_lift", AnimationState::Skill1);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/dying", AnimationState::Die);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/fight_idle", AnimationState::Combat);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/fireball", AnimationState::Skill2);
             enemyModel->ReadAnimation(L"Enemy/FinalBoss/getUp_behind", AnimationState::GetUP1);
             enemyModel->ReadAnimation(L"Enemy/FinalBoss/getUp_front", AnimationState::GetUP2);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/hit_1", AnimationState::Hit1);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/hit_2", AnimationState::Hit2);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/jumping", AnimationState::Jump);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/knockedDown_back", AnimationState::Down1);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/knockedDown_forward", AnimationState::Down2);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/choke_lift", AnimationState::Skill1);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/fireball", AnimationState::Skill2);
             enemyModel->ReadAnimation(L"Enemy/FinalBoss/magic_spell", AnimationState::Skill3);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/run_forward", AnimationState::Run);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/sprint", AnimationState::Run2);
             enemyModel->ReadAnimation(L"Enemy/FinalBoss/sweep", AnimationState::Skill4);
             enemyModel->ReadAnimation(L"Enemy/FinalBoss/thrust_slash", AnimationState::Skill5);
             enemyModel->ReadAnimation(L"Enemy/FinalBoss/uppercut", AnimationState::Skill6);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/warming_up", AnimationState::Skill7);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/super/super_GettingThrown", AnimationState::Skill8);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/super/super_GrabSlam", AnimationState::Skill9);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/super/super_Hurricane", AnimationState::Skill10);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/super/super_GettingThrown", AnimationState::Skill7);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/super/super_GrabSlam", AnimationState::Skill8);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/super/super_Hurricane", AnimationState::Skill9);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/dying", AnimationState::Die);
 
         }
         shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);

@@ -1,10 +1,12 @@
-﻿#pragma once
+#pragma once
 #include "Model.h"
 #include "Shader.h"
+#include "Terrain.h"
 
 struct MapObjDesc
 {
 public:
+    bool isMesh = false;
 	bool isCollision = true;
 	Vec3 extent = Vec3{ 1.0f };
 	Vec3 offset = Vec3{ 0.0f };
@@ -16,13 +18,15 @@ public:
 	wstring filename;
 	wstring shadername;
 	MapObjDesc() = default;
-	MapObjDesc(wstring file, wstring sha, bool isColl = true) : filename(file), shadername(sha), isCollision(isColl) {};
+	MapObjDesc(wstring file, wstring sha, bool isColl = true, bool isMes = false) : filename(file), shadername(sha), isCollision(isColl), isMesh(isMes) {};
 };
 
 struct MapModel
 {
-	shared_ptr<Model> _model ;
-	shared_ptr<Shader> _shader;
+	shared_ptr<Model> _model = nullptr;
+    shared_ptr<Material> _material = nullptr;
+	shared_ptr<Mesh> _mesh = nullptr;
+	shared_ptr<Shader> _shader = nullptr;
 };
 
 class MapManager
@@ -38,6 +42,7 @@ public:
 	// 이 함수는 클릭했을 때 추가하는 함수.
 	shared_ptr<GameObject> Create(Vec3& pos);
 
+    void SetTerrain(shared_ptr<Terrain> vec) { _terrain = vec; };
 
 	// 초기 init
 	void AddMapObj(shared_ptr<MapObjDesc>  obj);
@@ -60,13 +65,17 @@ private:
 	void ChangeMapObjRotation();
 	void ChangeMapObjScale();
 
+    // 바닥에 붙이는 함수.
+    void CreateQuadTerrain(shared_ptr<Mesh> mesh, shared_ptr<GameObject> obj, Vec3 pos);
+
 	// 이 함수는 파일에서 불러올 때 사용하는 함수
 	shared_ptr<GameObject> Create(MapObjDesc& obj);
 	// ImGui에서 맵오브젝트 고르는 함수.
 	void ImGuiSelectMapObject();
 private:
 	// 정보 저장된 파일이름.
-	wstring _fileName = L"../Resources/MapObj/MapObjectLists.txt";
+	wstring _fileName = L"../Resources/MapFile/MapObjectLists.txt";
+	wstring _meshFileName = L"..\\Resources\\Textures\\Terrain\\";
 	// 파일로 저장시킬 오브젝트들 리스트
 	vector<shared_ptr<GameObject>> _mapObjList;
 	// 맵정보 구조체 배열
@@ -84,4 +93,6 @@ private:
 	int _transformSelect = 0;
 	bool _isZState = false;
 	bool _isSelect = false;
+
+    shared_ptr<Terrain> _terrain;
 };

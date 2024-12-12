@@ -7,6 +7,7 @@
 #include "AABBBoxCollider.h"
 #include "CollisionManager.h"
 #include "Rigidbody.h"
+#include "Material.h"
 
 void MapManager::Init()
 {
@@ -84,11 +85,14 @@ void MapManager::Init()
 		src = make_shared<MapObjDesc>(L"MapObject/Udrock04", L"23. RenderDemo.fx", false);
 		MAP->AddMapObj(src);
 
+
+        src = make_shared<MapObjDesc>(L"tailtexture01.png", L"23. RenderDemo.fx",false,true);
+		MAP->AddMapObj(src);
+
 		// ImGui용 함수.
 		MAP->InitMapText();
 	}
 
-	ImportMapObj();
 
 }
 
@@ -173,10 +177,29 @@ shared_ptr<GameObject> MapManager::Create(Vec3& pos)
 		auto it = _mapInfoList.find(_mapSelectDesc->filename);
 		if (it != _mapInfoList.end())
 		{
-			auto modelrender = make_shared<ModelRenderer>(it->second->_shader);
-			obj->AddComponent(modelrender);
-			obj->GetModelRenderer()->SetModel(it->second->_model);
-			obj->GetModelRenderer()->SetPass(1);
+            if (_mapSelectDesc->isMesh == true)
+            {
+                auto meshrender = make_shared<MeshRenderer>();
+                obj->AddComponent(meshrender);
+
+
+                //auto mesh = RESOURCES->Get<Mesh>(L"Quads");
+                auto mesh = make_shared<Mesh>();
+                mesh->CreateGrid(1,1);
+                CreateQuadTerrain(mesh, obj, pos);
+                obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(_mapSelectDesc->filename));
+                obj->GetMeshRenderer()->SetMesh(mesh);
+                obj->GetMeshRenderer()->SetPass(0);
+                obj->GetMeshRenderer()->SetAlphaBlend(true);
+            }
+            else
+            {
+                auto modelrender = make_shared<ModelRenderer>(it->second->_shader);
+                obj->AddComponent(modelrender);
+                obj->GetModelRenderer()->SetModel(it->second->_model);
+                obj->GetModelRenderer()->SetPass(1);
+            }
+			
 		}
 
 
@@ -205,10 +228,28 @@ shared_ptr<GameObject> MapManager::Create(MapObjDesc& desc)
 		auto it = _mapInfoList.find(desc.filename);
 		if (it != _mapInfoList.end())
 		{
-			auto modelrender = make_shared<ModelRenderer>(it->second->_shader);
-			obj->AddComponent(modelrender);
-			obj->GetModelRenderer()->SetModel(it->second->_model);
-			obj->GetModelRenderer()->SetPass(1);
+            if (desc.isMesh == true)
+            {
+                auto meshrender = make_shared<MeshRenderer>();
+                obj->AddComponent(meshrender);
+                
+
+                auto mesh = RESOURCES->Get<Mesh>(L"Quads");
+                CreateQuadTerrain(mesh, obj, desc.pos);
+                obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(desc.filename));
+                obj->GetMeshRenderer()->SetMesh(mesh);
+                obj->GetMeshRenderer()->SetPass(0);
+                obj->GetMeshRenderer()->SetMaterial(it->second->_material);
+                obj->GetMeshRenderer()->SetAlphaBlend(true);
+            }
+            else
+            {
+                auto modelrender = make_shared<ModelRenderer>(it->second->_shader);
+                obj->AddComponent(modelrender);
+                obj->GetModelRenderer()->SetModel(it->second->_model);
+                obj->GetModelRenderer()->SetPass(1);
+            }
+
 		}
 
 
@@ -239,14 +280,41 @@ void MapManager::AddMapObj(shared_ptr<MapObjDesc> obj)
 	}
 	_mapInitInfoList.push_back(obj);
 
-	shared_ptr<MapModel> models = make_shared<MapModel>();
 
-	models->_model = make_shared<Model>();
-	{
-		models->_model->ReadModel(obj->filename);
-		models->_model->ReadMaterial(obj->filename);
-	}
-	models->_shader = make_shared<Shader>(obj->shadername);
+    shared_ptr<MapModel> models = make_shared<MapModel>();
+
+    if (obj->isMesh != true)
+    {
+        models->_model = make_shared<Model>();
+        {
+            models->_model->ReadModel(obj->filename);
+            models->_model->ReadMaterial(obj->filename);
+        }
+        models->_shader = make_shared<Shader>(obj->shadername);
+    }
+    else
+    {
+        models->_shader = make_shared<Shader>(obj->shadername);
+
+        shared_ptr<Mesh> mesh = make_shared<Mesh>();
+        mesh->CreateGrid(1,1);
+        models->_mesh = mesh;
+        RESOURCES->Add(L"Quads", mesh);
+
+        auto material = make_shared<Material>();
+        material->SetShader(models->_shader);
+        material->SetName(obj->filename);
+        wstring result = _meshFileName + obj->filename;
+        auto texture = RESOURCES->Load<Texture>(obj->filename, result);
+        material->SetDiffuseMap(texture);
+        MaterialDesc& desc = material->GetMaterialDesc();
+        desc.ambient = Vec4(1.f);
+        desc.diffuse = Vec4(1.f);
+        desc.specular = Vec4(1.f);
+        RESOURCES->Add(obj->filename, material);
+
+        models->_material = material;
+    }
 
 	_mapInfoList.insert(make_pair(obj->filename, models));
 }
@@ -361,6 +429,209 @@ void MapManager::ChangeMapObjScale()
 	_mapSelectObj->GetTransform()->AddLocalScale(scale);
 }
 
+void MapManager::CreateQuadTerrain(shared_ptr<Mesh> mesh, shared_ptr<GameObject> obj, Vec3 pos)
+{
+    // 내가 바꿀 Mesh Vertex 가져옴.
+    shared_ptr<Geometry<VertexTextureNormalTangentData>> geom = mesh->GetGeometry();
+    vector<VertexTextureNormalTangentData> vertices = geom->GetVertices();
+    // 1,1 그리드에 스케일값을 곱할 예정.
+    Vec3 scale = obj->GetTransform()->GetLocalScale();
+
+    // terrain 높이 가져옴.
+    vector<VertexTextureNormalTangentData>& vTerrain = const_cast<vector<VertexTextureNormalTangentData>&>(_terrain->GetMesh()->GetGeometry()->GetVertices());
+
+   /* for (int index = 0; index < 4; index++)
+    {
+        assert(pos.z < (512-scale.z) && pos.z >= 0);
+        assert(pos.x < (512-scale.x) && pos.x >= 0);
+
+        switch (index)
+        {
+        case 0:
+        {
+            int Width = (int)pos.x % 512;
+            int Height = ((int)pos.z * 512);
+
+            int resultIndex = Height + Width;
+            if (pos.z != 0)
+            {
+                resultIndex++;
+            }
+            vertices[index].position.y = vTerrain[resultIndex].position.y;
+        }
+            break;
+        case 1:
+        {
+            int Width = ((int)pos.x + ((int)scale.x - 1)) % 512;
+            int Height = ((int)pos.z * 512);
+
+            int resultIndex = Height + Width;
+
+            if (pos.z != 0)
+            {
+                resultIndex++;
+            }
+            vertices[index].position.y = vTerrain[resultIndex].position.y;
+        }
+            break;
+        case 2:
+        {
+            int Width = (int)pos.x % 512;
+            int Height = (((int)pos.z + ((int)scale.z-1)) * 512);
+
+            int resultIndex = Height + Width;
+
+            if (pos.z != 0)
+            {
+                resultIndex++;
+            }
+            vertices[index].position.y = vTerrain[resultIndex].position.y;
+        }
+            break;
+        case 3:
+        {
+            int Width = ((int)pos.x + ((int)scale.x - 1)) % 512;
+            int Height = (((int)pos.z + ((int)scale.z - 1)) * 512);
+
+            int resultIndex = Height + Width;
+
+            if (pos.z != 0)
+            {
+                resultIndex++;
+            }
+            vertices[index].position.y = vTerrain[resultIndex].position.y;
+        }
+            break;
+        default:
+            vertices[index].position.y = 0.0f;
+            break;
+        }
+        
+    }*/
+
+     for (int index = 0; index < 4; index++)
+    {
+        assert(pos.z < (512-scale.z) && pos.z >= 0);
+        assert(pos.x < (512-scale.x) && pos.x >= 0);
+
+        switch (index)
+        {
+        case 0:
+        {
+            int Width = (int)pos.x % 512;
+            int Height = ((int)pos.z * 512);
+
+            int resultIndex = Height + Width;
+            if ((int)pos.z != 0)
+            {
+                resultIndex++;
+            }
+            vertices[index].position.y = vTerrain[resultIndex].position.y;
+        }
+            break;
+        case 1:
+        {
+            int Width = ((int)pos.x + ((int)scale.x)) % 512;
+            int Height = ((int)pos.z * 512);
+
+            int resultIndex = Height + Width;
+
+            if ((int)pos.z != 0)
+            {
+                resultIndex++;
+            }
+            vertices[index].position.y = vTerrain[resultIndex].position.y;
+        }
+            break;
+        case 2:
+        {
+            int Width = (int)pos.x % 512;
+            int Height = (((int)pos.z + ((int)scale.z)) * 512);
+
+            int resultIndex = Height + Width;
+
+            if ((int)pos.z != 0)
+            {
+                resultIndex++;
+            }
+            vertices[index].position.y = vTerrain[resultIndex].position.y;
+        }
+            break;
+        case 3:
+        {
+            int Width = ((int)pos.x + ((int)scale.x)) % 512;
+            int Height = (((int)pos.z + ((int)scale.z)) * 512);
+
+            int resultIndex = Height + Width;
+
+            if ((int)pos.z != 0)
+            {
+                resultIndex++;
+            }
+            vertices[index].position.y = vTerrain[resultIndex].position.y;
+        }
+            break;
+        default:
+            vertices[index].position.y = 0.0f;
+            break;
+        }
+        
+    }
+
+    geom->SetVertices(vertices);
+
+    mesh->GetVertexBuffer()->Create(vertices);
+    mesh->GetIndexBuffer()->Create(mesh->GetGeometry()->GetIndices());
+
+
+    //void Terrain::Create(int32 sizeX, int32 sizeZ, shared_ptr<Material> material)
+    //{
+    //    _sizeX = sizeX;
+    //    _sizeZ = sizeZ;
+
+    //    auto go = _gameObject.lock();
+
+    //    go->GetOrAddTransform();
+
+    //    if (go->GetMeshRenderer() == nullptr)
+    //        go->AddComponent(make_shared<MeshRenderer>());
+
+    //    _mesh = make_shared<Mesh>();
+    //    _mesh->CreateGrid(sizeX, sizeZ);
+
+    //    go->GetMeshRenderer()->SetMesh(_mesh);
+    //    go->GetMeshRenderer()->SetPass(0);
+    //    go->GetMeshRenderer()->SetMaterial(material);
+    //}
+
+
+
+
+
+    //geom->SetVertices(vertices);
+
+    // 게임오브젝트 scale 값 가져오고, 그거만큼 곱한다음에 
+    // 버텍스 y축만 바꾸면 될거같은데
+    //Vec3 position = { 0, 0, 0 };
+    //Vec2 uv = { 0, 0 };
+    //Vec3 normal = { 0, 0, 0 };
+    //Vec3 tangent = { 0, 0, 0 };
+    
+    //vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
+    //assert(v.size() == (width + 1) * (height + 1));
+    //for (int32 z = 0; z <= height; z++)
+    //{
+    //    for (int32 x = 0; x <= width; x++)
+    //    {
+    //        int32 idx = (width + 1) * z + x;
+    //        uint8 height = expandedPixelBuffer[idx] / 255.f * 25.f;
+    //        v[idx].position.y = height - 8.f;
+    //    }
+    //}
+
+
+}
+
 bool MapManager::ExportMapObj()
 {
 	int length = _mapObjList.size();
@@ -379,8 +650,12 @@ bool MapManager::ExportMapObj()
 	MapObjDesc dec;
 	for (int i = 0; i < length; i++)
 	{
+        dec.isMesh = (_mapObjList[i]->GetMeshRenderer() == nullptr) ? false : true;
+        fwrite(&dec.isMesh, sizeof(bool), 1, fp);
+
 		dec.isCollision = (_mapObjList[i]->GetCollider() == nullptr) ? false : true;
 		fwrite(&dec.isCollision, sizeof(bool), 1, fp);
+
 
 		//AABBBoxCollider* collider = dynamic_cast<AABBBoxCollider*>(_mapObjList[i]->GetCollider().get());
         if (dec.isCollision == true)
@@ -400,14 +675,28 @@ bool MapManager::ExportMapObj()
 		dec.rotation = _mapObjList[i]->GetTransform()->GetLocalRotation();
 		fwrite(&dec.rotation, sizeof(Vec3), 1, fp);
 
-		dec.filename = _mapObjList[i]->GetModelRenderer()->GetModel()->GetTextureName();
+        if (dec.isMesh != true)
+        {
+            dec.filename = _mapObjList[i]->GetModelRenderer()->GetModel()->GetTextureName();
+        }
+        else
+        {
+            dec.filename = _mapObjList[i]->GetMeshRenderer()->GetMaterial()->GetName();
+        }
 		dec.fileLength = dec.filename.length();
 		wchar_t szLoadfilename[256] = { 0, };
 		dec.filename.copy(szLoadfilename, dec.fileLength);
 		fwrite(&dec.fileLength, sizeof(int), 1, fp);
 		fwrite(&szLoadfilename, sizeof(wchar_t), dec.fileLength, fp);
 
-		dec.shadername = _mapObjList[i]->GetModelRenderer()->GetShader()->GetFile();
+        if (dec.isMesh != true)
+        {
+            dec.shadername = _mapObjList[i]->GetModelRenderer()->GetShader()->GetFile();
+        }
+        else
+        {
+            dec.shadername = _mapObjList[i]->GetMeshRenderer()->GetMaterial()->GetShader()->GetFile();
+        }
 		dec.shaderLength = dec.shadername.length();
 		wchar_t szLoadShadername[256] = { 0, };
 		dec.shadername.copy(szLoadShadername, dec.shaderLength);
@@ -432,6 +721,8 @@ bool MapManager::ImportMapObj()
 	MapObjDesc dec;
 	for (int i = 0; i < lengths; i++)
 	{
+        fread(&dec.isMesh, sizeof(bool), 1, fp);
+
 		fread(&dec.isCollision, sizeof(bool), 1, fp);
         if (dec.isCollision == true)
         {
@@ -490,16 +781,27 @@ shared_ptr<GameObject> MapManager::CreatePreViewObj(Vec3 pickPos)
 		obj->GetOrAddTransform()->SetLocalRotation(_mapSelectDesc->rotation); // XMConvertToRadians()
 		obj->GetOrAddTransform()->SetScale(_mapSelectDesc->scale);
 
-		shared_ptr<Model> model = make_shared<Model>();
+        if (_mapSelectDesc->isMesh != true)
+        {
+            shared_ptr<Model> model = make_shared<Model>();
+            model->ReadModel(_mapSelectDesc->filename);
+            model->ReadMaterial(_mapSelectDesc->filename);
+            shared_ptr<Shader> shader = make_shared<Shader>(_mapSelectDesc->shadername);
+            auto modelrender = make_shared<ModelRenderer>(shader);
+            obj->AddComponent(modelrender);
+            obj->GetModelRenderer()->SetModel(model);
+            obj->GetModelRenderer()->SetPass(1);
+        }
+        else
 		{
-			model->ReadModel(_mapSelectDesc->filename);
-			model->ReadMaterial(_mapSelectDesc->filename);
+            auto meshrender = make_shared<MeshRenderer>();
+            obj->AddComponent(meshrender);
+            auto mesh = RESOURCES->Get<Mesh>(L"Quads");
+            obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(_mapSelectDesc->filename));
+            obj->GetMeshRenderer()->SetMesh(mesh);
+            obj->GetMeshRenderer()->SetPass(0);
+            obj->GetMeshRenderer()->SetAlphaBlend(true);
 		}
-		shared_ptr<Shader> shader = make_shared<Shader>(_mapSelectDesc->shadername);
-		auto modelrender = make_shared<ModelRenderer>(shader);
-		obj->AddComponent(modelrender);
-		obj->GetModelRenderer()->SetModel(model);
-		obj->GetModelRenderer()->SetPass(1);
 	}
 	SCENE->GetCurrentScene()->Add(obj);
 	return obj;

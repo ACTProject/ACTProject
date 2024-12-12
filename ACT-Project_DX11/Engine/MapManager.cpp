@@ -431,84 +431,20 @@ void MapManager::ChangeMapObjScale()
 
 void MapManager::CreateQuadTerrain(shared_ptr<Mesh> mesh, shared_ptr<GameObject> obj, Vec3 pos)
 {
-    // 내가 바꿀 Mesh Vertex 가져옴.
+    // 맵 오브젝트 설치하듯이 tailtexture01.png이걸 눌러서 Scale 전부 111 만들어 주고 설치했음.
+    
+    // 내가 바꿀 Grid에 Mesh-> Vertex 가져옴.
     shared_ptr<Geometry<VertexTextureNormalTangentData>> geom = mesh->GetGeometry();
     vector<VertexTextureNormalTangentData> vertices = geom->GetVertices();
-    // 1,1 그리드에 스케일값을 곱할 예정.
+
+    // 1,1 그리드에 스케일값을 곱할 예정이니까 스케일값도 가져와서 정점찾을 때 사용.
     Vec3 scale = obj->GetTransform()->GetLocalScale();
 
-    // terrain 높이 가져옴.
+    // terrain에 있는 버텍스에 높이값을 가져오기 위해 terrain 버텍스배열 가져옴.
     vector<VertexTextureNormalTangentData>& vTerrain = const_cast<vector<VertexTextureNormalTangentData>&>(_terrain->GetMesh()->GetGeometry()->GetVertices());
 
-   /* for (int index = 0; index < 4; index++)
-    {
-        assert(pos.z < (512-scale.z) && pos.z >= 0);
-        assert(pos.x < (512-scale.x) && pos.x >= 0);
 
-        switch (index)
-        {
-        case 0:
-        {
-            int Width = (int)pos.x % 512;
-            int Height = ((int)pos.z * 512);
-
-            int resultIndex = Height + Width;
-            if (pos.z != 0)
-            {
-                resultIndex++;
-            }
-            vertices[index].position.y = vTerrain[resultIndex].position.y;
-        }
-            break;
-        case 1:
-        {
-            int Width = ((int)pos.x + ((int)scale.x - 1)) % 512;
-            int Height = ((int)pos.z * 512);
-
-            int resultIndex = Height + Width;
-
-            if (pos.z != 0)
-            {
-                resultIndex++;
-            }
-            vertices[index].position.y = vTerrain[resultIndex].position.y;
-        }
-            break;
-        case 2:
-        {
-            int Width = (int)pos.x % 512;
-            int Height = (((int)pos.z + ((int)scale.z-1)) * 512);
-
-            int resultIndex = Height + Width;
-
-            if (pos.z != 0)
-            {
-                resultIndex++;
-            }
-            vertices[index].position.y = vTerrain[resultIndex].position.y;
-        }
-            break;
-        case 3:
-        {
-            int Width = ((int)pos.x + ((int)scale.x - 1)) % 512;
-            int Height = (((int)pos.z + ((int)scale.z - 1)) * 512);
-
-            int resultIndex = Height + Width;
-
-            if (pos.z != 0)
-            {
-                resultIndex++;
-            }
-            vertices[index].position.y = vTerrain[resultIndex].position.y;
-        }
-            break;
-        default:
-            vertices[index].position.y = 0.0f;
-            break;
-        }
-        
-    }*/
-
+    // for문 돌면서 Grid 버텍스 4개에 y값 넣음.
      for (int index = 0; index < 4; index++)
     {
         assert(pos.z < (512-scale.z) && pos.z >= 0);
@@ -578,57 +514,11 @@ void MapManager::CreateQuadTerrain(shared_ptr<Mesh> mesh, shared_ptr<GameObject>
         
     }
 
+    
     geom->SetVertices(vertices);
-
+    // 메쉬에 있는 버텍스버퍼 정보도 갱신함.
     mesh->GetVertexBuffer()->Create(vertices);
     mesh->GetIndexBuffer()->Create(mesh->GetGeometry()->GetIndices());
-
-
-    //void Terrain::Create(int32 sizeX, int32 sizeZ, shared_ptr<Material> material)
-    //{
-    //    _sizeX = sizeX;
-    //    _sizeZ = sizeZ;
-
-    //    auto go = _gameObject.lock();
-
-    //    go->GetOrAddTransform();
-
-    //    if (go->GetMeshRenderer() == nullptr)
-    //        go->AddComponent(make_shared<MeshRenderer>());
-
-    //    _mesh = make_shared<Mesh>();
-    //    _mesh->CreateGrid(sizeX, sizeZ);
-
-    //    go->GetMeshRenderer()->SetMesh(_mesh);
-    //    go->GetMeshRenderer()->SetPass(0);
-    //    go->GetMeshRenderer()->SetMaterial(material);
-    //}
-
-
-
-
-
-    //geom->SetVertices(vertices);
-
-    // 게임오브젝트 scale 값 가져오고, 그거만큼 곱한다음에 
-    // 버텍스 y축만 바꾸면 될거같은데
-    //Vec3 position = { 0, 0, 0 };
-    //Vec2 uv = { 0, 0 };
-    //Vec3 normal = { 0, 0, 0 };
-    //Vec3 tangent = { 0, 0, 0 };
-    
-    //vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
-    //assert(v.size() == (width + 1) * (height + 1));
-    //for (int32 z = 0; z <= height; z++)
-    //{
-    //    for (int32 x = 0; x <= width; x++)
-    //    {
-    //        int32 idx = (width + 1) * z + x;
-    //        uint8 height = expandedPixelBuffer[idx] / 255.f * 25.f;
-    //        v[idx].position.y = height - 8.f;
-    //    }
-    //}
-
 
 }
 

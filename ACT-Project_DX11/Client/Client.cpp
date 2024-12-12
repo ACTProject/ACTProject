@@ -39,6 +39,7 @@ void Client::Init()
 	shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
 	shared_ptr<Shader> renderBoxShader = make_shared<Shader>(L"23. RenderDemoBox.fx");
 	shared_ptr<Shader> renderUIShader = make_shared<Shader>(L"23. RenderDemoUI.fx");
+    shared_ptr<Shader> hpShader = make_shared<Shader>(L"HpUI.fx");
 
 	// Camera
 	{
@@ -76,31 +77,55 @@ void Client::Init()
 		{
 			shared_ptr<Material> material = make_shared<Material>();
 			material->SetShader(renderUIShader);
-			auto texture = RESOURCES->Load<Texture>(L"HealBar", L"..\\Resources\\Textures\\UI\\BackBorder_Health.png");
+			auto texture = RESOURCES->Load<Texture>(L"HealBar_Shadow", L"..\\Resources\\Textures\\UI\\BarBorder_Health_Shadow.png");
 			material->SetDiffuseMap(texture);
 			MaterialDesc& desc = material->GetMaterialDesc();
 			desc.ambient = Vec4(1.f);
 			desc.diffuse = Vec4(1.f);
 			desc.specular = Vec4(1.f);
-			RESOURCES->Add(L"HealBar", material);
+			RESOURCES->Add(L"HealBar_Shadow", material);
 		}
 		// Material
 		{
 			shared_ptr<Material> material = make_shared<Material>();
 			material->SetShader(renderUIShader);
-			auto texture = RESOURCES->Load<Texture>(L"ArmorBar", L"..\\Resources\\Textures\\UI\\BackBorder_Armor.png");
+			auto texture = RESOURCES->Load<Texture>(L"ArmorBar_Shadow", L"..\\Resources\\Textures\\UI\\BarBorder_Armor_Shadow.png");
 			material->SetDiffuseMap(texture);
 			MaterialDesc& desc = material->GetMaterialDesc();
 			desc.ambient = Vec4(1.f);
 			desc.diffuse = Vec4(1.f);
 			desc.specular = Vec4(1.f);
-			RESOURCES->Add(L"ArmorBar", material);
+			RESOURCES->Add(L"ArmorBar_Shadow", material);
 		}
+        // Material
+        {
+            shared_ptr<Material> material = make_shared<Material>();
+            material->SetShader(hpShader);
+            auto texture = RESOURCES->Load<Texture>(L"HealBar", L"..\\Resources\\Textures\\UI\\BarBorder_Health.png");
+            material->SetDiffuseMap(texture);
+            MaterialDesc& desc = material->GetMaterialDesc();
+            desc.ambient = Vec4(1.f);
+            desc.diffuse = Vec4(1.f);
+            desc.specular = Vec4(1.f);
+            RESOURCES->Add(L"HealBar", material);
+        }
+        // Material
+        {
+            shared_ptr<Material> material = make_shared<Material>();
+            material->SetShader(renderUIShader);
+            auto texture = RESOURCES->Load<Texture>(L"ArmorBar", L"..\\Resources\\Textures\\UI\\BarBorder_Armor.png");
+            material->SetDiffuseMap(texture);
+            MaterialDesc& desc = material->GetMaterialDesc();
+            desc.ambient = Vec4(1.f);
+            desc.diffuse = Vec4(1.f);
+            desc.specular = Vec4(1.f);
+            RESOURCES->Add(L"ArmorBar", material);
+        }
 		// Material
 		{
 			shared_ptr<Material> material = make_shared<Material>();
 			material->SetShader(renderUIShader);
-			auto texture = RESOURCES->Load<Texture>(L"RedBar", L"..\\Resources\\Textures\\UI\\Front_HPBar2.png");
+			auto texture = RESOURCES->Load<Texture>(L"RedBar", L"..\\Resources\\Textures\\UI\\HP.png");
 			material->SetDiffuseMap(texture);
 			MaterialDesc& desc = material->GetMaterialDesc();
 			desc.ambient = Vec4(1.f);
@@ -109,39 +134,58 @@ void Client::Init()
 			RESOURCES->Add(L"RedBar", material);
 		}
 
+        // Material
+        {
+            shared_ptr<Material> material = make_shared<Material>();
+            material->SetShader(renderUIShader);
+            auto texture = RESOURCES->Load<Texture>(L"BlueBar", L"..\\Resources\\Textures\\UI\\Armor.png");
+            material->SetDiffuseMap(texture);
+            MaterialDesc& desc = material->GetMaterialDesc();
+            desc.ambient = Vec4(1.f);
+            desc.diffuse = Vec4(1.f);
+            desc.specular = Vec4(1.f);
+            RESOURCES->Add(L"BlueBar", material);
+        }
 
-		// MeshHealBar
+        Vec3 healPosition;
+        Vec3 armorPosition;;
+        healPosition.x = -330.f;
+        healPosition.y = -260.f;
+        armorPosition.x = healPosition.x + 2.f;
+        armorPosition.y = healPosition.y + 40.f;
+		// MeshHealBar_Shadow
 		{
 			auto obj = make_shared<GameObject>(GameObjectType::UI);
-			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-230.f, -260.f, 0.1f));
-			obj->GetOrAddTransform()->SetScale(Vec3(180, 30, 100));
+			obj->GetOrAddTransform()->SetLocalPosition(Vec3(healPosition.x, healPosition.y, 0.2f));
+			obj->GetOrAddTransform()->SetScale(Vec3(64, 29.75, 100));
 			obj->AddComponent(make_shared<MeshRenderer>());
 
 			obj->SetLayerIndex(Layer_UI);
 			{
-				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"HealBar"));
+				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"HealBar_Shadow"));
 
 			}
 			{
 				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
 				obj->GetMeshRenderer()->SetMesh(mesh);
+                obj->GetMeshRenderer()->SetAlphaBlend(true);
 				obj->GetMeshRenderer()->SetPass(0);
-				obj->GetMeshRenderer()->SetAlphaBlend(true);
+				
 			}
 
 			CUR_SCENE->Add(obj);
 		}
-		// MeshArmorBar
+		// MeshArmorBar_Shadow
 		{
 			auto obj = make_shared<GameObject>(GameObjectType::UI);
-			obj->GetOrAddTransform()->SetLocalPosition(Vec3(-210.f, -230.f, 0.1f));
-			obj->GetOrAddTransform()->SetScale(Vec3(200, 30, 100));
+			obj->GetOrAddTransform()->SetLocalPosition(Vec3(armorPosition.x, armorPosition.y, 0.2f));
+			obj->GetOrAddTransform()->SetScale(Vec3(64, 46, 100));
 			obj->AddComponent(make_shared<MeshRenderer>());
 
 			obj->SetLayerIndex(Layer_UI);
 			{
-				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"ArmorBar"));
-
+				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"ArmorBar_Shadow"));
+                 
 			}
 			{
 				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
@@ -152,12 +196,56 @@ void Client::Init()
 
 			CUR_SCENE->Add(obj);
 		}
+
+        // MeshHealBar
+        {
+            auto obj = make_shared<GameObject>(GameObjectType::UI);
+            obj->GetOrAddTransform()->SetLocalPosition(Vec3(healPosition.x, healPosition.y, 0.f));
+            obj->GetOrAddTransform()->SetScale(Vec3(64, 29.75, 100));
+            obj->AddComponent(make_shared<MeshRenderer>());
+
+            obj->SetLayerIndex(Layer_UI);
+            {
+                obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"HealBar"));
+
+            }
+            {
+                auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+                obj->GetMeshRenderer()->SetMesh(mesh);
+                obj->GetMeshRenderer()->SetAlphaBlend(true);
+                obj->GetMeshRenderer()->SetPass(0);
+                
+            }
+
+            CUR_SCENE->Add(obj);
+        }
+        // MeshArmorBar
+        {
+            auto obj = make_shared<GameObject>(GameObjectType::UI);
+            obj->GetOrAddTransform()->SetLocalPosition(Vec3(armorPosition.x, armorPosition.y, 0.f));
+            obj->GetOrAddTransform()->SetScale(Vec3(64, 46, 100));
+            obj->AddComponent(make_shared<MeshRenderer>());
+
+            obj->SetLayerIndex(Layer_UI);
+            {
+                obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"ArmorBar"));
+
+            }
+            {
+                auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+                obj->GetMeshRenderer()->SetMesh(mesh);
+                obj->GetMeshRenderer()->SetAlphaBlend(true);
+                obj->GetMeshRenderer()->SetPass(0);
+            }
+
+            CUR_SCENE->Add(obj);
+        }
 		// RedBar HPMesh
 		{
 			// 슬라이더 컴포넌트 추가.
 			auto obj = make_shared<GameObject>(GameObjectType::UI);
 			obj->AddComponent(make_shared<Slider>());
-			obj->GetUI()->Create(Vec3(-290.f, -261.f, 0.0f), Vec2(126, 8), RESOURCES->Get<Material>(L"RedBar"));
+			obj->GetUI()->Create(Vec3(healPosition.x -9.f, healPosition.y - 1.f, 0.1f), Vec2(29, 10), RESOURCES->Get<Material>(L"RedBar"));
 
             //obj->GetUI()->SetOwner();
 			CUR_SCENE->Add(obj);
@@ -168,7 +256,7 @@ void Client::Init()
 			// 슬라이더 컴포넌트 추가.
 			auto obj = make_shared<GameObject>(GameObjectType::UI);
 			obj->AddComponent(make_shared<Slider>());
-			obj->GetUI()->Create(Vec3(-290.f, -234.f, 0.0f), Vec2(164, 7), RESOURCES->Get<Material>(L"RedBar"));
+			obj->GetUI()->Create(Vec3(armorPosition.x -9.f, armorPosition.y - 9.f , 0.1f), Vec2(29, 10), RESOURCES->Get<Material>(L"BlueBar"));
 
 			CUR_SCENE->Add(obj);
 		}

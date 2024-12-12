@@ -22,6 +22,8 @@ public:
 	void SetPass(uint8 pass) { _pass = pass; }
 	void SetAlphaBlend(bool isAlphaBlend) { _isAlphaBlend = isAlphaBlend; }
 
+    bool GetAlphaBlend() { return _isAlphaBlend; }
+
 	void RenderInstancing(shared_ptr<class InstancingBuffer>& buffer);
 	void RenderSingle();
 

@@ -22,13 +22,15 @@ WPARAM Game::Run(uint32 num)
         // 2) 윈도우 창 생성
         if (!InitInstance(SW_SHOWNORMAL))
             return FALSE;
+
+        GRAPHICS->Init(g_hWnd);
+        TIME->Init();
+        INPUT->Init(g_hWnd);
     }
 	
     _scenes[_num].hWnd = g_hWnd;
 
-	GRAPHICS->Init(g_hWnd);
-	TIME->Init();
-	INPUT->Init(g_hWnd);
+	
 	GUI->Init();
 	RESOURCES->Init();
 	

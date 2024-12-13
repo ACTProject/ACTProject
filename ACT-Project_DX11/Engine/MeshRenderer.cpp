@@ -44,6 +44,8 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 	_mesh->GetVertexBuffer()->PushData(); 
 	_mesh->GetIndexBuffer()->PushData();
 
+
+
 	buffer->PushData();
 
 	if (Camera::S_IsWireFrame)
@@ -86,6 +88,11 @@ void MeshRenderer::RenderSingle()
 	_mesh->GetVertexBuffer()->PushData();
 	_mesh->GetIndexBuffer()->PushData();
 
+    if (GetGameObject()->GetBillboard() != nullptr)
+    {
+        auto wave = MAP->UpdateWaveMat();
+        _shader->PushWaveData(WaveDesc{wave});
+    }
 
 	if (Camera::S_IsWireFrame)
 		_technique = 3;

@@ -65,6 +65,7 @@ public:
 	void PushTweenData(const TweenDesc& desc);
 	void PushInstancedTweenData(const InstancedTweenDesc& desc);
 	void PushSnowData(const SnowBillboardDesc& desc);
+    void PushWaveData(const WaveDesc& desc);
     
 
 private:
@@ -103,6 +104,10 @@ private:
 	SnowBillboardDesc _snowDesc;
 	shared_ptr<ConstantBuffer<SnowBillboardDesc>> _snowBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> _snowEffectBuffer;
+
+    WaveDesc  _waveDesc;
+    shared_ptr<ConstantBuffer<WaveDesc>> _waveBuffer;
+    ComPtr<ID3DX11EffectConstantBuffer> _waveEffectBuffer;
 };
 
 class ShaderManager

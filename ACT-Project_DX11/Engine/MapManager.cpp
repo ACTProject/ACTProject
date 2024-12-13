@@ -205,7 +205,7 @@ shared_ptr<GameObject> MapManager::Create(Vec3& pos)
                 obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(_mapSelectDesc->filename));
                 obj->GetMeshRenderer()->SetMesh(mesh);
                 obj->GetMeshRenderer()->SetPass(0);
-                obj->GetMeshRenderer()->SetAlphaBlend(false);
+                obj->GetMeshRenderer()->SetAlphaBlend(true);
             }
             else
             {
@@ -216,7 +216,6 @@ shared_ptr<GameObject> MapManager::Create(Vec3& pos)
             }
 
         }
-
 
         if (_mapSelectDesc->isCollision == true)
         {
@@ -254,13 +253,14 @@ shared_ptr<GameObject> MapManager::Create(MapObjDesc& desc)
                 obj->AddComponent(meshrender);
 
 
-                auto mesh = RESOURCES->Get<Mesh>(L"Quads");
+                //auto mesh = RESOURCES->Get<Mesh>(L"Quads");
+                auto mesh = make_shared<Mesh>();
+                mesh->CreateGrid(1, 1);
                 CreateQuadTerrain(mesh, obj, desc.pos);
                 obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(desc.filename));
                 obj->GetMeshRenderer()->SetMesh(mesh);
                 obj->GetMeshRenderer()->SetPass(0);
-                obj->GetMeshRenderer()->SetMaterial(it->second->_material);
-                obj->GetMeshRenderer()->SetAlphaBlend(false);
+                obj->GetMeshRenderer()->SetAlphaBlend(true);
             }
             else
             {
@@ -271,7 +271,6 @@ shared_ptr<GameObject> MapManager::Create(MapObjDesc& desc)
             }
 
         }
-
 
         if (desc.isCollision == true)
         {
@@ -352,10 +351,24 @@ void MapManager::InitMapText()
     }
 }
 
+Matrix MapManager::UpdateWaveMat()
+{
+    Matrix result = Matrix::Identity;
+    float time = TIME->GetGameTime();
+
+    // time을 라디안값으로 생각하면서 값 계산.
+    // -1 ~ 1 사이 값.
+    float sinVal = amplitude * XMScalarSin(time * frequency);
+
+    result._21 = sinVal;
+
+    return result;
+}
+
 void MapManager::AddBillBoard(Vec3 pos)
 {
     _mapBillBoradList.emplace_back(pos);
-    _mapBillBoard->GetBillboard()->Add({ pos.x,pos.y + 0.5f,pos.z },{1.2,1.2});
+    _mapBillBoard->GetBillboard()->Add({ pos.x,pos.y + 0.5f,pos.z },{1,1});
 }
 
 void MapManager::ImGuiSelectMapObject()
@@ -469,79 +482,40 @@ void MapManager::CreateQuadTerrain(shared_ptr<Mesh> mesh, shared_ptr<GameObject>
 
     // 1,1 그리드에 스케일값을 곱할 예정이니까 스케일값도 가져와서 정점찾을 때 사용.
     Vec3 scale = obj->GetTransform()->GetLocalScale();
+    Vec3 newScale = { scale.x, scale.y, scale.z };
+    obj->GetOrAddTransform()->SetLocalScale(newScale);
+    
+    float offsetY = 0.001f;
 
-    // terrain에 있는 버텍스에 높이값을 가져오기 위해 terrain 버텍스배열 가져옴.
-    vector<VertexTextureNormalTangentData>& vTerrain = const_cast<vector<VertexTextureNormalTangentData>&>(_terrain->GetMesh()->GetGeometry()->GetVertices());
-
-
-    // for문 돌면서 Grid 버텍스 4개에 y값 넣음.
     for (int index = 0; index < 4; index++)
     {
-        assert(pos.z < (512 - scale.z) && pos.z >= 0);
-        assert(pos.x < (512 - scale.x) && pos.x >= 0);
-
         switch (index)
         {
         case 0:
         {
-            int Width = (int)pos.x % 512;
-            int Height = ((int)pos.z * 512);
-
-            int resultIndex = Height + Width;
-            if ((int)pos.z != 0)
-            {
-                resultIndex++;
-            }
-            vertices[index].position.y = vTerrain[resultIndex].position.y;
+            Vec2 inPos = Vec2{ pos.x,pos.z };
+            vertices[index].position.y = _terrain->GetHeightAtPosition(inPos.x, inPos.y) + offsetY;
         }
-        break;
+            break;
         case 1:
         {
-            int Width = ((int)pos.x + ((int)scale.x)) % 512;
-            int Height = ((int)pos.z * 512);
-
-            int resultIndex = Height + Width;
-
-            if ((int)pos.z != 0)
-            {
-                resultIndex++;
-            }
-            vertices[index].position.y = vTerrain[resultIndex].position.y;
+            Vec2 inPos = Vec2{ pos.x + scale.x, pos.z };
+            vertices[index].position.y = _terrain->GetHeightAtPosition(inPos.x, inPos.y) + offsetY;
         }
-        break;
+            break;
         case 2:
         {
-            int Width = (int)pos.x % 512;
-            int Height = (((int)pos.z + ((int)scale.z)) * 512);
-
-            int resultIndex = Height + Width;
-
-            if ((int)pos.z != 0)
-            {
-                resultIndex++;
-            }
-            vertices[index].position.y = vTerrain[resultIndex].position.y;
+            Vec2 inPos = Vec2{ pos.x,pos.z + scale.z };
+            vertices[index].position.y = _terrain->GetHeightAtPosition(inPos.x, inPos.y) + offsetY;
         }
-        break;
+            break;
         case 3:
         {
-            int Width = ((int)pos.x + ((int)scale.x)) % 512;
-            int Height = (((int)pos.z + ((int)scale.z)) * 512);
-
-            int resultIndex = Height + Width;
-
-            if ((int)pos.z != 0)
-            {
-                resultIndex++;
-            }
-            vertices[index].position.y = vTerrain[resultIndex].position.y;
+            Vec2 inPos = Vec2{ pos.x + scale.x ,pos.z + scale.z };
+            vertices[index].position.y = _terrain->GetHeightAtPosition(inPos.x, inPos.y) + offsetY;
         }
-        break;
-        default:
-            vertices[index].position.y = 0.0f;
             break;
         }
-
     }
 
 
@@ -596,9 +570,10 @@ bool MapManager::ExportMapObj()
 
     fwrite(&length, sizeof(int), 1, fp);
     fwrite(&_billBoardCount, sizeof(int), 1, fp);
-    MapObjDesc dec;
     for (int i = 0; i < length; i++)
     {
+        MapObjDesc dec;
+
         dec.isMesh = (_mapObjList[i]->GetMeshRenderer() == nullptr) ? false : true;
         fwrite(&dec.isMesh, sizeof(bool), 1, fp);
 
@@ -696,14 +671,15 @@ bool MapManager::ImportMapObj()
         }
         
         fread(&dec.isBillBoard, sizeof(bool), 1, fp);
+        fread(&dec.pos, sizeof(Vec3), 1, fp);
+        fread(&dec.scale, sizeof(Vec3), 1, fp);
+        fread(&dec.rotation, sizeof(Vec3), 1, fp);
         if (dec.isBillBoard == true)
         {
             continue;
         }
 
-        fread(&dec.pos, sizeof(Vec3), 1, fp);
-        fread(&dec.scale, sizeof(Vec3), 1, fp);
-        fread(&dec.rotation, sizeof(Vec3), 1, fp);
+
 
         fread(&dec.fileLength, sizeof(int), 1, fp);
         wchar_t szLoadfilename[256] = { 0, };
@@ -736,18 +712,6 @@ bool MapManager::ImportMapObj()
     return true;
 }
 
-void MapManager::PushWaveMatrix()
-{
-    float time = TIME->GetGameTime();
-    // 삼각함수로 반복되는 진폭만들고
-    // 그 진폭수 비율 조절하면서
-    // 진폭비율로 전단행렬 만들어서
-    // 컨스턴트 버퍼로 넘기기
-
-
-
-
-}
 
 
 void MapManager::PreViewMapObject()

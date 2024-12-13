@@ -18,7 +18,7 @@ cbuffer TransformBuffer
     matrix W;
 };
 
-cbuffer waveBuffer
+cbuffer WaveBuffer
 {
     matrix Wave;
 };

@@ -50,6 +50,7 @@ public:
 	void AddMapObj(shared_ptr<MapObjDesc>  obj);
 	void InitMapText();
 
+    Matrix UpdateWaveMat();
 
 
 	// 파일에 맵 오브젝트 정보 추가하는 함수
@@ -57,7 +58,6 @@ public:
 	// 파일을 읽어 들이는 함수
 	bool ImportMapObj();
 private:
-    void PushWaveMatrix();
 
     // 빌보드 요소 추가 함수
     void AddBillBoard(Vec3 pos);
@@ -110,6 +110,8 @@ private:
 	bool _isSelect = false;
 
     int _billBoardCount = 0;
+    float amplitude = 0.3f; // 흔들림의 크기 (전단 계수의 최대값)
+    float frequency = 0.5f; // 흔들림의 주파수 (주기의 빠르기)
 
     shared_ptr<Terrain> _terrain;
 };

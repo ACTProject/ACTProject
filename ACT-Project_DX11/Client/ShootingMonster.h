@@ -23,6 +23,9 @@ public:
     void SetModelAnimator(shared_ptr<ModelAnimator> modelAnimator) { _modelAnimator = modelAnimator; }
     void SetAnimationState(AnimationState state);
 
+    bool GetHit() { return _hit; }
+    void SetHit(bool hit) { _hit = hit; }
+
     void Aggro();
     void Move(Vec3 objPos, Vec3 targetPos, float speed);
     void Rota(Vec3 objPos, Vec3 targetPos);
@@ -61,6 +64,9 @@ private:
     Vec3 EnemyToPlayerdir;
     float EnemyToPlayerdistance;
     bool shootCount = true;
+
+    // 히트 상태
+    bool _hit = false;
 
     shared_ptr<Model> _enemy;
     shared_ptr<ModelAnimator> _modelAnimator;

@@ -101,6 +101,7 @@ void MapManager::Init()
 
 }
 
+// 맵 오브젝트 피킹했는지 체크
 bool MapManager::ChekMapObjectSelect(shared_ptr<GameObject> obj)
 {
     for (auto& go : _mapObjList)
@@ -371,6 +372,7 @@ void MapManager::AddBillBoard(Vec3 pos)
     _mapBillBoard->GetBillboard()->Add({ pos.x,pos.y + 0.5f,pos.z },{1,1});
 }
 
+// IMGUI 초기화 (변수값)
 void MapManager::ImGuiSelectMapObject()
 {
     ImGui::Begin("SelectMapObject");
@@ -765,7 +767,6 @@ shared_ptr<GameObject> MapManager::CreatePreViewObj(Vec3 pickPos)
     SCENE->GetCurrentScene()->Add(obj);
     return obj;
 }
-
 
 void MapManager::UpdateMapDescTransform()
 {

@@ -20,6 +20,9 @@ public:
 	void SetModelAnimator(shared_ptr<ModelAnimator> modelAnimator) { _modelAnimator = modelAnimator; }
 	void SetAnimationState(AnimationState state);
 
+    bool GetHit() { return _hit; }
+    void SetHit(bool hit) { _hit = hit; }
+
 	void Aggro();
 	void Move(Vec3 objPos, Vec3 targetPos, float speed);
 	void Rota(Vec3 objPos, Vec3 targetPos);
@@ -50,6 +53,9 @@ private:
     bool isFirstAggro = true;
     bool onAttack = false;
     bool _isAnimating = false;
+
+    // 히트 상태
+    bool _hit = false;
 
     Vec3 StartPos;
     Vec3 CurForward;

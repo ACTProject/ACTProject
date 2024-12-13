@@ -22,9 +22,10 @@ public:
     // 범위 검색
    // std::vector<TerrainTriangle> QueryTerrain(const BaseCollider& rangeCollider);
     std::vector<std::shared_ptr<BaseCollider>> QueryColliders(const shared_ptr<BaseCollider>& rangeCollider);
+    std::vector<std::shared_ptr<BaseCollider>> QueryColliders(const Ray& ray);
 
     void RenderNode(); // 노드 렌더링
-
+    size_t GetTotalColliderCount() const;
 private:
     void Subdivide();
 private:

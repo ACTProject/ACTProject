@@ -11,26 +11,29 @@ void CollisionManager::Init()
 // 충돌 감지 및 처리
 void CollisionManager::Update()
 {
+    // 모든 Collider를 순회하며 충돌 검사
+    for (const auto& colliderA : _colliders)
+    {
+        // Collider가 비활성화 상태이면 충돌 검사 중단
+        if (!colliderA->IsActive())
+            continue;
 
-    // Rigidbody 있을 때 충돌 처리
-	for (size_t i = 0; i < _colliders.size(); ++i)
-	{
-		for (size_t j = i + 1; j < _colliders.size(); ++j)
-		{
-			auto colliderA = _colliders[i];
-			auto colliderB = _colliders[j];
+        // 옥트리에서 colliderA와 잠재적으로 충돌할 수 있는 콜라이더 검색
+        auto nearbyColliders = OCTREE->QueryColliders(colliderA);
 
-            // Collider가 비활성화 상태이면 충돌 검사 중단
-			if (!colliderA->IsActive() || !colliderB->IsActive())
-				continue;
+        for (const auto& colliderB : nearbyColliders)
+        {
+            // 동일한 콜라이더나 비활성화된 콜라이더는 무시
+            if (colliderA == colliderB || !colliderB->IsActive())
+                continue;
 
             // 충돌 감지
-			if (colliderA->Intersects(colliderB))
-			{
-				HandleCollision(colliderA, colliderB);
-			}
-		}
-	}
+            if (colliderA->Intersects(colliderB))
+            {
+                HandleCollision(colliderA, colliderB);
+            }
+        }
+    }
 }
 
 void CollisionManager::AddCollider(shared_ptr<BaseCollider> collider)

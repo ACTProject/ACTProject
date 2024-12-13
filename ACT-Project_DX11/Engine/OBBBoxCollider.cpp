@@ -16,10 +16,10 @@ OBBBoxCollider::~OBBBoxCollider()
 
 void OBBBoxCollider::Update()
 {
-	_boundingOrientedBox.Center = GetColliderCenter();
+	//_boundingOrientedBox.Center = GetColliderCenter();
 }
 
-bool OBBBoxCollider::Intersects(Ray& ray, OUT float& distance)
+bool OBBBoxCollider::Intersects(const Ray& ray, OUT float& distance)
 {
 	return _boundingOrientedBox.Intersects(ray.position, ray.direction, OUT distance);
 }

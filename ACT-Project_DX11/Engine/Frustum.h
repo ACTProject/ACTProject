@@ -17,7 +17,8 @@ class Frustum
     DECLARE_SINGLE(Frustum);
 public:
 	void FinalUpdate();
-	bool ContainsSphere(const Vec3& pos, float radius);
+    void ExpandFrustum(float padding);
+    bool ContainsSphere(const Vec3& pos, float radius) const;
     bool ContainsAABB(const BoundingBox& box) const;
 
 private:

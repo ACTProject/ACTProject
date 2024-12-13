@@ -1,12 +1,30 @@
 #include "pch.h"
 #include "Camera.h"
 #include "Scene.h"
+#include "Terrain.h"
 
 Matrix	Camera::S_MatView			= Matrix::Identity;
 Matrix	Camera::S_MatProjection		= Matrix::Identity;
 Matrix	Camera::S_UIMatView			= Matrix::Identity;
 Matrix	Camera::S_UIMatProjection	= Matrix::Identity;
 bool	Camera::S_IsWireFrame	= false;
+
+Vec3 Camera::GetForward() const
+{
+    Vec3 forward = Vec3(_matView._13, _matView._23, _matView._33);
+    if (forward.LengthSquared() > 0.0f)
+        forward.Normalize();
+    return forward;
+}
+
+Vec3 Camera::GetRight() const
+{
+    Vec3 forward = GetForward();
+    Vec3 up = Vec3(0.0f, 1.0f, 0.0f);
+    Vec3 right = forward.Cross(up);
+    right.Normalize();
+    return right;
+}
 
 void Camera::SetCameraOffset(Vec3 v)
 {	
@@ -48,10 +66,9 @@ void Camera::Render_Forward()
     {
         S_MatView = _matView;
         S_MatProjection = _matProjection;
-        //FRUSTUM->FinalUpdate();
-        //vector<std::shared_ptr<GameObject>> visibleObjects = CUR_SCENE->FrustumCulling(_vecForward);
-        //GET_SINGLE(InstancingManager)->Render(visibleObjects);
-        GET_SINGLE(InstancingManager)->Render(_vecForward);
+        FRUSTUM->FinalUpdate();
+        vector<shared_ptr<GameObject>> visibleObjects = CUR_SCENE->FrustumCulling(_vecForward);
+        GET_SINGLE(InstancingManager)->Render(visibleObjects);
     }
     else 
     {
@@ -98,8 +115,14 @@ void Camera::Update()
 		{
 			_debugInitialized = false;
 		}
-
 		UpdateCameraWithMouseInput();
+
+        auto terrain = CUR_SCENE->GetCurrentTerrain()->GetTerrain();  // 현재 Terrain 가져오기
+        if (terrain)
+        {
+            // Terrain을 통과하지 못하도록 카메라 위치 제한
+            RestrictCameraAboveTerrain(terrain);
+        }
 	}
 
 	// 카메라 매트릭스 업데이트
@@ -170,34 +193,14 @@ void Camera::UpdateCameraWithMouseInput()
 	_pitch += dy * _sensitivity;
 
 	// pitch 값의 범위를 제한하여 카메라가 뒤집히지 않도록 조정 (-90도 ~ 90도 사이)
-    _pitch = std::clamp(_pitch, 0.08f, XM_PIDIV2 - 0.1f);
+    _pitch = std::clamp(_pitch, -XM_PIDIV2 + 0.1f, XM_PIDIV2 - 0.1f);
+
+    _pitch = max(_pitch, -1.0f); // pitch를 수평 이상으로 제한
 
 	// 카메라 위치 계산
 	float x = _cameraDistance * cosf(_pitch) * sinf(_yaw);
 	float y = _cameraDistance * sinf(_pitch);
 	float z = _cameraDistance * cosf(_pitch) * cosf(_yaw);
-
-
-
-    if (_pitch < 0.09f)
-    {
-        if (_player != nullptr)
-        {
-            Vec3 playerPosition = _player->GetTransform()->GetPosition();
-
-            Vec3 forward(
-                sinf(_yaw),
-                0.0f,
-                cosf(_yaw)
-            );
-            forward.Normalize();
-
-            
-            _cameraPosition = playerPosition + forward * _cameraDistance + Vec3(0.f, y, 0.f);
-            _focusPosition = playerPosition;
-            return;
-        }
-    }
 
 	// 카메라 위치를 플레이어 위치 기준으로 설정
 	if (_player == nullptr)
@@ -250,3 +253,44 @@ void Camera::UpdateMatrix()
 	
 }
 
+void Camera::SetCameraZoomForTerrain(const shared_ptr<Terrain>& terrain)
+{
+    // Terrain 높이를 가져오기
+    float terrainHeight = terrain->GetHeightAtPosition(_cameraPosition.x, _cameraPosition.z);
+
+    // Terrain과 카메라의 거리 계산
+    float distanceToTerrain = _cameraPosition.y - terrainHeight;
+
+    // Terrain과의 거리가 임계값 이하일 경우 카메라 줌인
+    if (distanceToTerrain < 2.0f) // 임계값 설정 (2.0f는 조정 가능)
+    {
+        // 줌인 비율 계산 (줌인을 완화)
+        float zoomFactor = std::clamp(0.9f + (distanceToTerrain / 2.0f * 0.1f), 0.9f, 1.0f);
+
+        // 카메라 중심축 벡터
+        Vec3 direction = _cameraPosition - _focusPosition;
+        direction.Normalize();
+
+        // 카메라 위치 조정
+        _cameraPosition = _focusPosition + direction * _cameraDistance * zoomFactor;
+    }
+}
+
+void Camera::RestrictCameraAboveTerrain(const shared_ptr<Terrain>& terrain)
+{
+    // Terrain 높이를 가져오기
+    float terrainHeight = terrain->GetHeightAtPosition(_cameraPosition.x, _cameraPosition.z);
+
+    // 카메라가 Terrain 아래로 내려가지 못하도록 y 좌표를 조정
+    if (_cameraPosition.y < terrainHeight + 2.0f) // 여유 높이 설정 (0.5f는 조정 가능)
+    {
+        _cameraPosition.y = terrainHeight + 2.0f;
+
+        // 카메라가 Terrain에 너무 가까운 경우, 뒤로 밀어내기
+        Vec3 directionToFocus = _focusPosition - _cameraPosition;
+        directionToFocus.Normalize();
+
+        // 카메라를 뒤로 이동시켜 Terrain과의 충돌을 완벽히 방지
+        _cameraPosition -= directionToFocus * 0.1f; // 0.1f는 조정 가능
+    }
+}

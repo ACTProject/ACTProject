@@ -23,57 +23,74 @@ void Frustum::FinalUpdate()
 	};
 
     // 프러스텀 평면 설정
-	_planes[PLANE_FRONT] =   ::XMPlaneFromPoints(worldCorners[0], worldCorners[1], worldCorners[2]); // Near CW
-	_planes[PLANE_BACK]  =   ::XMPlaneFromPoints(worldCorners[4], worldCorners[7], worldCorners[5]); // Far CCW
-	_planes[PLANE_UP]    =   ::XMPlaneFromPoints(worldCorners[4], worldCorners[5], worldCorners[1]); // Top CW
-	_planes[PLANE_DOWN]  =   ::XMPlaneFromPoints(worldCorners[7], worldCorners[3], worldCorners[6]); // Bottom CCW
-	_planes[PLANE_LEFT]  =   ::XMPlaneFromPoints(worldCorners[4], worldCorners[0], worldCorners[7]); // Left CW
-	_planes[PLANE_RIGHT] =   ::XMPlaneFromPoints(worldCorners[5], worldCorners[6], worldCorners[1]); // Right CCW
+    _planes[PLANE_FRONT] =   ::XMPlaneFromPoints(worldCorners[0], worldCorners[2], worldCorners[1]); // Near CW
+    _planes[PLANE_BACK]  =   ::XMPlaneFromPoints(worldCorners[4], worldCorners[5], worldCorners[7]); // Far CCW
+    _planes[PLANE_UP]    =   ::XMPlaneFromPoints(worldCorners[4], worldCorners[1], worldCorners[5]); // Top CW
+    _planes[PLANE_DOWN]  =   ::XMPlaneFromPoints(worldCorners[7], worldCorners[6], worldCorners[3]); // Bottom CCW
+    _planes[PLANE_LEFT]  =   ::XMPlaneFromPoints(worldCorners[4], worldCorners[7], worldCorners[0]); // Left CW
+    _planes[PLANE_RIGHT] =   ::XMPlaneFromPoints(worldCorners[5], worldCorners[1], worldCorners[6]); // Right CCW
 }
 
-// 구체(Sphere)가 프러스텀 안에 포함되어 있는지 확인
-bool Frustum::ContainsSphere(const Vec3& pos, float radius)
-{
-    // 프러스텀의 각 평면을 검사
-	for (const Vec4& plane : _planes)
-	{
-        // 평면의 법선 벡터와 거리 추출
-		Vec3 normal = Vec3(plane.x, plane.y, plane.z);
-        float distanceToPlane = normal.Dot(pos) + plane.w;
-		
-        // 구체의 반지름보다 먼 경우 프러스텀 밖에 있음
-		if (distanceToPlane > radius)
-			return false;
-	}
-
-	return true; // 모든 평면을 통과하면 프러스텀 안에 있음
-}
-
-// AABB가 프러스텀 안에 포함되어 있는지 확인
 bool Frustum::ContainsAABB(const BoundingBox& box) const
 {
+    Vec3 corners[BoundingBox::CORNER_COUNT];
+    box.GetCorners(corners); // AABB 코너 가져오기
 
-    // AABB의 모든 코너 검사
+    int insideCount = 0;
+
     for (const Vec4& plane : _planes)
     {
         Vec3 normal(plane.x, plane.y, plane.z);
-        bool outside = true;
-
-        Vec3 corners[BoundingBox::CORNER_COUNT];
-        box.GetCorners(corners);
+        bool allOutside = true;
 
         for (const Vec3& corner : corners)
         {
-            if (normal.Dot(corner) + plane.w < 0)
+            float distance = normal.Dot(corner) + plane.w;
+
+            // 한 점이라도 안쪽이면 프러스텀에 포함
+            if (distance >= 0)
             {
-                outside = false;
-                break; // 한 점이라도 평면의 안쪽에 있으면 종료
+                allOutside = false;
+                insideCount++;
+                break;
             }
         }
 
-        if (outside)
-            return false; // 평면 바깥에 있음
+        if (insideCount > 0)
+            return true;  // 한 점이라도 안에 있음
+        if (allOutside)
+            return false; // 완전히 바깥에 있음
     }
 
-    return true; // 모든 평면 안쪽에 있음
+    return insideCount > 0; // 일부라도 포함되어 있으면 true
 }
+
+bool Frustum::ContainsSphere(const Vec3& pos, float radius) const
+{
+    bool isPartiallyInside = false;
+
+    for (const Vec4& plane : _planes)
+    {
+        Vec3 normal = Vec3(plane.x, plane.y, plane.z);
+        float distanceToPlane = normal.Dot(pos) + plane.w;
+
+        // 구체가 현재 평면 기준으로 일부라도 안쪽에 있음
+        if (distanceToPlane >= -radius)
+        {
+            isPartiallyInside = true;
+            break;
+        }
+
+        // 구체가 현재 평면 바깥에 완전히 있는지 확인
+        if (distanceToPlane < -(radius))
+        {
+            return false; // 구체가 완전히 바깥에 있음
+        }
+
+
+    }
+
+    return isPartiallyInside;
+}
+
+

@@ -121,13 +121,13 @@ void Scene::Remove(shared_ptr<GameObject> object)
 
 std::shared_ptr<GameObject> Scene::GetMainCamera()
 {
-	for (auto& camera : _cameras)
-	{
-		if (camera->GetCamera()->GetProjectionType() == ProjectionType::Perspective)
-			return camera;
-	}
+    for (auto& camera : _cameras)
+    {
+        if (camera->GetCamera()->IsMainCamera())
+            return camera;
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 std::shared_ptr<GameObject> Scene::GetUICamera()
@@ -284,14 +284,14 @@ vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<Gam
         if (object->GetBullet())
         {
             visibleObjects.push_back(object);
-            break;
+            continue;
         }
 
         // Terrain은 무조건 보이게
         if (object->GetTerrain())
         {
             visibleObjects.push_back(object);
-            break;
+            continue;
         }
 
         // 객체가 비활성화되어 있으면 무시

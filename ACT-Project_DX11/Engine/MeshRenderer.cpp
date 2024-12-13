@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "MeshRenderer.h"
 #include "Camera.h"
 #include "Game.h"
@@ -41,8 +41,10 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 	_material->Update();
 
 	// IA
-	_mesh->GetVertexBuffer()->PushData();
+	_mesh->GetVertexBuffer()->PushData(); 
 	_mesh->GetIndexBuffer()->PushData();
+
+
 
 	buffer->PushData();
 
@@ -50,6 +52,7 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 		_technique = 2;
 	else
 		_technique = 0;
+
 
 	_shader->DrawIndexedInstanced(_technique, _pass, _mesh->GetIndexBuffer()->GetCount(), buffer->GetCount());
 }
@@ -85,6 +88,11 @@ void MeshRenderer::RenderSingle()
 	_mesh->GetVertexBuffer()->PushData();
 	_mesh->GetIndexBuffer()->PushData();
 
+    if (GetGameObject()->GetBillboard() != nullptr)
+    {
+        auto wave = MAP->UpdateWaveMat();
+        _shader->PushWaveData(WaveDesc{wave});
+    }
 
 	if (Camera::S_IsWireFrame)
 		_technique = 3;
@@ -92,7 +100,7 @@ void MeshRenderer::RenderSingle()
 		_technique = 1;
 
 	if (_isAlphaBlend)
-		_technique = 4;
+		_technique = 4; 
 	_shader->DrawIndexed(_technique, _pass, _mesh->GetIndexBuffer()->GetCount(), 0, 0);
 }
 

@@ -92,6 +92,11 @@ void Scene::Render()
 
 void Scene::Add(shared_ptr<GameObject> object)
 {
+    if (object == nullptr)
+    {
+        return;
+    }
+
 	_objects.insert(object);
 
 	if (object->GetCamera() != nullptr)

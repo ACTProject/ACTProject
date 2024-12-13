@@ -192,8 +192,7 @@ void Client::Init()
 	// Player
 	auto player = make_shared<GameObject>();
 
-
-	// Player
+    player->SetObjectType(ObjectType::Player);
 	player->GetOrAddTransform()->SetPosition(Vec3(40, 0, 40));
 	player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 	player->GetOrAddTransform()->SetScale(Vec3(0.01f));
@@ -265,6 +264,7 @@ void Client::Init()
 	playerScript->SetModelAnimator(ma1);
 	playerScript->SetHitBox(hitboxGO);
 
+    player->SetController(playerScript);
 	player->AddComponent(playerScript);
 
 	CUR_SCENE->Add(player);

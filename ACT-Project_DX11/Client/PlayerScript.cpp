@@ -74,10 +74,26 @@ void PlayerScript::Update()
 	if (_isAttacking)
 	{
 		// 히트박스 활성화
-		_hitbox->GetCollider()->SetActive(true);
+        auto hitboxCollider = _hitbox->GetCollider();
+        hitboxCollider->SetActive(true);
+
+        // 옥트리에서 충돌 가능한 객체 가져오기
+        vector<shared_ptr<BaseCollider>> nearbyColliders = OCTREE->QueryColliders(hitboxCollider);
+
+        for (const auto& collider : nearbyColliders)
+        {
+            ObjectType type = collider->GetGameObject()->GetObjectType();
+            if (type != ObjectType::Monster)
+                continue;
+            
+            if (hitboxCollider->Intersects(collider))
+            {
+                // TODO : 
+                collider->GetGameObject()->Destroy();
+            }
+        }
 
 		_attackTimer += dt;
-
 		// 공격 단계 시간 초과 시 Idle로 복귀
 		if (_attackTimer >= (_attackDurations[_attackStage - 1] / _FPS)) {
 			_attackStage = 0;
@@ -154,7 +170,7 @@ void PlayerScript::Update()
 
 		}
 
-		// HitBox
+		// HitBox // TODO
 		{
 			_hitbox->GetTransform()->SetPosition(_transform->GetPosition() + _hitbox->GetHitBox()->GetOffSet() + _transform->GetLook() * 1.8f);
 		}

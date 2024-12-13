@@ -233,3 +233,27 @@ void GameObject::AddComponent(shared_ptr<Component> component)
 		_scripts.push_back(dynamic_pointer_cast<MonoBehaviour>(component));
 	}
 }
+
+void GameObject::Destroy()
+{
+    // 활성화 상태를 비활성화
+    _isActive = false;
+
+    // 모든 컴포넌트 정리
+    for (auto& component : _components)
+    {
+        if (component)
+        {
+            component.reset(); // 컴포넌트의 shared_ptr 해제
+        }
+    }
+
+    // MonoBehaviour 스크립트 정리
+    _scripts.clear();
+
+    // Controller 해제
+    if (_controller)
+    {
+        _controller.reset();
+    }
+}

@@ -164,38 +164,38 @@ void Client::Init()
 			{
 				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"HealBar_Shadow"));
 
-			}
-			{
-				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
-				obj->GetMeshRenderer()->SetMesh(mesh);
+            }
+            {
+                auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+                obj->GetMeshRenderer()->SetMesh(mesh);
                 obj->GetMeshRenderer()->SetAlphaBlend(true);
-				obj->GetMeshRenderer()->SetPass(0);
-				
-			}
+                obj->GetMeshRenderer()->SetPass(0);
 
-			CUR_SCENE->Add(obj);
-		}
-		// MeshArmorBar_Shadow
-		{
-			auto obj = make_shared<GameObject>(GameObjectType::UI);
-			obj->GetOrAddTransform()->SetLocalPosition(Vec3(armorPosition.x, armorPosition.y, 0.2f));
-			obj->GetOrAddTransform()->SetScale(Vec3(64, 46, 100));
-			obj->AddComponent(make_shared<MeshRenderer>());
+            }
 
-			obj->SetLayerIndex(Layer_UI);
-			{
-				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"ArmorBar_Shadow"));
-                 
-			}
-			{
-				auto mesh = RESOURCES->Get<Mesh>(L"Quad");
-				obj->GetMeshRenderer()->SetMesh(mesh);
-				obj->GetMeshRenderer()->SetAlphaBlend(true);
-				obj->GetMeshRenderer()->SetPass(0);
-			}
+            CUR_SCENE->Add(obj);
+        }
+        // MeshArmorBar_Shadow
+        {
+            auto obj = make_shared<GameObject>(GameObjectType::UI);
+            obj->GetOrAddTransform()->SetLocalPosition(Vec3(armorPosition.x, armorPosition.y, 0.2f));
+            obj->GetOrAddTransform()->SetScale(Vec3(64, 46, 100));
+            obj->AddComponent(make_shared<MeshRenderer>());
 
-			CUR_SCENE->Add(obj);
-		}
+            obj->SetLayerIndex(Layer_UI);
+            {
+                obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"ArmorBar_Shadow"));
+
+            }
+            {
+                auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+                obj->GetMeshRenderer()->SetMesh(mesh);
+                obj->GetMeshRenderer()->SetAlphaBlend(true);
+                obj->GetMeshRenderer()->SetPass(0);
+            }
+
+            CUR_SCENE->Add(obj);
+        }
 
         // MeshHealBar
         {
@@ -214,7 +214,7 @@ void Client::Init()
                 obj->GetMeshRenderer()->SetMesh(mesh);
                 obj->GetMeshRenderer()->SetAlphaBlend(true);
                 obj->GetMeshRenderer()->SetPass(0);
-                
+
             }
 
             CUR_SCENE->Add(obj);
@@ -240,27 +240,116 @@ void Client::Init()
 
             CUR_SCENE->Add(obj);
         }
-		// RedBar HPMesh
-		{
-			// 슬라이더 컴포넌트 추가.
-			auto obj = make_shared<GameObject>(GameObjectType::UI);
-			obj->AddComponent(make_shared<Slider>());
-			obj->GetUI()->Create(Vec3(healPosition.x -9.f, healPosition.y - 1.f, 0.1f), Vec2(29, 10), RESOURCES->Get<Material>(L"RedBar"));
+        // RedBar HPMesh
+        {
+            // 슬라이더 컴포넌트 추가.
+            auto obj = make_shared<GameObject>(GameObjectType::UI);
+            obj->AddComponent(make_shared<Slider>());
+            obj->GetUI()->Create(Vec3(healPosition.x - 9.f, healPosition.y - 1.f, 0.1f), Vec2(29, 10), RESOURCES->Get<Material>(L"RedBar"));
 
             //obj->GetUI()->SetOwner();
-			CUR_SCENE->Add(obj);
-		}
+            CUR_SCENE->Add(obj);
+        }
 
-		// RedBar ARmor Mesh
-		{
-			// 슬라이더 컴포넌트 추가.
-			auto obj = make_shared<GameObject>(GameObjectType::UI);
-			obj->AddComponent(make_shared<Slider>());
-			obj->GetUI()->Create(Vec3(armorPosition.x -9.f, armorPosition.y - 9.f , 0.1f), Vec2(29, 10), RESOURCES->Get<Material>(L"BlueBar"));
+        // RedBar ARmor Mesh
+        {
+            // 슬라이더 컴포넌트 추가.
+            auto obj = make_shared<GameObject>(GameObjectType::UI);
+            obj->AddComponent(make_shared<Slider>());
+            obj->GetUI()->Create(Vec3(armorPosition.x - 9.f, armorPosition.y - 9.f, 0.1f), Vec2(29, 10), RESOURCES->Get<Material>(L"BlueBar"));
 
-			CUR_SCENE->Add(obj);
-		}
-	}
+            CUR_SCENE->Add(obj);
+        }
+    }
+
+    //Option
+    {
+        // option Material
+        {
+            shared_ptr<Material> material = make_shared<Material>();
+            material->SetShader(renderUIShader);
+            auto texture = RESOURCES->Load<Texture>(L"Option", L"..\\Resources\\Textures\\UI\\option.png");
+            material->SetDiffuseMap(texture);
+            MaterialDesc& desc = material->GetMaterialDesc();
+            desc.ambient = Vec4(1.f);
+            desc.diffuse = Vec4(1.f);
+            desc.specular = Vec4(1.f);
+            RESOURCES->Add(L"Option", material);
+        }
+        //Button Material
+        {
+            {
+                shared_ptr<Material> material = make_shared<Material>();
+                material->SetShader(renderUIShader);
+                auto texture = RESOURCES->Load<Texture>(L"Continue", L"..\\Resources\\Textures\\UI\\continue.png");
+                material->SetDiffuseMap(texture);
+                MaterialDesc& desc = material->GetMaterialDesc();
+                desc.ambient = Vec4(1.f);
+                desc.diffuse = Vec4(1.f);
+                desc.specular = Vec4(1.f);
+                RESOURCES->Add(L"Continue", material);
+            }
+            {
+                shared_ptr<Material> material = make_shared<Material>();
+                material->SetShader(renderUIShader);
+                auto texture = RESOURCES->Load<Texture>(L"ReturnToTitle", L"..\\Resources\\Textures\\UI\\returnToTitle.png");
+                material->SetDiffuseMap(texture);
+                MaterialDesc& desc = material->GetMaterialDesc();
+                desc.ambient = Vec4(1.f);
+                desc.diffuse = Vec4(1.f);
+                desc.specular = Vec4(1.f);
+                RESOURCES->Add(L"ReturnToTitle", material);
+            }
+        }
+        // Option Mesh
+        {
+            auto obj = make_shared<GameObject>();
+            obj->GetOrAddTransform()->SetLocalPosition(Vec3(0.f, 50.f, 0.4f));
+            obj->GetOrAddTransform()->SetScale(Vec3(595.f, 404.f, 0.f));
+            obj->AddComponent(make_shared<MeshRenderer>());
+
+            obj->SetLayerIndex(Layer_UI);
+            {
+                obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Option"));
+            }
+            {
+                auto mesh = RESOURCES->Get<Mesh>(L"Quad");
+                obj->GetMeshRenderer()->SetMesh(mesh);
+                obj->GetMeshRenderer()->SetPass(0);
+                obj->GetMeshRenderer()->SetAlphaBlend(true);
+            }
+
+            CUR_SCENE->Add(obj);
+        }
+
+        // Mesh
+        {
+            auto obj = make_shared<GameObject>();
+            obj->AddComponent(make_shared<Button>());
+
+            obj->GetButton()->Create(Vec3(532, 308, 0.3), Vec2(175, 38),nullptr);
+            obj->GetMeshRenderer()->SetAlphaBlend(true);
+            obj->GetButton()->AddOnHoverEvent([obj]() { obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Continue")); });
+            obj->GetButton()->AddOnHoverEndEvent([obj]() { obj->GetMeshRenderer()->SetMaterial(nullptr); });
+
+            obj->GetButton()->AddOnClickedEvent([]() {  });
+
+            CUR_SCENE->Add(obj);
+        }
+        // Mesh
+        {
+            auto obj = make_shared<GameObject>();
+            obj->AddComponent(make_shared<Button>());
+
+            obj->GetButton()->Create(Vec3(532, 359, 0.3), Vec2(175, 38), nullptr);
+            obj->GetMeshRenderer()->SetAlphaBlend(true);
+            obj->GetButton()->AddOnHoverEvent([obj]() { obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"ReturnToTitle")); });
+            obj->GetButton()->AddOnHoverEndEvent([obj]() { obj->GetMeshRenderer()->SetMaterial(nullptr); });
+            obj->GetButton()->AddOnClickedEvent([]() { GAME->ChangeScene(0); });
+
+            CUR_SCENE->Add(obj);
+        }
+    }
 
 	// Light
 	{

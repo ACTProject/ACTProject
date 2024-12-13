@@ -57,7 +57,7 @@ MeshOutput VS_UIMesh(VertexTextureNormal input)
     output.worldPosition = output.position;
 
     // 뷰-프로젝션 변환
-    output.position = mul(output.position, VP);
+    output.position = mul(output.position, VP); 
 
     // UV 및 노멀 전달
     output.uv = input.uv;

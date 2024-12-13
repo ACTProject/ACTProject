@@ -1,31 +1,37 @@
-﻿#pragma once
+#pragma once
 
 enum class KEY_TYPE
 {
-	UP = VK_UP,
-	DOWN = VK_DOWN,
-	LEFT = VK_LEFT,
-	RIGHT = VK_RIGHT,
+    UP = VK_UP,
+    DOWN = VK_DOWN,
+    LEFT = VK_LEFT,
+    RIGHT = VK_RIGHT,
 
-	SHIFT = VK_SHIFT,
-	CAPSLOCK = VK_CAPITAL,
+    SHIFT = VK_SHIFT,
+    CAPSLOCK = VK_CAPITAL,
 
-	DELETEKEY = VK_DELETE,
+    DELETEKEY = VK_DELETE,
 
-	W = 'W',
-	A = 'A',
-	S = 'S',
-	D = 'D',
+    W = 'W',
+    A = 'A',
+    S = 'S',
+    D = 'D',
 
-	Q = 'Q',
-	E = 'E',
-	Z = 'Z',
-	C = 'C',
+    Q = 'Q',
+    E = 'E',
+    Z = 'Z',
+    C = 'C',
 
-	R = 'R',
-	T = 'T',
-	Y = 'Y',
-	U = 'U',
+    R = 'R',
+    T = 'T',
+    Y = 'Y',
+    U = 'U',
+
+    I = 'I',
+    O = 'O',
+    P = 'P',
+    ESC = VK_ESCAPE,
+
 
 	KEY_1 = '1',
 	KEY_2 = '2',

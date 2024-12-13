@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 class DebugManager
 {
 	DECLARE_SINGLE(DebugManager);
@@ -6,6 +6,10 @@ class DebugManager
 public:
 	bool IsDebugEnabled() const { return _isDebugEnabled; }
 	void EnableDebug(bool enable) { _isDebugEnabled = enable; }
+
+    void CreateConsoleWindow();
+
+    void LogVec3ToConsole(const Vec3& vec, const std::string& label);
 private:
 	bool _isDebugEnabled = false;
 };

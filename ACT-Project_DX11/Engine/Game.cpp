@@ -16,6 +16,7 @@ WPARAM Game::Run(GameDesc& desc)
 	if (!InitInstance(SW_SHOWNORMAL))
 		return FALSE;
 	
+    DEBUG->CreateConsoleWindow();
     // Octree
     {
         // 전체 월드 공간 옥트리

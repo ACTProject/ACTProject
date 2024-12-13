@@ -80,7 +80,7 @@ void Scene::Render()
         Camera::S_MatView = mainCamera->GetViewMatrix();
         Camera::S_MatProjection = mainCamera->GetProjectionMatrix();
         FRUSTUM->FinalUpdate();
-        vector<std::shared_ptr<GameObject>> visibleObjects = FrustumCulling(mainCamera->GetVecForward(), 0.f);
+        vector<std::shared_ptr<GameObject>> visibleObjects = FrustumCulling(mainCamera->GetVecForward());
         INSTANCING->RenderCollider(visibleObjects);
         
         if (INPUT->GetButton(KEY_TYPE::KEY_F2))
@@ -116,13 +116,13 @@ void Scene::Remove(shared_ptr<GameObject> object)
 
 std::shared_ptr<GameObject> Scene::GetMainCamera()
 {
-	for (auto& camera : _cameras)
-	{
-		if (camera->GetCamera()->GetProjectionType() == ProjectionType::Perspective)
-			return camera;
-	}
+    for (auto& camera : _cameras)
+    {
+        if (camera->GetCamera()->IsMainCamera())
+            return camera;
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 std::shared_ptr<GameObject> Scene::GetUICamera()
@@ -270,7 +270,7 @@ void Scene::CheckPhysicCollision()
 	COLLISION->Update();
 }
 
-vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<GameObject>>& allObjects, float padding = 5.0f)
+vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<GameObject>>& allObjects)
 {
     vector<shared_ptr<GameObject>> visibleObjects;
 
@@ -279,14 +279,14 @@ vector<shared_ptr<GameObject>> Scene::FrustumCulling(const vector<shared_ptr<Gam
         if (object->GetBullet())
         {
             visibleObjects.push_back(object);
-            break;
+            continue;
         }
 
         // Terrain은 무조건 보이게
         if (object->GetTerrain())
         {
             visibleObjects.push_back(object);
-            break;
+            continue;
         }
 
         // 객체가 비활성화되어 있으면 무시

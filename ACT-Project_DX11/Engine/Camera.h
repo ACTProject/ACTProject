@@ -25,6 +25,8 @@ public:
 	void UpdateCameraWithMouseInput();
 	void UpdateMatrix();
 	void FreeCameraMovement(); // 디버그 모드시 카메라 이동
+    void SetCameraZoomForTerrain(const shared_ptr<class Terrain>& terrain);
+    void RestrictCameraAboveTerrain(const shared_ptr<Terrain>& terrain);
 
 	void SetProjectionType(ProjectionType type) { _type = type; }
 	ProjectionType GetProjectionType() { return _type; }
@@ -36,6 +38,8 @@ public:
 	void SetWidth(float value) { _width = value; }
 	void SetHeight(float value) { _height = value; }
 
+    Vec3 GetForward() const;
+    Vec3 GetRight() const;
 	void SetCameraOffset(Vec3 v);
 
 	Matrix& GetViewMatrix() { return _matView; }

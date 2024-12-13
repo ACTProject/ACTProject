@@ -43,18 +43,30 @@ void PlayerScript::Update()
 	}
 	_transform = GetTransform();
 
-	Vec3 moveDir = Vec3(0.0f);
+    Vec3 oldPosition = _transform->GetPosition();
+
 	bool isRunning = INPUT->GetButton(KEY_TYPE::SHIFT);  // Shift 키로 달리기 모드 여부 확인
 
-	// 이동 입력 처리
-	if (INPUT->GetButton(KEY_TYPE::W))
-		moveDir += Vec3(0.0f, 0.0f, 1.0f);
-	if (INPUT->GetButton(KEY_TYPE::S))
-		moveDir += Vec3(0.0f, 0.0f, -1.0f);
-	if (INPUT->GetButton(KEY_TYPE::A))
-		moveDir += Vec3(-1.0f, 0.0f, 0.0f);
-	if (INPUT->GetButton(KEY_TYPE::D))
-		moveDir += Vec3(1.0f, 0.0f, 0.0f);
+    Vec3 moveDir = Vec3(0.0f);
+
+    // 카메라의 forward 및 right 벡터 가져오기
+    Vec3 cameraForward = CUR_SCENE->GetMainCamera()->GetCamera()->GetForward(); // 카메라가 바라보는 방향
+    Vec3 cameraRight = CUR_SCENE->GetMainCamera()->GetCamera()->GetRight(); // 카메라의 오른쪽 방향
+
+    // 수직 축(y) 제거 (2D 평면에서 이동하도록)
+    cameraForward.y = 0.0f;
+    cameraRight.y = 0.0f;
+
+    // 이동 입력 처리
+    if (INPUT->GetButton(KEY_TYPE::W))
+        moveDir += cameraForward;
+    if (INPUT->GetButton(KEY_TYPE::S))
+        moveDir -= cameraForward;
+    if (INPUT->GetButton(KEY_TYPE::A))
+        moveDir += cameraRight;
+    if (INPUT->GetButton(KEY_TYPE::D))
+        moveDir -= cameraRight;
+
 	// 공격 입력 처리
 	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON)) {
 		if (_attackStage > 0)
@@ -88,7 +100,7 @@ void PlayerScript::Update()
             
             if (hitboxCollider->Intersects(collider))
             {
-                // TODO : 
+                // TODO : 해당 몬스터 OnHit 상태 만들기
                 collider->GetGameObject()->Destroy();
             }
         }
@@ -116,17 +128,27 @@ void PlayerScript::Update()
     // Move
 	if (moveDir.LengthSquared() > 0.0f)  // 이동 벡터가 0이 아니라면 이동 중으로 간주
 	{
-		moveDir.Normalize();
+        // 정규화 (속도 보정)
+        if (moveDir.LengthSquared() > 0.0f)
+        {
+            moveDir.Normalize();
+        }
+        else
+        {
+            moveDir = Vec3(0.0f); // 이동 방향 초기화
+        }
+
 		float speed = isRunning ? _speed * 2 : _speed;
         Vec3 oldPosition = GetTransform()->GetPosition();
         Vec3 newPosition = oldPosition + moveDir * speed * dt;
+
+        bool canMove = true;
 
         Ray ray(oldPosition, moveDir);
 
         // 옥트리에서 충돌 가능한 객체 가져오기
         vector<shared_ptr<BaseCollider>> nearbyColliders = OCTREE->QueryColliders(ray);
-        bool canMove = true;
-
+        
         for (const auto& collider : nearbyColliders)
         {
             if (collider->GetGameObject()->GetRigidbody() != nullptr)
@@ -145,8 +167,10 @@ void PlayerScript::Update()
         }
 
         if (canMove)
-        // 플레이어의 이동 영역에 해당하는 
-		_transform->SetPosition(newPosition);
+		    _transform->SetPosition(newPosition);
+
+
+        Vec3 changePosition = _transform->GetPosition();
 
 		targetAnimationState = isRunning ? AnimationState::Run : AnimationState::Walk;
 
@@ -155,8 +179,10 @@ void PlayerScript::Update()
 		Vec3 targetForward = moveDir;					// 캐릭터가 이동하려는 방향
 		Vec3 currentForward = _transform->GetLook();	// 캐릭터가 현재 바라보는 방향
 
-		// 두 벡터 사이의 각도를 계산하여 회전
-		float angle = std::acos(currentForward.Dot(targetForward));	// 두 벡터 사이의 각도
+        // 두 벡터 사이의 각도를 계산하여 회전
+        float dot = std::clamp(currentForward.Dot(targetForward), -1.0f, 1.0f); // 안전한 범위 클램프
+        float angle = std::acos(dot);
+
 		if (angle != 0.f)
 		{
 			Vec3 rotationAxis = currentForward.Cross(targetForward);	// 두 벡터가 이루는 평면의 법선벡터
@@ -166,14 +192,14 @@ void PlayerScript::Update()
 			if (rotationAxis.y < 0) {
 				angle = -angle;  // 왼쪽으로 회전
 			}
-			_transform->SetRotation(_transform->GetRotation() + Vec3(0, angle, 0));
+			_transform->SetRotation(_transform->GetLocalRotation() + Vec3(0, angle, 0));
 
 		}
 
 		// HitBox // TODO
 		{
 			_hitbox->GetTransform()->SetPosition(_transform->GetPosition() + _hitbox->GetHitBox()->GetOffSet() + _transform->GetLook() * 1.8f);
-		}
+        }
 	}
 	else
 	{

@@ -8,6 +8,8 @@ struct MapObjDesc
 public:
     bool isMesh = false;
 	bool isCollision = true;
+    bool isBillBoard = false;
+    int  billboardCount = 0;
 	Vec3 extent = Vec3{ 1.0f };
 	Vec3 offset = Vec3{ 0.0f };
 	Vec3 pos = { 0.f,0.f,0.f };
@@ -18,7 +20,7 @@ public:
 	wstring filename;
 	wstring shadername;
 	MapObjDesc() = default;
-	MapObjDesc(wstring file, wstring sha, bool isColl = true, bool isMes = false) : filename(file), shadername(sha), isCollision(isColl), isMesh(isMes) {};
+    MapObjDesc(wstring file, wstring sha, bool isColl = true, bool isMes = false, bool isbill = false) : filename(file), shadername(sha), isCollision(isColl), isMesh(isMes), isBillBoard(isbill) {};
 };
 
 struct MapModel
@@ -48,11 +50,16 @@ public:
 	void AddMapObj(shared_ptr<MapObjDesc>  obj);
 	void InitMapText();
 
+
+
 	// 파일에 맵 오브젝트 정보 추가하는 함수
 	bool ExportMapObj();
 	// 파일을 읽어 들이는 함수
 	bool ImportMapObj();
 private:
+    // 빌보드 요소 추가 함수
+    void AddBillBoard(Vec3 pos);
+
 	// 클릭하지 않고도 맵오브젝트 설치 전에 보이게끔 하는 함수.
 	void PreViewMapObject();
 	shared_ptr<GameObject> CreatePreViewObj(Vec3 pickPos);
@@ -67,6 +74,8 @@ private:
 
     // 바닥에 붙이는 함수.
     void CreateQuadTerrain(shared_ptr<Mesh> mesh, shared_ptr<GameObject> obj, Vec3 pos);
+
+    void CreateBillBoardMesh(shared_ptr<MapObjDesc> objs);
 
 	// 이 함수는 파일에서 불러올 때 사용하는 함수
 	shared_ptr<GameObject> Create(MapObjDesc& obj);
@@ -83,9 +92,13 @@ private:
 	// 초기 맵 정보 구조체 배열.
 	vector<shared_ptr<MapObjDesc>> _mapInitInfoList;
 
+    // 빌보드 설치 위치 저장 배열
+    vector<Vec3> _mapBillBoradList;
+
 	shared_ptr<MapObjDesc> _mapSelectDesc;
 	shared_ptr<GameObject> _mapSelectObj;
 	shared_ptr<GameObject> _mapPreviewObj;
+    shared_ptr<GameObject> _mapBillBoard;
 
 	Vec3 _pickPos;
 	vector<string> _fileTextList;
@@ -93,6 +106,8 @@ private:
 	int _transformSelect = 0;
 	bool _isZState = false;
 	bool _isSelect = false;
+
+    int _billBoardCount = 0;
 
     shared_ptr<Terrain> _terrain;
 };

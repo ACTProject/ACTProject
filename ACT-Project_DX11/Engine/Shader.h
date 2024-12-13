@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Pass.h"
 #include "Technique.h"
 #include "BindShaderDesc.h"
@@ -65,6 +65,7 @@ public:
 	void PushTweenData(const TweenDesc& desc);
 	void PushInstancedTweenData(const InstancedTweenDesc& desc);
 	void PushSnowData(const SnowBillboardDesc& desc);
+    
 
 private:
 	GlobalDesc _globalDesc;

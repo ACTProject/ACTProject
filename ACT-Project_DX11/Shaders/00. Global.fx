@@ -18,6 +18,10 @@ cbuffer TransformBuffer
     matrix W;
 };
 
+cbuffer waveBuffer
+{
+    matrix Wave;
+};
 ////////////////
 // VertexData //
 ////////////////

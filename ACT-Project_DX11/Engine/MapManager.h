@@ -57,6 +57,8 @@ public:
 	// 파일을 읽어 들이는 함수
 	bool ImportMapObj();
 private:
+    void PushWaveMatrix();
+
     // 빌보드 요소 추가 함수
     void AddBillBoard(Vec3 pos);
 

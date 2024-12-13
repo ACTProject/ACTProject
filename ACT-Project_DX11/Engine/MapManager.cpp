@@ -736,6 +736,19 @@ bool MapManager::ImportMapObj()
     return true;
 }
 
+void MapManager::PushWaveMatrix()
+{
+    float time = TIME->GetGameTime();
+    // 삼각함수로 반복되는 진폭만들고
+    // 그 진폭수 비율 조절하면서
+    // 진폭비율로 전단행렬 만들어서
+    // 컨스턴트 버퍼로 넘기기
+
+
+
+
+}
+
 
 void MapManager::PreViewMapObject()
 {

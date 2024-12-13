@@ -124,35 +124,35 @@ void EnemyManager::CreateFinalBoss(Vec3 SpawnPos)
             enemyModel->ReadModel(L"Enemy/FinalBoss/mrKrab");
             enemyModel->ReadMaterial(L"Enemy/FinalBoss/mrKrab");
 
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/mrKRAB_idle", AnimationState::Idle);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/boss_walk", AnimationState::Walk);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/boss_roar", AnimationState::Roar);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/warming_up", AnimationState::Appear);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/fight_idle", AnimationState::Combat);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/run_forward", AnimationState::Run);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/sprint", AnimationState::Run2);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/back_sprint", AnimationState::Run3);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/jumping", AnimationState::Jump);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/hit_1", AnimationState::Hit1);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/hit_2", AnimationState::Hit2);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/boxing_1", AnimationState::Attack1);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/boxing_2", AnimationState::Attack2);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/boxing_3", AnimationState::Attack3);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/boxing_4", AnimationState::Attack4);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/getUp_behind", AnimationState::GetUP1);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/getUp_front", AnimationState::GetUP2);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/knockedDown_back", AnimationState::Down1);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/knockedDown_forward", AnimationState::Down2);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/choke_lift", AnimationState::Skill1);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/fireball", AnimationState::Skill2);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/magic_spell", AnimationState::Skill3);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/sweep", AnimationState::Skill4);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/thrust_slash", AnimationState::Skill5);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/uppercut", AnimationState::Skill6);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/super/super_GettingThrown", AnimationState::Skill7);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/super/super_GrabSlam", AnimationState::Skill8);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/super/super_Hurricane", AnimationState::Skill9);
-            enemyModel->ReadAnimation(L"Enemy/FinalBoss/dying", AnimationState::Die);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/00_mrKRAB_idle", AnimationState::Idle);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/01_boss_walk", AnimationState::Walk);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/02_boss_roar", AnimationState::Roar);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/03_warming_up", AnimationState::Appear);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/04_fight_idle", AnimationState::Combat);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/05_run_forward", AnimationState::Run);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/06_sprint", AnimationState::Run2);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/07_back_sprint", AnimationState::Run3);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/08_jumping", AnimationState::Jump);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/09_hit_1", AnimationState::Hit1);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/10_hit_2", AnimationState::Hit2);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/11_boxing_1", AnimationState::Attack1);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/12_boxing_2", AnimationState::Attack2);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/13_boxing_3", AnimationState::Attack3);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/14_boxing_4", AnimationState::Attack4);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/15_getUp_behind", AnimationState::GetUP1); // 이상함
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/16_getUp_front", AnimationState::GetUP2);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/17_knockedDown_back", AnimationState::Down1);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/18_knockedDown_forward", AnimationState::Down2);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/19_choke_lift", AnimationState::Skill1);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/20_fireball", AnimationState::Skill2);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/21_magic_spell", AnimationState::Skill3);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/22_sweep", AnimationState::Skill4);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/23_thrust_slash", AnimationState::Skill5);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/24_uppercut", AnimationState::Skill6);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/25_gettingThrown", AnimationState::Skill7);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/26_grabSlam", AnimationState::Skill8);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/27_hurricane", AnimationState::Skill9);
+            enemyModel->ReadAnimation(L"Enemy/FinalBoss/28_dying", AnimationState::Die);
 
         }
         shared_ptr<ModelAnimator> ma2 = make_shared<ModelAnimator>(renderShader);
@@ -165,13 +165,13 @@ void EnemyManager::CreateFinalBoss(Vec3 SpawnPos)
 
         BossScript->SetEnemy(enemyModel);
         BossScript->SetModelAnimator(ma2);
-
         FinalBoss->AddComponent(BossScript);
 
         // Collider
-        auto collider = make_shared<AABBBoxCollider>();
-        collider->SetBoundingBox(BoundingBox(Vec3(0.f), Vec3(1.5f)));
-        collider->SetOffset(Vec3(0.f, 1.f, 0.f));
+        auto collider = make_shared<SphereCollider>();
+        collider->SetRadius(10.0f);
+        //collider->SetBoundingBox(BoundingBox(Vec3(0.f), Vec3(2.0f)));
+        collider->SetOffset(Vec3(0.f, 2.5f, 0.f));
         OCTREE->InsertCollider(collider);
         FinalBoss->AddComponent(collider);
 

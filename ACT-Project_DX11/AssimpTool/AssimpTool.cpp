@@ -152,150 +152,149 @@ void AssimpTool::Init()
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/back_sprint.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/back_sprint");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/00_mrKRAB_idle.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/00_mrKRAB_idle");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/boss_walk.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/boss_walk");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/01_boss_walk.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/01_boss_walk");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/boxing_1.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/boxing_1");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/02_boss_roar.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/02_boss_roar");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/boxing_2.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/boxing_2");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/03_warming_up.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/03_warming_up");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/boxing_3.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/boxing_3");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/04_fight_idle.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/04_fight_idle");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/boxing_4.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/boxing_4");
-            }
-            {
-                shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/choke_lift.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/choke_lift");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/05_run_forward.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/05_run_forward");
             } {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/dying.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/dying");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/06_sprint.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/06_sprint");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/fight_idle.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/fight_idle");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/07_back_sprint.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/07_back_sprint");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/fireball.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/fireball");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/08_jumping.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/08_jumping");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/getUp_behind.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/getUp_behind");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/09_hit_1.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/09_hit_1");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/getUp_front.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/getUp_front");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/10_hit_2.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/10_hit_2");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/hit_1.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/hit_1");
-            } {
-                shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/hit_2.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/hit_2");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/11_boxing_1.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/11_boxing_1");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/jumping.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/jumping");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/12_boxing_2.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/12_boxing_2");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/magic_spell.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/magic_spell");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/13_boxing_3.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/13_boxing_3");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/mrKRAB_idle.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/mrKRAB_idle");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/14_boxing_4.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/14_boxing_4");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/run_forward.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/run_forward");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/15_getUp_behind.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/15_getUp_behind");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/sprint.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/sprint");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/16_getUp_front.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/16_getUp_front");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/sweep.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/sweep");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/17_knockedDown_back.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/17_knockedDown_back");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/thrust_slash.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/thrust_slash");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/18_knockedDown_forward.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/18_knockedDown_forward");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/uppercut.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/uppercut");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/19_choke_lift.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/19_choke_lift");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/warming_up.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/warming_up");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/20_fireball.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/20_fireball");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/boss_roar.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/boss_roar");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/21_magic_spell.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/21_magic_spell");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/knockedDown_forward.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/knockedDown_forward");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/22_sweep.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/22_sweep");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/knockedDown_back.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/knockedDown_back");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/23_thrust_slash.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/23_thrust_slash");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/super/super_GettingThrown.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/super/super_GettingThrown");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/24_uppercut.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/24_uppercut");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/super/super_GrabSlam.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/super/super_GrabSlam");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/25_gettingThrown.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/25_gettingThrown");
             }
             {
                 shared_ptr<Converter> converter = make_shared<Converter>();
-                converter->ReadAssetFile(L"Enemy/FinalBoss/super/super_Hurricane.fbx");
-                converter->ExportAnimationData(L"Enemy/FinalBoss/super/super_Hurricane");
+                converter->ReadAssetFile(L"Enemy/FinalBoss/26_grabSlam.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/26_grabSlam");
             }
-
+            {
+                shared_ptr<Converter> converter = make_shared<Converter>();
+                converter->ReadAssetFile(L"Enemy/FinalBoss/27_hurricane.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/27_hurricane");
+            }
+            {
+                shared_ptr<Converter> converter = make_shared<Converter>();
+                converter->ReadAssetFile(L"Enemy/FinalBoss/28_dying.fbx");
+                converter->ExportAnimationData(L"Enemy/FinalBoss/28_dying");
+            }
         }
-        
 	}
 	// MapObject
 	{

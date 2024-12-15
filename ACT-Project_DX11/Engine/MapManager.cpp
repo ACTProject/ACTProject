@@ -21,7 +21,7 @@ void MapManager::Init()
         src = make_shared<MapObjDesc>(L"MapObject/PencilHedgehog", L"23. RenderDemo.fx");
         MAP->AddMapObj(src);
 
-        src = make_shared<MapObjDesc>(L"MapObject/StarFish", L"23. RenderDemo.fx", false);
+        src = make_shared<MapObjDesc>(L"MapObject/StarFish", L"23. RenderDemo.fx");
         MAP->AddMapObj(src);
 
         src = make_shared<MapObjDesc>(L"MapObject/pigeon", L"23. RenderDemo.fx");
@@ -69,7 +69,7 @@ void MapManager::Init()
         src = make_shared<MapObjDesc>(L"MapObject/rock2", L"23. RenderDemo.fx");
         MAP->AddMapObj(src);
         //
-        src = make_shared<MapObjDesc>(L"MapObject/Urock01", L"23. RenderDemo.fx", false);
+        src = make_shared<MapObjDesc>(L"MapObject/Urock01", L"23. RenderDemo.fx");
         MAP->AddMapObj(src);
         src = make_shared<MapObjDesc>(L"MapObject/Urock02", L"23. RenderDemo.fx");
         MAP->AddMapObj(src);
@@ -83,16 +83,34 @@ void MapManager::Init()
         MAP->AddMapObj(src);
         src = make_shared<MapObjDesc>(L"MapObject/Udrock02", L"23. RenderDemo.fx");
         MAP->AddMapObj(src);
-        src = make_shared<MapObjDesc>(L"MapObject/Udrock04", L"23. RenderDemo.fx", false);
+        src = make_shared<MapObjDesc>(L"MapObject/Udrock04", L"23. RenderDemo.fx");
+        MAP->AddMapObj(src);
+
+        src = make_shared<MapObjDesc>(L"MapObject/Chips", L"23. RenderDemo.fx");
+        MAP->AddMapObj(src);
+        src = make_shared<MapObjDesc>(L"MapObject/FishCar", L"23. RenderDemo.fx");
+        MAP->AddMapObj(src);
+        src = make_shared<MapObjDesc>(L"MapObject/Milk Carton", L"23. RenderDemo.fx");
+        MAP->AddMapObj(src);
+        src = make_shared<MapObjDesc>(L"MapObject/Prop_ChineseTakeout", L"23. RenderDemo.fx");
+        MAP->AddMapObj(src);
+        src = make_shared<MapObjDesc>(L"MapObject/80s_radio", L"23. RenderDemo.fx");
+        MAP->AddMapObj(src);
+        src = make_shared<MapObjDesc>(L"MapObject/BottomFeeders_Barrels", L"23. RenderDemo.fx");
+        MAP->AddMapObj(src);
+        src = make_shared<MapObjDesc>(L"MapObject/can_crushed_03", L"23. RenderDemo.fx");
+        MAP->AddMapObj(src);
+        src = make_shared<MapObjDesc>(L"MapObject/CastleKit_Tower_01", L"23. RenderDemo.fx");
         MAP->AddMapObj(src);
 
         // 바닥텍스처
-        src = make_shared<MapObjDesc>(L"tailtexture01.png", L"23. RenderDemo.fx", false, true);
+        src = make_shared<MapObjDesc>(L"tailtexture01.png", L"23. RenderDemo.fx", true, true);
         MAP->AddMapObj(src);
 
         // 빌보드메시
         src = make_shared<MapObjDesc>(L"grass.png", L"28. BillBoardDemo.fx", false, false, true);
         MAP->AddMapObj(src);
+
 
         // ImGui용 함수.
         MAP->InitMapText();
@@ -137,7 +155,7 @@ void MapManager::Update()
         if (_mapSelectDesc != nullptr)
         {
             UpdateMapDescTransform();
-            PreViewMapObject();
+            //PreViewMapObject();
         }
         if (_mapSelectObj != nullptr)
         {
@@ -207,7 +225,7 @@ shared_ptr<GameObject> MapManager::Create(Vec3& pos)
                 obj->GetMeshRenderer()->SetMesh(mesh);
                 obj->GetMeshRenderer()->SetPass(0);
                 obj->GetMeshRenderer()->SetAlphaBlend(true);
-            }
+            } 
             else
             {
                 auto modelrender = make_shared<ModelRenderer>(it->second->_shader);
@@ -369,7 +387,7 @@ Matrix MapManager::UpdateWaveMat()
 void MapManager::AddBillBoard(Vec3 pos)
 {
     _mapBillBoradList.emplace_back(pos);
-    _mapBillBoard->GetBillboard()->Add({ pos.x,pos.y + 0.5f,pos.z },{1,1});
+    _mapBillBoard->GetBillboard()->Add({ pos.x,pos.y + 1.5f,pos.z },{3,3});
 }
 
 // IMGUI 초기화 (변수값)
@@ -572,6 +590,7 @@ bool MapManager::ExportMapObj()
 
     fwrite(&length, sizeof(int), 1, fp);
     fwrite(&_billBoardCount, sizeof(int), 1, fp);
+
     for (int i = 0; i < length; i++)
     {
         MapObjDesc dec;
@@ -608,6 +627,7 @@ bool MapManager::ExportMapObj()
         {
             continue;
         }
+
         else if (dec.isMesh != true)
         {
             dec.filename = _mapObjList[i]->GetModelRenderer()->GetModel()->GetTextureName();
@@ -666,13 +686,15 @@ bool MapManager::ImportMapObj()
         fread(&dec.isMesh, sizeof(bool), 1, fp);
 
         fread(&dec.isCollision, sizeof(bool), 1, fp);
+        
+        fread(&dec.isBillBoard, sizeof(bool), 1, fp);
+
         if (dec.isCollision == true)
         {
             fread(&dec.extent, sizeof(Vec3), 1, fp);
             fread(&dec.offset, sizeof(Vec3), 1, fp);
         }
-        
-        fread(&dec.isBillBoard, sizeof(bool), 1, fp);
+
         fread(&dec.pos, sizeof(Vec3), 1, fp);
         fread(&dec.scale, sizeof(Vec3), 1, fp);
         fread(&dec.rotation, sizeof(Vec3), 1, fp);
@@ -693,7 +715,7 @@ bool MapManager::ImportMapObj()
         fread(szLoadshadername, sizeof(wchar_t), dec.shaderLength, fp);
         dec.shadername = szLoadshadername;
 
-        Create(dec);
+        Create(dec); 
     }
 
     for (int i = 0; i < _billBoardCount; i++)

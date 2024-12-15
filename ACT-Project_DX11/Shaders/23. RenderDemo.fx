@@ -20,8 +20,8 @@ float4 PS(MeshOutput input) : SV_TARGET
    
     float distance = length(input.worldPosition - CameraPosition());
 	
-    float start = 50.f;
-    float end = 90.f;
+    float start = 60.f;
+    float end = 140.f;
     float fogFactor = saturate((end - distance) / (end - start));
 	
     float4 fogColor = float4(0.1, 0.6, 0.9, 1.0);
@@ -34,6 +34,9 @@ float4 PS(MeshOutput input) : SV_TARGET
     {
         color.rgb = lerp(fogColor.rgb, color.rgb, fogFactor);
     }
+    
+    if (color.a < 0.3f)
+        discard;
     
     return color;
 }

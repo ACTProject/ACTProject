@@ -305,6 +305,55 @@ void AssimpTool::Init()
 			converter->ExportModelData(L"MapObject/Udrock04");
 		}
 
+        //
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"MapObject/Chips.fbx");
+            converter->ExportMaterialData(L"MapObject/Chips");
+            converter->ExportModelData(L"MapObject/Chips");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"MapObject/FishCar.fbx");
+            converter->ExportMaterialData(L"MapObject/FishCar");
+            converter->ExportModelData(L"MapObject/FishCar");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"MapObject/Milk Carton.fbx");
+            converter->ExportMaterialData(L"MapObject/Milk Carton");
+            converter->ExportModelData(L"MapObject/Milk Carton");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"MapObject/Prop_ChineseTakeout.fbx");
+            converter->ExportMaterialData(L"MapObject/Prop_ChineseTakeout");
+            converter->ExportModelData(L"MapObject/Prop_ChineseTakeout");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"MapObject/80s_radio.fbx");
+            converter->ExportMaterialData(L"MapObject/80s_radio");
+            converter->ExportModelData(L"MapObject/80s_radio");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"MapObject/BottomFeeders_Barrels.fbx");
+            converter->ExportMaterialData(L"MapObject/BottomFeeders_Barrels");
+            converter->ExportModelData(L"MapObject/BottomFeeders_Barrels");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"MapObject/can_crushed_03.fbx");
+            converter->ExportMaterialData(L"MapObject/can_crushed_03");
+            converter->ExportModelData(L"MapObject/can_crushed_03");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"MapObject/CastleKit_Tower_01.fbx");
+            converter->ExportMaterialData(L"MapObject/CastleKit_Tower_01");
+            converter->ExportModelData(L"MapObject/CastleKit_Tower_01");
+        }
 
 
 	}

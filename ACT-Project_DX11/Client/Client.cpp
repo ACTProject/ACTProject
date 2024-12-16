@@ -210,6 +210,7 @@ void Client::Init()
 		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo2", AnimationState::Attack2);
 		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo3", AnimationState::Attack3);
 		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo4", AnimationState::Attack4);
+        playerModel->ReadAnimation(L"Player/Crab_Jump", AnimationState::Jump);
 
 		//playerModel->ReadAnimation(L"Player/Crab_Death");
 		//playerModel->ReadAnimation(L"Player/Crab_GetUp");
@@ -235,7 +236,7 @@ void Client::Init()
 
 	// Collider
 	auto collider = make_shared<SphereCollider>();
-	collider->SetRadius(5.0f);
+	collider->SetRadius(4.f);
 	collider->SetOffset(Vec3(0.f, 1.f, 0.f));
     OCTREE->InsertCollider(collider);
 	player->AddComponent(collider);
@@ -243,7 +244,7 @@ void Client::Init()
 	// Rigidbody
 	shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
 	rigidBody->SetUseGravity(true);
-	rigidBody->SetMass(5.0f);
+	rigidBody->SetMass(10.0f);
 	player->AddComponent(rigidBody);
 
 	COLLISION->AddCollider(collider);

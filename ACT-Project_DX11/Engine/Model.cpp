@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Model.h"
 #include "Utils.h"
 #include "FileUtils.h"

@@ -282,7 +282,7 @@ void Camera::RestrictCameraAboveTerrain(const shared_ptr<Terrain>& terrain)
     float terrainHeight = terrain->GetHeightAtPosition(_cameraPosition.x, _cameraPosition.z);
 
     // 카메라가 Terrain 아래로 내려가지 못하도록 y 좌표를 조정
-    if (_cameraPosition.y < terrainHeight + 2.0f) // 여유 높이 설정 (0.5f는 조정 가능)
+        if (_cameraPosition.y < terrainHeight + 2.0f) // 여유 높이 설정 (0.5f는 조정 가능)
     {
         _cameraPosition.y = terrainHeight + 2.0f;
 

@@ -7,6 +7,7 @@
 #include <coroutine>
 #include "HitBox.h"
 #include "BaseCollider.h"
+#include "Rigidbody.h"
 
 // Coroutine
 std::coroutine_handle<MyCoroutine::promise_type> currentCoroutine;
@@ -35,7 +36,7 @@ void PlayerScript::Update()
 	if (DEBUG->IsDebugEnabled())
 		return;
 
-
+    _rigidbody = GetGameObject()->GetRigidbody();
 	_FPS = static_cast<float>(TIME->GetFps());
 	float dt = TIME->GetDeltaTime();
 	for (int i = 0; i < 4; ++i) {
@@ -67,6 +68,10 @@ void PlayerScript::Update()
     if (INPUT->GetButton(KEY_TYPE::D))
         moveDir -= cameraRight;
 
+    if (INPUT->GetButton(KEY_TYPE::SPACE))
+    {
+        Jump();
+    }
 	// 공격 입력 처리
 	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON)) {
 		if (_attackStage > 0)
@@ -82,12 +87,45 @@ void PlayerScript::Update()
 		}
 	}
 
+    // 점프 타이머 갱신
+    if (_isJumping)
+    {
+        if (_rigidbody->GetIsGrounded())
+        {
+            _isJumping = false;
+            _isPlayeringJumpAnimation = false;
+        }
+        else {
+            SetAnimationState(AnimationState::Jump);
+        }
+    }
+
 	// 공격 타이머 갱신
 	if (_isAttacking)
 	{
+        _attackTimer += dt;
+
+        if (_attackTimer >= 0.2f && _attackTimer <= 0.4f) // 애니메이션 중간에서 이동
+        {
+            Vec3 forward = _transform->GetLook(); // 캐릭터가 바라보는 방향
+            forward.Normalize();
+
+            float moveAmount = _attackMoveSpeed * dt;
+            if (_attackMoveDistance > 0.0f)
+            {
+                float moveStep = std::min(moveAmount, _attackMoveDistance);
+                Vec3 newPosition = _transform->GetPosition() + forward * moveStep;
+                _transform->SetPosition(newPosition);
+
+                _attackMoveDistance -= moveStep;
+            }
+        }
+
 		// 히트박스 활성화
         auto hitboxCollider = _hitbox->GetCollider();
         hitboxCollider->SetActive(true);
+
+        _hitbox->GetTransform()->SetPosition(_transform->GetPosition() + _hitbox->GetHitBox()->GetOffSet() + _transform->GetLook() * 2.0f);
 
         // 옥트리에서 충돌 가능한 객체 가져오기
         vector<shared_ptr<BaseCollider>> nearbyColliders = OCTREE->QueryColliders(hitboxCollider);
@@ -105,11 +143,11 @@ void PlayerScript::Update()
             }
         }
 
-		_attackTimer += dt;
 		// 공격 단계 시간 초과 시 Idle로 복귀
 		if (_attackTimer >= (_attackDurations[_attackStage - 1] / _FPS)) {
 			_attackStage = 0;
 			_isAttacking = false;
+            _attackMoveDistance = 1.0f;
 			ResetToIdleState();
 		}
 	}
@@ -118,10 +156,15 @@ void PlayerScript::Update()
 		// 히트박스 비활성화
 		_hitbox->GetCollider()->SetActive(false);
 	}
+
 	// 공격 애니메이션이 재생 중이면 다른 애니메이션 상태로 전환되지 않음
 	if (_isPlayeringAttackAnimation)
 		return;
 
+    // Hitbox
+    {
+        _hitbox->GetTransform()->SetPosition(_transform->GetPosition() + _hitbox->GetHitBox()->GetOffSet() + _transform->GetLook() * 2.0f);
+    }
 	// 이동 방향의 크기를 기준으로 애니메이션 상태 결정
 	AnimationState targetAnimationState;
 
@@ -195,16 +238,15 @@ void PlayerScript::Update()
 			_transform->SetRotation(_transform->GetLocalRotation() + Vec3(0, angle, 0));
 
 		}
-
-		// HitBox // TODO
-		{
-			_hitbox->GetTransform()->SetPosition(_transform->GetPosition() + _hitbox->GetHitBox()->GetOffSet() + _transform->GetLook() * 1.8f);
-        }
 	}
 	else
 	{
 		targetAnimationState = AnimationState::Idle;
 	}
+
+    // 점프 애니메이션이 재생 중이면 다른 애니메이션 상태로 전환되지 않음
+    if (_isPlayeringJumpAnimation)
+        return;
 
 	// 애니메이션 상태가 변경되었을 때만 상태 전환
 	if (_currentAnimationState != targetAnimationState)
@@ -252,6 +294,7 @@ void PlayerScript::ContinueAttack()
 		EndAttackCoroutine();
 
 		float duration = _attackDurations[_attackStage - 1] / _FPS;
+        _attackMoveDistance = 1.0f;
 
 		// 다음 공격 애니메이션 재생
 		PlayAttackAnimation(_attackStage);
@@ -283,6 +326,25 @@ void PlayerScript::PlayAttackAnimation(int stage)
 	}
 }
 
+void PlayerScript::Jump()
+{
+    auto rigidbody = _rigidbody;
+    if (rigidbody->GetIsGrounded())
+    {
+        _isJumping = true;
+        auto velocity = rigidbody->GetVelocity();
+        velocity.y = _jumpSpeed;
+        rigidbody->SetVelocity(velocity);
+        rigidbody->SetIsGrounded(false);
+        
+        Vec3 position = _transform->GetPosition();
+        position += velocity * SCENE->GetFixedDeltaTime();
+        _transform->SetPosition(position);
+
+        SetAnimationState(AnimationState::Jump);
+        _isPlayeringJumpAnimation = true;
+    }
+}
 void PlayerScript::ResetToIdleState() {
 	_isPlayeringAttackAnimation = false;
 	EndAttackCoroutine();

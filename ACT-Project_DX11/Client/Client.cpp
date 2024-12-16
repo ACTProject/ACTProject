@@ -211,6 +211,7 @@ void Client::Init()
 		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo3", AnimationState::Attack3);
 		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo4", AnimationState::Attack4);
         playerModel->ReadAnimation(L"Player/Crab_Jump", AnimationState::Jump);
+        playerModel->ReadAnimation(L"Player/Crab_Dodge", AnimationState::Dodge);
 
 		//playerModel->ReadAnimation(L"Player/Crab_Death");
 		//playerModel->ReadAnimation(L"Player/Crab_GetUp");

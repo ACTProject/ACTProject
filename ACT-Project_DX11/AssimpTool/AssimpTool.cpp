@@ -66,6 +66,11 @@ void AssimpTool::Init()
             converter->ReadAssetFile(L"Player/Crab_Jump.fbx");
             converter->ExportAnimationData(L"Player/Crab_Jump");
         }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"Player/Crab_Dodge.fbx");
+            converter->ExportAnimationData(L"Player/Crab_Dodge");
+        }
 	}
 	// Enemy
 	{

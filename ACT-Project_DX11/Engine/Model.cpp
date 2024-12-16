@@ -356,6 +356,7 @@ string Model::AnimationStateToString(AnimationState state)
 	case AnimationState::Attack4: return "Attack4";
 	case AnimationState::Combat: return "Combat";
 	case AnimationState::Jump:   return "Jump";
+	case AnimationState::Dodge:   return "Dodge";
 	case AnimationState::Hit1:   return "Hit1";
 	case AnimationState::Hit2:   return "Hit2";
 	case AnimationState::Die:   return "Die";

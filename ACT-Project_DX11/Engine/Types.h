@@ -43,6 +43,7 @@ enum class AnimationState
 	Attack4,
     Combat, //전투 상태의 Idle
 	Jump,
+    Dodge,
 	Hit1, //피격
 	Hit2, //피격
 	Die, //죽음

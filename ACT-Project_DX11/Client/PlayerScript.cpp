@@ -67,11 +67,8 @@ void PlayerScript::Update()
         moveDir += cameraRight;
     if (INPUT->GetButton(KEY_TYPE::D))
         moveDir -= cameraRight;
-
     if (INPUT->GetButton(KEY_TYPE::SPACE))
-    {
         Jump();
-    }
 	// 공격 입력 처리
 	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON)) {
 		if (_attackStage > 0)
@@ -86,6 +83,9 @@ void PlayerScript::Update()
 			ContinueAttack();
 		}
 	}
+    if (INPUT->GetButtonDown(KEY_TYPE::CTRL))
+        Dodge();
+    
 
     // 점프 타이머 갱신
     if (_isJumping)

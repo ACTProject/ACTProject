@@ -1,5 +1,6 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Graphics.h"
+#include "Camera.h"
 
 void Graphics::Init(HWND hwnd)
 {
@@ -112,4 +113,42 @@ void Graphics::CreateDepthStencilView()
 void Graphics::SetViewport(float width, float height, float x /*= 0*/, float y /*= 0*/, float minDepth /*= 0*/, float maxDepth /*= 1*/)
 {
 	_vp.Set(width, height, x, y, minDepth, maxDepth);
+}
+
+void Graphics::OnResize(float width, float height)
+{
+    // 렌더 타겟과 깊이 스텐실 뷰 해제
+    if (_renderTargetView) _renderTargetView.Reset();
+    if (_depthStencilView) _depthStencilView.Reset();
+    if (_depthStencilTexture) _depthStencilTexture.Reset();
+
+    GameDesc desc = GAME->GetGameDesc();
+    desc.width = width;
+    desc.height = height;
+    GAME->SetGameDesc(desc);
+
+    // 스왑 체인 크기 조정
+    HRESULT hr = _swapChain->ResizeBuffers(0, static_cast<UINT>(width), static_cast<UINT>(height), DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+    if (FAILED(hr))
+    {
+        MessageBox(nullptr, L"Failed to resize swap chain buffers.", L"Error", MB_OK);
+        return;
+    }
+
+    // 렌더 타겟 뷰 다시 생성
+    CreateRenderTargetView();
+
+    // 깊이 스텐실 뷰 다시 생성
+    CreateDepthStencilView();
+
+    // 뷰포트 업데이트
+    SetViewport(width, height);
+
+    if (CUR_SCENE->GetMainCamera())
+    {
+        auto camera = CUR_SCENE->GetMainCamera()->GetCamera();
+        camera->SetWidth(static_cast<float>(width));
+        camera->SetHeight(static_cast<float>(height));
+        camera->UpdateMatrix(); // 투영 행렬 및 뷰 행렬 갱신
+    }
 }

@@ -17,6 +17,17 @@ class Slider;
 class Skybox;
 class HitBox;
 class Bullet;
+class Raycast;
+
+enum class ObjectType
+{
+    Monster,
+    Player,
+    Terrain,
+    // ...
+
+    Unknown,
+};
 
 class GameObject : public enable_shared_from_this<GameObject>
 {
@@ -47,19 +58,32 @@ public:
 	shared_ptr<Skybox> GetSkybox();
 	shared_ptr<HitBox> GetHitBox();
 	shared_ptr<Bullet> GetBullet();
+	shared_ptr<Raycast> GetRaycast();
 
 	shared_ptr<Transform> GetOrAddTransform();
 	void AddComponent(shared_ptr<Component> component);
+    void Destroy();
 
 	void SetLayerIndex(uint8 layer) { _layerIndex = layer; }
 	uint8 GetLayerIndex() { return _layerIndex; }
 
     bool IsActive() { return _isActive; }
+
+    shared_ptr<MonoBehaviour> GetController() { return _controller; }
+    void SetController(shared_ptr<MonoBehaviour> controller) { _controller = controller; }
+
+    ObjectType GetObjectType() const { return _type; }
+    void SetObjectType(ObjectType type) { _type = type; }
+
 protected:
 	array<shared_ptr<Component>, FIXED_COMPONENT_COUNT> _components;
 	vector<shared_ptr<MonoBehaviour>> _scripts;
 
 	uint8 _layerIndex = 0;
     bool _isActive = true;
+
+private:
+    shared_ptr<MonoBehaviour> _controller = nullptr;
+    ObjectType _type = ObjectType::Unknown;
 };
 

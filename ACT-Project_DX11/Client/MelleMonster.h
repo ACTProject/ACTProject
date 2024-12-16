@@ -49,6 +49,9 @@ private:
     bool onAttack = false;
     bool _isAnimating = false;
 
+    // 히트 상태
+    bool _hit = false;
+
     Vec3 StartPos;
     Vec3 CurForward;
     Vec3 EnemyPos;

@@ -14,7 +14,7 @@ public:
 	BaseCollider(ColliderType colliderType);
 	virtual ~BaseCollider();
 
-	virtual bool Intersects(Ray& ray, OUT float& distance) = 0;
+	virtual bool Intersects(const Ray& ray, OUT float& distance) = 0;
 	virtual bool Intersects(const shared_ptr<BaseCollider>& other) = 0;
 	virtual bool Intersects(const BoundingBox& box) const = 0;
 	virtual void RenderCollider(shared_ptr<InstancingBuffer>& buffer) = 0;

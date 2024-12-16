@@ -17,10 +17,18 @@ AABBBoxCollider::~AABBBoxCollider()
 
 void AABBBoxCollider::Update()
 {
-	_boundingBox.Center = GetColliderCenter();
+    if (Vec3(_boundingBox.Center) == GetColliderCenter())
+    {
+        return;
+    }
+    else
+    {
+        _boundingBox.Center = GetColliderCenter();
+        OCTREE->UpdateCollider(GetGameObject()->GetCollider());
+    }
 }
 
-bool AABBBoxCollider::Intersects(Ray& ray, OUT float& distance)
+bool AABBBoxCollider::Intersects(const Ray& ray, OUT float& distance)
 {
 	// Collider가 비활성화 상태이면 충돌 검사 중단
 	if (!this->IsActive())

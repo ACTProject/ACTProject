@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Component.h"
 class Rigidbody : public Component
 {
@@ -17,13 +17,17 @@ public:
 	const float GetMass() { return _mass; }
 	void SetMass(float mass) { _mass = mass; }
 
+public:
 	bool GetUseGravity() { return _useGravity; }
 	void SetUseGravity(bool useGravity) { _useGravity = useGravity; }
+    bool GetIsGrounded() { return _isGrounded; }
+    void SetIsGrounded(bool isGrounded) { _isGrounded = isGrounded; }
 private:
 	Vec3 _velocity = Vec3(0.f);		// 속도
 	Vec3 _force = Vec3(0.f);		// 외부 힘
 	float _mass = 1.0f;				// 질량
 	bool _useGravity = false;		// 중력 사용 여부
+    bool _isGrounded = true;        // 땅에 붙어 있는지
 
 	float _fixedDeltaTime = 0.f;
 };

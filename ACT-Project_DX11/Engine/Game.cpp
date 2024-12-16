@@ -16,11 +16,12 @@ WPARAM Game::Run(GameDesc& desc)
 	if (!InitInstance(SW_SHOWNORMAL))
 		return FALSE;
 	
+    DEBUG->CreateConsoleWindow();
     // Octree
     {
         // 전체 월드 공간 옥트리
         BoundingBox worldBounds(Vec3(300.f, 100.f, 300.f), Vec3(300.f, 100.f, 300.f));
-        int maxDepth = 6;
+        int maxDepth = 4;
         OCTREE->Init(worldBounds, maxDepth);
     }
 
@@ -34,6 +35,8 @@ WPARAM Game::Run(GameDesc& desc)
 	SCENE->Awake();
 	_desc.app->Init(); // 게임오브젝트 생성
 	SCENE->Start();
+
+    _init = true;
 
 	MSG msg = { 0 };
 
@@ -130,8 +133,18 @@ LRESULT CALLBACK Game::WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM 
 
 	switch (message)
 	{
-	case WM_SIZE:
-		break;
+    case WM_SIZE:
+    {
+        if (!GAME->_init)
+            break;
+        if (wParam != SIZE_MINIMIZED)
+        {
+            int width = LOWORD(lParam);  // 새로운 창 너비
+            int height = HIWORD(lParam); // 새로운 창 높이
+            GRAPHICS->OnResize(width, height);
+        }
+        break;
+    }
 	case WM_CLOSE:
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -140,4 +153,3 @@ LRESULT CALLBACK Game::WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM 
 		return ::DefWindowProc(handle, message, wParam, lParam);
 	}
 }
-

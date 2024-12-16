@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Materials>
+    <Material>
+        <Name>Wood</Name>
+        <DiffuseFile>Wood_basecolor.png</DiffuseFile>
+        <SpecularFile>Wood_basecolor.png</SpecularFile>
+        <NormalFile>Wood_basecolor.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="0" G="0" B="0" A="1"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>RustedSteel</Name>
+        <DiffuseFile>RustedSteel_basecolor.png</DiffuseFile>
+        <SpecularFile>RustedSteel_basecolor.png</SpecularFile>
+        <NormalFile>RustedSteel_basecolor.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="0" G="0" B="0" A="1"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+</Materials>

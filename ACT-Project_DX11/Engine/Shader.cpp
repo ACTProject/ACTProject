@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Shader.h"
 #include "Utils.h"
 
@@ -435,4 +435,18 @@ void Shader::PushSnowData(const SnowBillboardDesc& desc)
 	_snowDesc = desc;
 	_snowBuffer->CopyData(_snowDesc);
 	_snowEffectBuffer->SetConstantBuffer(_snowBuffer->GetComPtr().Get());
+}
+
+void Shader::PushWaveData(const WaveDesc& desc)
+{
+    if (_waveEffectBuffer == nullptr)
+    {
+        _waveBuffer = make_shared<ConstantBuffer<WaveDesc>>();
+        _waveBuffer->Create();
+        _waveEffectBuffer = GetConstantBuffer("WaveBuffer");
+    }
+
+    _waveDesc = desc;
+    _waveBuffer->CopyData(_waveDesc);
+    _waveEffectBuffer->SetConstantBuffer(_waveBuffer->GetComPtr().Get());
 }

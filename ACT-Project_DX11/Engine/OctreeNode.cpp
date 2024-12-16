@@ -190,6 +190,37 @@ std::vector<std::shared_ptr<BaseCollider>> OctreeNode::QueryColliders(const shar
 	return result;
 }
 
+std::vector<std::shared_ptr<BaseCollider>> OctreeNode::QueryColliders(const Ray& ray)
+{
+    std::vector<std::shared_ptr<BaseCollider>> result;
+
+    // Ray와 현재 노드의 바운딩박스가 충돌하지 않으면 검색 중단
+    float distance;
+    if (!_bounds.Intersects(ray.position, ray.direction, OUT distance))
+        return result;
+
+    // 현재 노드에 저장된 Collider와 Ray의 충돌 검사
+    for (const auto& collider : _colliders)
+    {
+        if (collider->Intersects(ray, OUT distance))
+        {
+            result.push_back(collider);
+        }
+    }
+
+    // 자식 노드 검색
+    for (const auto& child : _children)
+    {
+        if (child)
+        {
+            auto childResult = child->QueryColliders(ray);
+            result.insert(result.end(), childResult.begin(), childResult.end());
+        }
+    }
+
+    return result;
+}
+
 void OctreeNode::RenderNode()
 {
     // 1. 현재 노드의 경계 박스 생성
@@ -262,4 +293,19 @@ void OctreeNode::Subdivide()
 	_children.push_back(std::make_unique<OctreeNode>(BoundingBox(center + Vec3(halfSize.x, -halfSize.y, halfSize.z), halfSize), _depth + 1, _maxDepth));
 	_children.push_back(std::make_unique<OctreeNode>(BoundingBox(center + Vec3(-halfSize.x, halfSize.y, halfSize.z), halfSize), _depth + 1, _maxDepth));
 	_children.push_back(std::make_unique<OctreeNode>(BoundingBox(center + Vec3(halfSize.x, halfSize.y, halfSize.z), halfSize), _depth + 1, _maxDepth));
+}
+
+size_t OctreeNode::GetTotalColliderCount() const
+{
+    size_t count = _colliders.size();
+
+    for (const auto& child : _children)
+    {
+        if (child)
+        {
+            count += child->GetTotalColliderCount();
+        }
+    }
+
+    return count;
 }

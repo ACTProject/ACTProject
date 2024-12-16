@@ -192,8 +192,7 @@ void Client::Init()
 	// Player
 	auto player = make_shared<GameObject>();
 
-
-	// Player
+    player->SetObjectType(ObjectType::Player);
 	player->GetOrAddTransform()->SetPosition(Vec3(40, 0, 40));
 	player->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
 	player->GetOrAddTransform()->SetScale(Vec3(0.01f));
@@ -211,6 +210,7 @@ void Client::Init()
 		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo2", AnimationState::Attack2);
 		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo3", AnimationState::Attack3);
 		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo4", AnimationState::Attack4);
+        playerModel->ReadAnimation(L"Player/Crab_Jump", AnimationState::Jump);
 
 		//playerModel->ReadAnimation(L"Player/Crab_Death");
 		//playerModel->ReadAnimation(L"Player/Crab_GetUp");
@@ -236,7 +236,7 @@ void Client::Init()
 
 	// Collider
 	auto collider = make_shared<SphereCollider>();
-	collider->SetRadius(5.0f);
+	collider->SetRadius(4.f);
 	collider->SetOffset(Vec3(0.f, 1.f, 0.f));
     OCTREE->InsertCollider(collider);
 	player->AddComponent(collider);
@@ -244,7 +244,7 @@ void Client::Init()
 	// Rigidbody
 	shared_ptr<Rigidbody> rigidBody = make_shared<Rigidbody>();
 	rigidBody->SetUseGravity(true);
-	rigidBody->SetMass(5.0f);
+	rigidBody->SetMass(10.0f);
 	player->AddComponent(rigidBody);
 
 	COLLISION->AddCollider(collider);
@@ -255,7 +255,7 @@ void Client::Init()
 	shared_ptr<HitBox> hitbox = make_shared<HitBox>();
 	hitboxGO->AddComponent(hitbox);
 	hitbox->SetOffSet(Vec3(0.f, 0.6f, 0.f));
-	hitbox->Craete(player, Vec3(1.4f));
+	hitbox->Craete(player, Vec3(1.5f));
 	CUR_SCENE->Add(hitboxGO);
 
 	// Player::PlayerScript
@@ -265,6 +265,7 @@ void Client::Init()
 	playerScript->SetModelAnimator(ma1);
 	playerScript->SetHitBox(hitboxGO);
 
+    player->SetController(playerScript);
 	player->AddComponent(playerScript);
 
 	CUR_SCENE->Add(player);
@@ -339,104 +340,124 @@ void Client::Init()
 
 		//material->SetShader(tessellationShader);
 		auto heightMap = RESOURCES->Load<Texture>(L"Height", L"../Resources/Textures/Terrain/height4.png");
-		auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
-		auto textureNormal = RESOURCES->Load<Texture>(L"SandNormal", L"..\\Resources\\Textures\\Terrain\\SandNormalMap.png");
-		//auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
+        auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\SandMap.png");
+        auto textureNormal = RESOURCES->Load<Texture>(L"SandNormal", L"..\\Resources\\Textures\\Terrain\\SandNormalMap.png");
+        //auto texture = RESOURCES->Load<Texture>(L"Sand", L"..\\Resources\\Textures\\Terrain\\testTile.png");
 
-		const int32 width = heightMap->GetSize().x;
-		const int32 height = heightMap->GetSize().y;
+        const int32 width = heightMap->GetSize().x;
+        const int32 height = heightMap->GetSize().y;
 
-		const DirectX::ScratchImage& info = heightMap->GetInfo();
+        const DirectX::ScratchImage& info = heightMap->GetInfo();
 
-		// size_t pixelDataSize = info.GetPixelsSize();
-		// Replace the old heightmap with the filtered one.
-		uint8* pixelBuffer = info.GetPixels();
-		std::vector<uint8> expandedPixelBuffer((width + 1) * (height + 1));
+        // size_t pixelDataSize = info.GetPixelsSize();
+        // Replace the old heightmap with the filtered one.
+        uint8* pixelBuffer = info.GetPixels();
+        std::vector<uint8> expandedPixelBuffer((width + 1)* (height + 1));
 
-		for (int z = 0; z <= height; ++z) {
-			for (int x = 0; x <= width; ++x) {
-				int idxExpanded = z * (width + 1) + x;
+        for (int z = 0; z <= height; ++z) {
+            for (int x = 0; x <= width; ++x) {
+                int idxExpanded = z * (width + 1) + x;
 
-				if (x < width && z < height) {
-					int idxOriginal = z * width + x;
-					expandedPixelBuffer[idxExpanded] = pixelBuffer[idxOriginal];
-				}
-				else {
-					if (x == width && z != height) {
-						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[z * (width + 1) + x - 1];
-					}
-					else if (z == height && x != width) {
-						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x];
-					}
-					else if (x == width && z == height) {
-						expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x - 1];
-					}
-				}
-			}
-		}
+                if (x < width && z < height) {
+                    int idxOriginal = z * width + x;
+                    expandedPixelBuffer[idxExpanded] = pixelBuffer[idxOriginal];
+                }
+                else {
+                    if (x == width && z != height) {
+                        expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[z * (width + 1) + x - 1];
+                    }
+                    else if (z == height && x != width) {
+                        expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x];
+                    }
+                    else if (x == width && z == height) {
+                        expandedPixelBuffer[idxExpanded] = expandedPixelBuffer[(z - 1) * (width + 1) + x - 1];
+                    }
+                }
+            }
+        }
 
 
-		material->SetDiffuseMap(texture);
-		material->SetNormalMap(textureNormal);
-		MaterialDesc& desc = material->GetMaterialDesc();
-		desc.ambient = Vec4(1.f);
-		desc.diffuse = Vec4(1.f);
+        material->SetDiffuseMap(texture);
+        material->SetNormalMap(textureNormal);
+        MaterialDesc& desc = material->GetMaterialDesc();
+        desc.ambient = Vec4(1.f);
+        desc.diffuse = Vec4(1.f);
         desc.specular = Vec4(1.f);
-		RESOURCES->Add(L"Sand", material);
+        RESOURCES->Add(L"Sand", material);
 
 
-		auto obj = make_shared<GameObject>();
-		obj->AddComponent(make_shared<Terrain>());
-		obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
-		{
+        auto obj = make_shared<GameObject>();
+        obj->AddComponent(make_shared<Terrain>());
+        obj->GetTerrain()->Create(width, height, RESOURCES->Get<Material>(L"Sand"));
+        {
 
 
-			vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
-			assert(v.size() == (width + 1) * (height + 1));
-			for (int32 z = 0; z <= height; z++)
-			{
-				for (int32 x = 0; x <= width; x++)
-				{
-					int32 idx = (width + 1) * z + x;
-					uint8 height = expandedPixelBuffer[idx] / 255.f * 25.f;
-					v[idx].position.y = height - 8.f;
-				}
-			}
+            vector<VertexTextureNormalTangentData>& v = const_cast<vector<VertexTextureNormalTangentData>&>(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
+            assert(v.size() == (width + 1) * (height + 1));
+            for (int32 z = 0; z <= height; z++)
+            {
+                for (int32 x = 0; x <= width; x++)
+                {
+                    int32 idx = (width + 1) * z + x;
+                    uint8 height = expandedPixelBuffer[idx] / 255.f * 25.f;
+                    v[idx].position.y = height - 8.f;
+                }
+            }
 
-			// Smooth
-			float avg = 0.0f;
-			float num = 0.0f;
+            // Smooth
+            float avg = 0.0f;
+            float num = 0.0f;
 
-			for (int32 z = 0; z < height; z++)
-			{
-				for (int32 x = 0; x < width; x++)
-				{
-					avg = 0.0f;
-					num = 0.0f;
-					for (int32 m = z - 1; m <= z + 1; ++m) // -1 ~ 1, 0 ~ 2
-					{
+            for (int32 z = 0; z < height; z++)
+            {
+                for (int32 x = 0; x < width; x++)
+                {
+                    avg = 0.0f;
+                    num = 0.0f;
+                    for (int32 m = z - 1; m <= z + 1; ++m) // -1 ~ 1, 0 ~ 2
+                    {
 
-						for (int32 n = x - 1; n <= x + 1; ++n)
-						{
+                        for (int32 n = x - 1; n <= x + 1; ++n)
+                        {
 
-							if (m >= 0 && m < (int32)height && n >= 0 && n < (int32)width)
-							{
-								avg += v[m * width + n].position.y;
-								num += 1.0f;
-							}
-						}
-					}
-					v[z * height + x].position.y = avg / num;
-				}
-			}
-		}
+                            if (m >= 0 && m < (int32)height && n >= 0 && n < (int32)width)
+                            {
+                                avg += v[m * width + n].position.y;
+                                num += 1.0f;
+                            }
+                        }
+                    }
+                    v[z * height + x].position.y = avg / num;
+                }
+            }
 
-		obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
-		obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetIndices());
+        }
 
-		CUR_SCENE->SetTerrain(obj);
-		CUR_SCENE->Add(obj);
-	}
+        obj->GetTerrain()->GetMesh()->GetVertexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetVertices());
+        obj->GetTerrain()->GetMesh()->GetIndexBuffer()->Create(obj->GetTerrain()->GetMesh()->GetGeometry()->GetIndices());
+
+        MAP->SetTerrain(obj->GetTerrain());
+        CUR_SCENE->SetTerrain(obj);
+        CUR_SCENE->Add(obj);
+    }
+
+    MAP->ImportMapObj();
+
+
+    //// MapSubTexture
+    //{
+    //    shared_ptr<Material> material = make_shared<Material>();
+    //    material->SetShader(renderBoxShader);
+    //    auto texture = RESOURCES->Load<Texture>(materialName, texturePath);
+    //    material->SetDiffuseMap(texture);
+
+    //    MaterialDesc& desc = material->GetMaterialDesc();
+    //    desc.ambient = Vec4(1.f);
+    //    desc.diffuse = Vec4(1.f);
+    //    desc.specular = Vec4(1.f);
+
+    //    RESOURCES->Add(materialName, material);
+    //}
 
 
 

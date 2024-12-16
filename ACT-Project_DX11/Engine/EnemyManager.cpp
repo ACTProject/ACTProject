@@ -5,6 +5,7 @@ void EnemyManager::CreateMeleeMonster(Vec3 SpawnPos)
 {
     auto rangoon = make_shared<GameObject>();
     {
+        rangoon->SetObjectType(ObjectType::Monster);
         rangoon->GetOrAddTransform()->SetPosition(SpawnPos);
         rangoon->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
         rangoon->GetOrAddTransform()->SetScale(Vec3(0.0001f));
@@ -36,6 +37,7 @@ void EnemyManager::CreateMeleeMonster(Vec3 SpawnPos)
         rangoonScript->SetEnemy(enemyModel);
         rangoonScript->SetModelAnimator(ma2);
 
+        rangoon->SetController(rangoonScript);
         rangoon->AddComponent(rangoonScript);
 
         // Collider
@@ -62,6 +64,7 @@ void EnemyManager::CreateShootingMonster(Vec3 SpawnPos)
 {
     auto PistolShrimp = make_shared<GameObject>(); // Pistol_Shrimp
     {
+        PistolShrimp->SetObjectType(ObjectType::Monster);
         PistolShrimp->GetOrAddTransform()->SetPosition(SpawnPos);
         PistolShrimp->GetOrAddTransform()->SetLocalRotation(Vec3(0, XMConvertToRadians(180), 0)); // XMConvertToRadians()
         PistolShrimp->GetOrAddTransform()->SetScale(Vec3(0.01f));
@@ -88,6 +91,7 @@ void EnemyManager::CreateShootingMonster(Vec3 SpawnPos)
         ShrimpScript->SetEnemy(enemyModel);
         ShrimpScript->SetModelAnimator(ma2);
 
+        PistolShrimp->SetController(ShrimpScript);
         PistolShrimp->AddComponent(ShrimpScript);
 
         // Collider

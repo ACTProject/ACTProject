@@ -21,6 +21,7 @@ enum class ComponentType : uint8
 	Skybox,
 	HitBox,
     Bullet,
+    Raycast,
 	// ...
 	Script,
 

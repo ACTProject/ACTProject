@@ -59,9 +59,6 @@ public:
 	void SortGameObject();
 	void Render_Forward();
 
-	Vec3 GetForward();
-    Vec3 GetRight();
-
 	void SetCullingMaskLayerOnOff(uint8 layer, bool on)
 	{
 		if (on)

@@ -27,10 +27,11 @@ public:
     void Walk(Vec3 objPos, Vec3 targetPos, float speed);// 타겟 방향으로 이동
     void Rota(Vec3 objPos, Vec3 targetPos);             // 타겟 방향으로 회전
     void Die();                                         // 죽음
-    bool Punch(int atkType);                         // 펀치 공격
+    bool Punch(int atkType);                            // 펀치 공격
+    void Fireball();
 
-    int comboCnt = 1;
-    int randType = 4;                   //랜덤한 타입
+    int comboCnt;
+    int randType;                   //랜덤한 타입
     float currentTime = 0.f;            //현재 게임 시간
     float lastTime = 0.f;               //마지막 애니메이션 시간
     Vec3 bossPos;                       //보스 위치

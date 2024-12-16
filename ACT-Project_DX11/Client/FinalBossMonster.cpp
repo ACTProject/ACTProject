@@ -14,6 +14,7 @@ void FinalBossMonster::Start()
     _transform = GetTransform();
     _player = SCENE->GetCurrentScene()->GetPlayer();
     SetAnimationState(AnimationState::Idle);
+    comboCnt = 1;
 }
 
 void FinalBossMonster::Update()
@@ -23,9 +24,10 @@ void FinalBossMonster::Update()
         int a = 0;
     }
 
-    dt = TIME->GetDeltaTime();
+    dt = DT;
     _FPS = static_cast<float>(TIME->GetFps());
     bossPos = _transform->GetPosition();
+    
     playerPos = _player->GetTransform()->GetPosition();
     currentTime = TIME->GetGameTime(); // 현재 게임 시간
 
@@ -50,7 +52,7 @@ void FinalBossMonster::Update()
 
 void FinalBossMonster::Phase_1()
 {
-    if (isFirstTime) // 조우
+    if (!isFirstTime) // 조우
     {
         if (currentTime > 8.f) // 실행되는데 걸리는 시간으로 인한 애니메이션이 짤리는 현상때문에 설정
         {
@@ -72,89 +74,64 @@ void FinalBossMonster::Phase_1()
     {
         if (punchAble)
         {
-            if (randType < 4)
+            switch (randType)
             {
-                if (!Punch(randType)) // 펀치 애니메이션 중
+            case 0: case 1: case 2: case 3: // 단일 펀치
+                if (!Punch(randType))
                 {
-                    return;
+                    return; // 애니메이션 진행 중
                 }
-            }
-            else if(randType == 4)
-            {
-                if (comboCnt == 1)
-                {
-                    if (!Punch(0))
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        comboCnt++;
-                    }
-                }
+                break;
 
-                if (comboCnt == 2)
-                {
-                    if (!Punch(2))
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        comboCnt++;
-                    }
-                }
+            //case 4: // 3단 콤보: 0 → 2 → 3
+            //    if (comboCnt == 1)
+            //    {
+            //        if (Punch(0)) comboCnt++;
+            //    }
+            //    else if (comboCnt == 2)
+            //    {
+            //        if (Punch(2)) comboCnt++;
+            //    }
+            //    else if (comboCnt == 3)
+            //    {
+            //        if (Punch(3))
+            //        {
+            //            comboCnt = 1; // 콤보 종료 후 초기화
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return; // 애니메이션 진행 중
+            //    }
+            //    break;
 
-                if (comboCnt == 3)
-                {
-                    if (!Punch(3))
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        comboCnt = 1;
-                    }
-                }
-            }
-            else if (randType == 5)
-            {
-                if (comboCnt == 1)
-                {
-                    if (!Punch(0))
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        comboCnt++;
-                    }
-                }
+            //case 5: // 2단 콤보: 0 → 2
+            //    if (comboCnt == 1)
+            //    {
+            //        if (Punch(0)) comboCnt++;
+            //    }
+            //    else if (comboCnt == 2)
+            //    {
+            //        if (Punch(2))
+            //        {
+            //            comboCnt = 1; // 콤보 종료 후 초기화
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return; // 애니메이션 진행 중
+            //    }
+            //    break;
 
-                if (comboCnt == 2)
-                {
-                    if (!Punch(2))
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        comboCnt = 1;
-                    }
-                }
+            //default:
+            //    break;
             }
-            // 1번 콤보 : punch 0 -> 2 -> 3
-            // 2번 콤보 : pucnh 0 -> 2
-            // 각각 1/6 확률로
         }
         else if (chaseAble)
         {
             Walk(bossPos, playerPos, 5.0f);
             Rota(bossPos, playerPos);
         }
-    }
-
-    {
     }
 }
 
@@ -236,18 +213,37 @@ bool FinalBossMonster::Punch(int atkType)
     {
     case 0:
         if (PlayCheckAnimating(AnimationState::Attack1))
-            return false;
+        {
+            return false; // 플레이 중
+        }
+        break;
     case 1:
         if (PlayCheckAnimating(AnimationState::Attack2))
-            return false;
+        {
+            return false; // 플레이 중
+        }
+        break;
     case 2:
         if (PlayCheckAnimating(AnimationState::Attack3))
-            return false;
+        {
+            return false; // 플레이 중
+        }
+        break;
     case 3:
         if (PlayCheckAnimating(AnimationState::Attack4))
-            return false;
+        {
+            return false; // 플레이 중
+        }
+        break;
+    default:
+        return true;
+        break;
     }
-    return true;
+}
+
+void FinalBossMonster::Fireball()
+{
+
 }
 
 
@@ -260,6 +256,7 @@ bool FinalBossMonster::PlayCheckAnimating(AnimationState state)
 
     if (animPlayingTime >= duration)
     {
+        randType = rand() % 4;
         animPlayingTime = 0.0f;
         SetAnimationState(AnimationState::Combat);
         return false;

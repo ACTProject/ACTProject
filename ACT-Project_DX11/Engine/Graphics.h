@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Viewport.h"
 
 class Graphics
@@ -13,6 +13,11 @@ public:
 
 	ComPtr<ID3D11Device> GetDevice() { return _device; }
 	ComPtr<ID3D11DeviceContext> GetDeviceContext() { return _deviceContext; }
+    ComPtr<IDXGISwapChain> GetSwapChain() { return _swapChain; }
+
+    ComPtr<ID3D11RenderTargetView> GetRenderTargetView() { return _renderTargetView; }
+    ComPtr<ID3D11Texture2D> GetDepthStencilTexture() { return _depthStencilTexture; }
+    ComPtr<ID3D11DepthStencilView> GetDepthStencilView() { return _depthStencilView; }
 
 private:
 	void CreateDeviceAndSwapChain();
@@ -22,6 +27,9 @@ private:
 public:
 	void SetViewport(float width, float height, float x = 0, float y = 0, float minDepth = 0, float maxDepth = 1);
 	Viewport& GetViewport() { return _vp; }
+
+public:
+    void OnResize(float width, float height);
 
 private:
 	HWND _hwnd = {};

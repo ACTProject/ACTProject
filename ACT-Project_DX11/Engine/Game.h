@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 struct GameDesc
 {
@@ -20,6 +20,7 @@ public:
 	WPARAM Run(GameDesc& desc);
 
 	GameDesc& GetGameDesc() { return _desc; }
+    void SetGameDesc(GameDesc desc) { _desc = desc; }
 
 private:
 	ATOM MyRegisterClass();
@@ -32,5 +33,6 @@ private:
 	
 private:
 	GameDesc _desc;
+    bool _init = false;
 };
 

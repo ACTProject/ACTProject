@@ -282,15 +282,15 @@ void Camera::RestrictCameraAboveTerrain(const shared_ptr<Terrain>& terrain)
     float terrainHeight = terrain->GetHeightAtPosition(_cameraPosition.x, _cameraPosition.z);
 
     // 카메라가 Terrain 아래로 내려가지 못하도록 y 좌표를 조정
-    //if (_cameraPosition.y < terrainHeight + 2.0f) // 여유 높이 설정 (0.5f는 조정 가능)
-    //{
-    //    _cameraPosition.y = terrainHeight + 2.0f;
+    if (_cameraPosition.y < terrainHeight + 2.0f) // 여유 높이 설정 (0.5f는 조정 가능)
+    {
+        _cameraPosition.y = terrainHeight + 2.0f;
 
-    //    // 카메라가 Terrain에 너무 가까운 경우, 뒤로 밀어내기
-    //    Vec3 directionToFocus = _focusPosition - _cameraPosition;
-    //    directionToFocus.Normalize();
+        // 카메라가 Terrain에 너무 가까운 경우, 뒤로 밀어내기
+        Vec3 directionToFocus = _focusPosition - _cameraPosition;
+        directionToFocus.Normalize();
 
-    //    // 카메라를 뒤로 이동시켜 Terrain과의 충돌을 완벽히 방지
-    //    _cameraPosition -= directionToFocus * 0.1f; // 0.1f는 조정 가능
-    //}
+        // 카메라를 뒤로 이동시켜 Terrain과의 충돌을 완벽히 방지
+        _cameraPosition -= directionToFocus * 0.1f; // 0.1f는 조정 가능
+    }
 }

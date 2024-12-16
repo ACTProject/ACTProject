@@ -20,20 +20,15 @@ public:
 	void SetModelAnimator(shared_ptr<ModelAnimator> modelAnimator) { _modelAnimator = modelAnimator; }
 	void SetAnimationState(AnimationState state);
 
-    bool GetHit() { return _hit; }
-    void SetHit(bool hit) { _hit = hit; }
-
-	void Aggro();
-	void Move(Vec3 objPos, Vec3 targetPos, float speed);
-	void Rota(Vec3 objPos, Vec3 targetPos);
-	void Attack(int type);
-	void Tracking(Vec3 pos, const std::vector<Node3D>& path);
-	void ResetToIdleState();
-	void Patrol(Vec3 Target);
-
-	//float angle; 
-
 private:
+    void Aggro();
+    void Move(Vec3 objPos, Vec3 targetPos, float speed);
+    void Rota(Vec3 objPos, Vec3 targetPos);
+    void Attack(int type);
+    void Tracking(Vec3 pos, const std::vector<Node3D>& path);
+    void ResetToIdleState();
+    void Patrol(Vec3 Target);
+
 	float _speed = 10.f;
 	float _hp = 100.0f;
 	float _atk = 30.0f;

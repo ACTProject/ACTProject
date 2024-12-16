@@ -59,6 +59,9 @@ public:
 	void SortGameObject();
 	void Render_Forward();
 
+	Vec3 GetForward();
+    Vec3 GetRight();
+
 	void SetCullingMaskLayerOnOff(uint8 layer, bool on)
 	{
 		if (on)
@@ -98,6 +101,7 @@ private:
 	float _yaw = 0.0f;				// 좌우 회전 각도
 	float _pitch = 0.0f;			// 상하 회전 각도
 	float _cameraDistance = 5.0f;	// 플레이어와 카메라 간의 거리
+    float _zoomCameraDistance = 5.0f;
 	float _sensitivity = 0.005f;	// 마우스 감도
 
 	float _normalSpeed = 15.0f;  // 일반 이동 속도
@@ -106,6 +110,8 @@ private:
 	// 디버깅 모드 이전 상태 저장
 	bool _debugInitialized = false;			// 디버깅 모드 초기화 여부
 
+    Vec3 _camForward;
+    Vec3 _camRight;
 	// 카메라 위치
 	Vec3 _cameraPosition = Vec3(0.f);
 	// 초점 위치

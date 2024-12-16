@@ -1,5 +1,6 @@
 #pragma once
 #include "MonoBehaviour.h"
+#include "Camera.h"
 
 class Model;
 class ModelAnimator;
@@ -16,18 +17,19 @@ public:
 	void SetModelAnimator(shared_ptr<ModelAnimator> modelAnimator) { _modelAnimator = modelAnimator; }
 	void SetAnimationState(AnimationState state);
 	void SetHitBox(shared_ptr<GameObject> hitbox) { _hitbox = hitbox; }
+	void SetCamera(shared_ptr<GameObject> camera) { _camera = camera; }
 
 	void StartAttack();
 	void ContinueAttack();
 	void PlayAttackAnimation(int stage);
-    void Jump();
+  void Jump();
 	void ResetToIdleState();
 private:
 	float _speed = 5.f;
 	shared_ptr<Model> _player;
 	shared_ptr<ModelAnimator> _modelAnimator;
 	shared_ptr<Transform> _transform;
-
+    shared_ptr<GameObject> _camera;
 	shared_ptr<GameObject> _hitbox;
 	shared_ptr<Rigidbody> _rigidbody;
 
@@ -55,6 +57,7 @@ private:
     float _attackMoveTimer = 0.0f;     // 이동 타이머 초기화
 
 	bool _isPlayeringJumpAnimation = false; // 점프 애니메이션 재생 중인지 여부 확인
+
 	bool _isPlayeringAttackAnimation = false; // 공격 애니메이션 재생 중인지 여부 확인
 	AnimationState _currentAnimationState = AnimationState::Idle;
 };

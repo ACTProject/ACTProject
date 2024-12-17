@@ -171,7 +171,9 @@ void Scene::UpdateUI()
         {
             if (gameObject->GetButton()->Picked(screenPt))
                 gameObject->GetButton()->InvokeOnClicked();
-        }  
+        }
+
+        gameObject->GetButton()->CheckKeyInput();
 	}
 }
 

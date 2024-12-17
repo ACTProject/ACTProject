@@ -20,6 +20,7 @@ enum class ComponentType : uint8
 	UI,
 	Skybox,
 	HitBox,
+    Particle,
 	// ...
 	Script,
 

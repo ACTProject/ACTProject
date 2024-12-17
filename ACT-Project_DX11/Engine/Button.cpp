@@ -90,3 +90,26 @@ void Button::CheckHover(POINT screenPos)
             _onHoverEnd();
     }
 }
+
+void Button::AddOnKeyPressEvent(KEY_TYPE key, std::function<void(void)> func)
+{
+    _onKeyPress[key] = func;
+}
+
+void Button::InvokeOnKeyPress(KEY_TYPE key)
+{
+    if (_onKeyPress.find(key) != _onKeyPress.end())
+    {
+        if (_onKeyPress[key])
+            _onKeyPress[key]();
+    }
+}
+
+void Button::CheckKeyInput()
+{
+    for (const auto& [key, callback] : _onKeyPress) {
+        if (INPUT->GetButtonDown(key)) {
+            InvokeOnKeyPress(key);
+        }
+    }
+}

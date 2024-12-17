@@ -66,11 +66,16 @@ public:
 	uint8 GetLayerIndex() { return _layerIndex; }
 
     GameObjectType GetGameObjectType() { return _type; };
+
+    void SetVisible() { _isVisible = !_isVisible; }
+    bool GetVisible() { return _isVisible; }
 protected:
 	array<shared_ptr<Component>, FIXED_COMPONENT_COUNT> _components;
 	vector<shared_ptr<MonoBehaviour>> _scripts;
 
     GameObjectType _type;
 	uint8 _layerIndex = 0;
+
+    bool _isVisible = true;
 };
 

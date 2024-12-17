@@ -94,6 +94,7 @@
     <FxCompile Include="..\Shaders\28. BillBoardDemo.fx" />
     <FxCompile Include="..\Shaders\29. SnowDemo.fx" />
     <FxCompile Include="..\Shaders\HpUI.fx" />
+    <FxCompile Include="..\Shaders\Particle.fx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">

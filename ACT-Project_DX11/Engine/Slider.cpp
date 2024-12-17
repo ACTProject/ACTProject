@@ -17,6 +17,15 @@ void Slider::Update()
 {
     Super::PreUpdate();
 
+    if (ImGui::Button("Decrease Slider"))
+    {
+        _uvRatio -= 0.1f; // 감소량 조절 (예: 0.1f만큼 감소)
+        if (_uvRatio < 0.0f) // 최소값 제한
+        {
+            _uvRatio = 0.0f;
+        }
+    }
+
     ImGui::SliderFloat("SliderTest", &_uvRatio, 0.0f, 1.0f);
 
     if (_isVisible == true)

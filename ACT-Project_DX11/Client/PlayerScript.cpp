@@ -198,6 +198,21 @@ void PlayerScript::Update()
         
         for (const auto& collider : nearbyColliders)
         {
+            if (collider->GetGameObject()->GetObjectType() == ObjectType::Shell)
+            {
+                float distance = 0.0f;
+                if (collider->Intersects(ray, distance))
+                {
+                    if (abs(distance) <= 3.0f)
+                    {
+                        if (INPUT->GetButtonDown(KEY_TYPE::E))
+                        {
+                            // TODO
+                        }
+                    }
+                }
+            }
+
             if (collider->GetGameObject()->GetRigidbody() != nullptr)
                 continue;
 
@@ -277,6 +292,10 @@ void PlayerScript::SetAnimationState(AnimationState state)
 {
 	_modelAnimator->ChangeAnimation(state);
 	_currentAnimationState = state;
+}
+
+void PlayerScript::CheckInteraction()
+{
 }
 
 void PlayerScript::StartAttack()

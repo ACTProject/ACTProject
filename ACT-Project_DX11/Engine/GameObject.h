@@ -24,6 +24,7 @@ enum class ObjectType
     Monster,
     Player,
     Terrain,
+    Shell,
     // ...
 
     Unknown,

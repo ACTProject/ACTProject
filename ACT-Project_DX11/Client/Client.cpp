@@ -189,6 +189,37 @@ void Client::Init()
 		CUR_SCENE->Add(light);
 	}
 
+    // Shell
+    {
+        auto shell = make_shared<GameObject>();
+        shell->SetObjectType(ObjectType::Shell);
+        shell->GetOrAddTransform()->SetPosition(Vec3(5, 0, 5));
+        shell->GetOrAddTransform()->SetScale(Vec3(0.01f));
+
+        shared_ptr<Model> shellModel = make_shared<Model>();
+        {
+            // CustomData -> Memory
+            shellModel->ReadModel(L"Shell/Shell_SodaCan");
+            shellModel->ReadMaterial(L"Shell/Shell_SodaCan");
+        }
+
+        // Shell::ModelRenderer
+        shared_ptr<ModelRenderer> mr = make_shared<ModelRenderer>(renderShader);
+        shell->AddComponent(mr);
+        {
+            shell->GetModelRenderer()->SetModel(shellModel);
+            shell->GetModelRenderer()->SetPass(1);
+        }
+
+        // Collider
+        auto collider = make_shared<AABBBoxCollider>();
+        collider->SetBoundingBox(BoundingBox(Vec3(0.f), Vec3(0.5f,0.5f,1.f)));
+        collider->SetOffset(Vec3(0.f, 0.f, 1.f));
+        OCTREE->InsertCollider(collider);
+        shell->AddComponent(collider);
+        CUR_SCENE->Add(shell);
+    }
+
 	// Player
 	auto player = make_shared<GameObject>();
 

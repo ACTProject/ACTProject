@@ -17,6 +17,13 @@ void AssimpTool::Init()
 
 		// CustomData (File) -> Memory
 	}
+    // Shell
+    {
+        shared_ptr<Converter> converter = make_shared<Converter>();
+        converter->ReadAssetFile(L"Shell/Shell_SodaCan.fbx");
+        converter->ExportMaterialData(L"Shell/Shell_SodaCan");
+        converter->ExportModelData(L"Shell/Shell_SodaCan");
+    }
 
 	// Player
 	{

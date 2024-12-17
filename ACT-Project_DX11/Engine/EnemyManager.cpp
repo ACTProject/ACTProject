@@ -118,6 +118,7 @@ void EnemyManager::CreateFinalBoss(Vec3 SpawnPos)
 {
     auto FinalBoss = make_shared<GameObject>(); // MR_Krab
     {
+        FinalBoss->SetObjectType(ObjectType::Monster);
         FinalBoss->GetOrAddTransform()->SetPosition(SpawnPos);
         FinalBoss->GetOrAddTransform()->SetLocalRotation(Vec3(0, 0, 0)); // XMConvertToRadians()
         FinalBoss->GetOrAddTransform()->SetScale(Vec3(0.0005f));
@@ -173,7 +174,7 @@ void EnemyManager::CreateFinalBoss(Vec3 SpawnPos)
 
         // Collider
         auto collider = make_shared<SphereCollider>();
-        collider->SetRadius(10.0f);
+        collider->SetRadius(30.0f);
         //collider->SetBoundingBox(BoundingBox(Vec3(0.f), Vec3(2.0f)));
         collider->SetOffset(Vec3(0.f, 2.5f, 0.f));
         OCTREE->InsertCollider(collider);

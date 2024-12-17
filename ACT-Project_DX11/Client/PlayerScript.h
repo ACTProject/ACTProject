@@ -19,9 +19,15 @@ public:
 	void SetHitBox(shared_ptr<GameObject> hitbox) { _hitbox = hitbox; }
 	void SetCamera(shared_ptr<GameObject> camera) { _camera = camera; }
 
+    // Attack
 	void StartAttack();
 	void ContinueAttack();
 	void PlayAttackAnimation(int stage);
+
+    // Dodge
+    void StartDodge();
+    void UpdateDodge();
+
   void Jump();
 	void ResetToIdleState();
 private:
@@ -35,6 +41,8 @@ private:
 
 private:
 	float _FPS;
+
+    Vec3 _moveDir = Vec3(0.f);
 
     // Jump
     float _jumpSpeed = 7.5f;
@@ -56,9 +64,20 @@ private:
     float _attackMoveSpeed = 2.0f;     // 이동 속도
     float _attackMoveTimer = 0.0f;     // 이동 타이머 초기화
 
-	bool _isPlayeringJumpAnimation = false; // 점프 애니메이션 재생 중인지 여부 확인
+    // Dodge
+    float _dodgeTimer = 0.0f;
+    bool _isDodging = false;            // 회피 중인지 여부
+    bool _isInvincible = false;         // 무적 상태 여부
+    float _dodgeDuration = 0.0f;        // 회피 동작 시간
+    float _dodgeDistance = 0.0f;        // 회피 이동 거리
+    Vec3 _dodgeDirection = Vec3(0.f);   // 회피 방향 설정
 
+    // 애니메이션 진행 중인지 여부
+	bool _isPlayeringJumpAnimation = false; // 점프 애니메이션 재생 중인지 여부 확인
 	bool _isPlayeringAttackAnimation = false; // 공격 애니메이션 재생 중인지 여부 확인
+	bool _isPlayeringDodgeAnimation = false; // 회피 애니메이션 재생 중인지 여부 확인
+
 	AnimationState _currentAnimationState = AnimationState::Idle;
+
 };
 

@@ -48,7 +48,7 @@ void PlayerScript::Update()
 
 	bool isRunning = INPUT->GetButton(KEY_TYPE::SHIFT);  // Shift 키로 달리기 모드 여부 확인
 
-    Vec3 moveDir = Vec3(0.0f);
+    _moveDir = Vec3(0.0f);
 
     // 카메라의 forward 및 right 벡터 가져오기
     Vec3 cameraForward = CUR_SCENE->GetMainCamera()->GetCamera()->GetForward(); // 카메라가 바라보는 방향
@@ -60,13 +60,13 @@ void PlayerScript::Update()
 
     // 이동 입력 처리
     if (INPUT->GetButton(KEY_TYPE::W))
-        moveDir += cameraForward;
+        _moveDir += cameraForward;
     if (INPUT->GetButton(KEY_TYPE::S))
-        moveDir -= cameraForward;
+        _moveDir -= cameraForward;
     if (INPUT->GetButton(KEY_TYPE::A))
-        moveDir += cameraRight;
+        _moveDir += cameraRight;
     if (INPUT->GetButton(KEY_TYPE::D))
-        moveDir -= cameraRight;
+        _moveDir -= cameraRight;
     if (INPUT->GetButton(KEY_TYPE::SPACE))
         Jump();
 	// 공격 입력 처리
@@ -84,8 +84,12 @@ void PlayerScript::Update()
 		}
 	}
     if (INPUT->GetButtonDown(KEY_TYPE::CTRL))
-        Dodge();
+        StartDodge();
     
+    if (_isDodging)
+    {
+        UpdateDodge();
+    }
 
     // 점프 타이머 갱신
     if (_isJumping)
@@ -169,25 +173,25 @@ void PlayerScript::Update()
 	AnimationState targetAnimationState;
 
     // Move
-	if (moveDir.LengthSquared() > 0.0f)  // 이동 벡터가 0이 아니라면 이동 중으로 간주
+	if (_moveDir.LengthSquared() > 0.0f)  // 이동 벡터가 0이 아니라면 이동 중으로 간주
 	{
         // 정규화 (속도 보정)
-        if (moveDir.LengthSquared() > 0.0f)
+        if (_moveDir.LengthSquared() > 0.0f)
         {
-            moveDir.Normalize();
+            _moveDir.Normalize();
         }
         else
         {
-            moveDir = Vec3(0.0f); // 이동 방향 초기화
+            _moveDir = Vec3(0.0f); // 이동 방향 초기화
         }
 
 		float speed = isRunning ? _speed * 2 : _speed;
         Vec3 oldPosition = GetTransform()->GetPosition();
-        Vec3 newPosition = oldPosition + moveDir * speed * dt;
+        Vec3 newPosition = oldPosition + _moveDir * speed * dt;
 
         bool canMove = true;
 
-        Ray ray(oldPosition, moveDir);
+        Ray ray(oldPosition, _moveDir);
 
         // 옥트리에서 충돌 가능한 객체 가져오기
         vector<shared_ptr<BaseCollider>> nearbyColliders = OCTREE->QueryColliders(ray);
@@ -219,7 +223,7 @@ void PlayerScript::Update()
 
 
 		// 이동 방향에 따라 회전 설정
-		Vec3 targetForward = moveDir;					// 캐릭터가 이동하려는 방향
+		Vec3 targetForward = _moveDir;					// 캐릭터가 이동하려는 방향
 		Vec3 currentForward = _transform->GetLook();	// 캐릭터가 현재 바라보는 방향
 
         // 두 벡터 사이의 각도를 계산하여 회전
@@ -243,6 +247,10 @@ void PlayerScript::Update()
 	{
 		targetAnimationState = AnimationState::Idle;
 	}
+
+    // 회피 애니메이션이 재생 중이면 다른 애니메이션 상태로 전환되지 않음
+    if (_isPlayeringDodgeAnimation)
+        return;
 
     // 점프 애니메이션이 재생 중이면 다른 애니메이션 상태로 전환되지 않음
     if (_isPlayeringJumpAnimation)
@@ -324,6 +332,50 @@ void PlayerScript::PlayAttackAnimation(int stage)
 		SetAnimationState(AnimationState::Idle);
 		break;
 	}
+}
+
+void PlayerScript::StartDodge()
+{
+    if (_isDodging)
+        return;
+
+    _isDodging = true;
+    _dodgeTimer = 0.0f;
+    _dodgeDuration = _player->GetAnimationDuration(static_cast<AnimationState>((int)AnimationState::Dodge)); // 회피 동작 시간
+    _dodgeDuration /= _FPS;
+    _dodgeDistance = 3.0f; // 회피 이동 거리
+    
+    // 회피 방향 설정
+    _dodgeDirection = _moveDir;
+    if (_dodgeDirection.LengthSquared() == 0.0f)
+        _dodgeDirection = _transform->GetLook(); // 입력이 없으면 바라보는 방향으로 이동
+    _dodgeDirection.Normalize();
+
+    _isPlayeringDodgeAnimation = true;
+    SetAnimationState(AnimationState::Dodge);
+
+    // TODO (무적 상태)
+    _isInvincible = true;
+}
+
+void PlayerScript::UpdateDodge()
+{
+    float dt = TIME->GetDeltaTime();
+
+    _dodgeTimer += dt;
+
+    // 회피 이동 처리
+    float moveAmount = (_dodgeDistance / _dodgeDuration) * dt;
+    Vec3 newPosition = _transform->GetPosition() + _dodgeDirection * moveAmount;
+    _transform->SetPosition(newPosition);
+
+    // 회피 종료 처리
+    if (_dodgeTimer >= _dodgeDuration)
+    {
+        _isDodging = false;
+        _isInvincible = false; // 무적 상태 해제
+        _isPlayeringDodgeAnimation = false;
+    }
 }
 
 void PlayerScript::Jump()

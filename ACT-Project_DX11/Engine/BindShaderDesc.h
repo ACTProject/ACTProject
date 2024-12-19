@@ -109,3 +109,8 @@ struct WaveDesc
 {
     Matrix Wave = Matrix::Identity;
 };
+
+struct ShadowDesc
+{
+    Matrix Shadow = Matrix::Identity;
+};

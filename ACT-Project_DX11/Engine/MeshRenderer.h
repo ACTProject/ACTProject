@@ -22,9 +22,11 @@ public:
 	void SetTechnique(uint8 technique) { _technique = technique; }
 	void SetPass(uint8 pass) { _pass = pass; }
 	void SetAlphaBlend(bool isAlphaBlend) { _isAlphaBlend = isAlphaBlend; }
+    void SetShader(shared_ptr<Shader> shader) { _shader = shader; }
 
 	void RenderInstancing(shared_ptr<class InstancingBuffer>& buffer);
 	void RenderSingle();
+    void RenderShadowMap(Matrix view, Matrix proj);
 
 	InstanceID GetInstanceID();
 

@@ -104,6 +104,39 @@ void MeshRenderer::RenderSingle()
 	_shader->DrawIndexed(_technique, _pass, _mesh->GetIndexBuffer()->GetCount(), 0, 0);
 }
 
+void MeshRenderer::RenderShadowMap(Matrix view, Matrix proj)
+{
+    if (_mesh == nullptr || _material == nullptr)
+        return;
+
+    _shader = _material->GetShader();
+    if (_shader == nullptr)
+        return;
+
+    // GlobalData
+    _shader->PushGlobalData(view, proj);
+
+    // Light
+    auto lightObj = SCENE->GetCurrentScene()->GetLight();
+    if (lightObj)
+        _shader->PushLightData(lightObj->GetLight()->GetLightDesc());\
+
+
+
+    // Light
+    _material->Update();
+
+    // Transform
+    auto world = GetTransform()->GetWorldMatrix();
+    _shader->PushTransformData(TransformDesc{ world });
+
+    // IA
+    _mesh->GetVertexBuffer()->PushData();
+    _mesh->GetIndexBuffer()->PushData();
+
+    _shader->DrawIndexed(_technique, _pass, _mesh->GetIndexBuffer()->GetCount(), 0, 0);
+}
+
 InstanceID MeshRenderer::GetInstanceID()
 {
 	return make_pair((uint64)_mesh.get(), (uint64)_material.get());

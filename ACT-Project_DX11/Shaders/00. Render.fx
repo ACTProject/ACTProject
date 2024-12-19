@@ -47,7 +47,7 @@ struct InstancingVertexMesh
 
 MeshOutput VS_InstancingMesh(InstancingVertexMesh input)
 {
-	MeshOutput output;
+    MeshOutput output = (MeshOutput)0;
 
 	output.position = mul(input.position, input.world); // W
 	output.worldPosition = output.position;
@@ -105,7 +105,7 @@ uint BoneIndex;
 
 MeshOutput VS_InstancingModel(InstancingVertexModel input)
 {
-	MeshOutput output;
+    MeshOutput output = (MeshOutput)0;
 
 	output.position = mul(input.position, BoneTransforms[BoneIndex]); // Model Global
 	output.position = mul(output.position, input.world); // W
@@ -113,6 +113,7 @@ MeshOutput VS_InstancingModel(InstancingVertexModel input)
 	output.position = mul(output.position, VP);
 	output.uv = input.uv;
 	output.normal = input.normal;
+    output.TexShadow = mul(input.position, Shadow);
 
 	return output;
 }
@@ -236,7 +237,7 @@ matrix GetAnimationMatrix(InstancingVertexModel input)
 
 MeshOutput VS_InstancingAnimation(InstancingVertexModel input)
 {
-	MeshOutput output;
+    MeshOutput output = (MeshOutput)0;
 
 	//output.position = mul(input.position, BoneTransforms[BoneIndex]); // Model Global
 
@@ -326,6 +327,14 @@ MeshOutput VS_Animation(VertexTextureNormalTangentBlend input)
 
 	return output;
 }
+
+
+// ************** SingleAnimRender ****************
+
+
+
+
+
 
 #endif
 

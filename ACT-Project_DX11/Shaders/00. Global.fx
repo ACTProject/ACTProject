@@ -1,6 +1,9 @@
 #ifndef _GLOBAL_FX_
 #define _GLOBAL_FX_
 
+Texture2D ShadowDepthTexture;
+Texture2D ShadowColorTexture;
+
 /////////////////
 // ConstBuffer //
 /////////////////
@@ -22,6 +25,12 @@ cbuffer WaveBuffer
 {
     matrix Wave;
 };
+
+cbuffer ShadowBuffer
+{
+    matrix Shadow;
+};
+
 ////////////////
 // VertexData //
 ////////////////
@@ -91,6 +100,7 @@ struct MeshOutput
     float2 uv : TEXCOORD;
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
+    float4 TexShadow : TEXCOORD1;
 };
 
 //////////////////
@@ -125,6 +135,13 @@ RasterizerState FrontCounterClockwiseTrue
     FrontCounterClockwise = true;
 };
 
+RasterizerState SlopeScaledDepthBias
+{
+    SlopeScaledDepthBias = true;
+};
+////////////////////////
+// DepthStencillState //
+////////////////////////
 
 ////////////////
 // BlendState //
@@ -221,6 +238,14 @@ pass name											\
     SetPixelShader(CompileShader(ps_5_0, ps()));	\
 }
 
+#define PASS_SHADOW(name, bs, rs,vs)				\
+pass name											\
+{					                                \
+	SetBlendState(bs, float4(0, 0, 0, 0), 0xFF);    \
+	SetRasterizerState(rs);                         \
+    SetVertexShader(CompileShader(vs_5_0, vs()));	\
+}
+ //SetPixelShader(CompileShader(ps_5_0, ps()));	\
 //////////////
 // Function //
 //////////////

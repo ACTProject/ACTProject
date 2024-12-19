@@ -17,28 +17,41 @@ float4 PS(MeshOutput input) : SV_TARGET
 	//float4 color = ComputeLight(input.normal, input.uv, input.worldPosition);
 
     float4 color = DiffuseMap.Sample(LinearSampler, input.uv);
-   
-    float distance = length(input.worldPosition - CameraPosition());
-	
-    float start = 60.f;
-    float end = 140.f;
-    float fogFactor = saturate((end - distance) / (end - start));
-	
-    float4 fogColor = float4(0.1, 0.6, 0.9, 1.0);
-    float maxFog = 0.0;
-    if (fogFactor <= maxFog)
+   // ///Shadow
+    float4 shadow = input.TexShadow;
+    float2 shadowPos = shadow.xy / shadow.w;
+    float texDepth = ShadowDepthTexture.Sample(LinearSampler, shadowPos.xy) + 0.005f;
+    float depth = shadow.z / shadow.w;
+    
+    float4 Finalcolor = color; // 기본값은 diffuse color로 설정
+    if (texDepth < depth)
     {
-        color.rgb = lerp(fogColor.rgb, color.rgb, maxFog);
-    }
-    else
-    {
-        color.rgb = lerp(fogColor.rgb, color.rgb, fogFactor);
+       Finalcolor = float4(0.0f, 0.0f, 0.0f, 1.f);
     }
     
-    if (color.a < 0.3f)
-        discard;
+    ///
+    //float distance = length(input.worldPosition - CameraPosition());
+	
+    //float start = 60.f;
+    //float end = 140.f;
+    //float fogFactor = saturate((end - distance) / (end - start));
+	
+    //float4 fogColor = float4(0.1, 0.6, 0.9, 1.0);
+    //float maxFog = 0.0;
+    //if (fogFactor <= maxFog)
+    //{
+    //    color.rgb = lerp(fogColor.rgb, color.rgb, maxFog);
+    //}
+    //else
+    //{
+    //    color.rgb = lerp(fogColor.rgb, color.rgb, fogFactor);
+    //}
     
-    return color;
+    //if (color.a < 0.3f)
+    //    discard;
+    return Finalcolor;
+    
+    
 }
 
 

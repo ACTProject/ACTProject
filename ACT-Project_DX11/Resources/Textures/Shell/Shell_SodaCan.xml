@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Materials>
     <Material>
-        <Name>Can_Fizzle_1.002</Name>
+        <Name>Can_Fizzle_1.018</Name>
         <DiffuseFile>FizzleAtlas1.png</DiffuseFile>
         <SpecularFile>FizzleAtlas1.png</SpecularFile>
         <NormalFile>FizzleAtlas1.png</NormalFile>

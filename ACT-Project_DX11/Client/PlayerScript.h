@@ -16,6 +16,8 @@ public:
 	shared_ptr<ModelAnimator> GetModelAnimator() { return _modelAnimator; }
 	void SetModelAnimator(shared_ptr<ModelAnimator> modelAnimator) { _modelAnimator = modelAnimator; }
 	void SetAnimationState(AnimationState state);
+	void CheckInteraction();
+	void InteractWithShell(shared_ptr<GameObject> gameObject);
 	void SetHitBox(shared_ptr<GameObject> hitbox) { _hitbox = hitbox; }
 	void SetCamera(shared_ptr<GameObject> camera) { _camera = camera; }
 

@@ -154,7 +154,7 @@ void Client::Init()
 			}
 
 			CUR_SCENE->Add(obj);
-		}
+		} 
 		// RedBar HPMesh
 		{
 			// 슬라이더 컴포넌트 추가.
@@ -193,7 +193,7 @@ void Client::Init()
     {
         auto shell = make_shared<GameObject>();
         shell->SetObjectType(ObjectType::Shell);
-        shell->GetOrAddTransform()->SetPosition(Vec3(5, 0, 5));
+        shell->GetOrAddTransform()->SetPosition(Vec3(5, -1, 5));
         shell->GetOrAddTransform()->SetScale(Vec3(0.01f));
 
         shared_ptr<Model> shellModel = make_shared<Model>();
@@ -214,7 +214,7 @@ void Client::Init()
         // Collider
         auto collider = make_shared<AABBBoxCollider>();
         collider->SetBoundingBox(BoundingBox(Vec3(0.f), Vec3(0.5f,0.5f,1.f)));
-        collider->SetOffset(Vec3(0.f, 0.f, 1.f));
+        collider->SetOffset(Vec3(0.f, 1.f, 0.f));
         OCTREE->InsertCollider(collider);
         shell->AddComponent(collider);
         CUR_SCENE->Add(shell);
@@ -243,6 +243,8 @@ void Client::Init()
 		playerModel->ReadAnimation(L"Player/Crab_Atk_Combo4", AnimationState::Attack4);
         playerModel->ReadAnimation(L"Player/Crab_Jump", AnimationState::Jump);
         playerModel->ReadAnimation(L"Player/Crab_Dodge", AnimationState::Dodge);
+        playerModel->ReadAnimation(L"Player/Crab_BlockingIdle", AnimationState::BlockingIdle);
+        playerModel->ReadAnimation(L"Player/Crab_BlockingCrawl", AnimationState::BlockingCrawl);
 
 		//playerModel->ReadAnimation(L"Player/Crab_Death");
 		//playerModel->ReadAnimation(L"Player/Crab_GetUp");
@@ -256,6 +258,15 @@ void Client::Init()
 		}
 		ModelMesh& weaponMesh = *weaponModel->GetMeshes()[0];
 		playerModel->AddDummyBoneAndAttach(weaponMesh, L"Hand_Grip_L", L"WeaponDummy");
+
+        //shared_ptr<Model> shellModel = make_shared<Model>();
+        //{
+        //    // CustomData -> Memory
+        //    shellModel->ReadModel(L"Shell/Shell_SodaCan");
+        //    shellModel->ReadMaterial(L"Shell/Shell_SodaCan");
+        //}
+        //ModelMesh& shellMesh = *shellModel->GetMeshes()[0];
+        //playerModel->AddDummyBoneAndAttach(shellMesh, L"Shell", L"ShellDummy");
 	}
 
 	// Player::ModelAnimator

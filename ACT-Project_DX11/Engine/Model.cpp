@@ -357,6 +357,8 @@ string Model::AnimationStateToString(AnimationState state)
 	case AnimationState::Combat: return "Combat";
 	case AnimationState::Jump:   return "Jump";
 	case AnimationState::Dodge:   return "Dodge";
+	case AnimationState::BlockingIdle:   return "BlockingIdle";
+	case AnimationState::BlockingCrawl:   return "BlockingCrawl";
 	case AnimationState::Hit1:   return "Hit1";
 	case AnimationState::Hit2:   return "Hit2";
 	case AnimationState::Die:   return "Die";
@@ -436,8 +438,7 @@ void Model::AddDummyBoneAndAttach(ModelMesh& mesh, const wstring& targetBoneName
 	if (targetBone)
 	{
 		// 더미 본 추가
-		Matrix dummyTransform = Matrix::CreateTranslation(0.1f, 0.0f, 0.0f); // 손 앞쪽으로 배치
-		auto dummyBone = targetBone->AddDummyBone(dummyBoneName, dummyTransform, GetBoneCount());
+		auto dummyBone = targetBone->AddDummyBone(dummyBoneName, GetBoneCount());
 
 		// `ModelMesh`에 더미 본 연결
 		mesh.AttachToDummyBone(dummyBone); // 마지막 자식이 새로 추가된 더미 본

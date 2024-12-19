@@ -1,10 +1,10 @@
-﻿#pragma once
+#pragma once
 
 struct ModelBone : public std::enable_shared_from_this<ModelBone>
 {
 	bool isDummy = false;
 
-	shared_ptr<ModelBone> AddDummyBone(const wstring& dummyName, Matrix dummyTransform, int32 dummyIndex);
+	shared_ptr<ModelBone> AddDummyBone(const wstring& dummyName, int32 dummyIndex);
 	wstring name;
 	int32 index;
 	int32 parentIndex;

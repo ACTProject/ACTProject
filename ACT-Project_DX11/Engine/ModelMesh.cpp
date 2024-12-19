@@ -1,8 +1,8 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "ModelMesh.h"
 
 
-shared_ptr<ModelBone> ModelBone::AddDummyBone(const wstring& dummyName, Matrix dummyTransform, int32 dummyIndex)
+shared_ptr<ModelBone> ModelBone::AddDummyBone(const wstring& dummyName, int32 dummyIndex)
 {
 	auto dummyBone = make_shared<ModelBone>();
 	dummyBone->isDummy = true;
@@ -10,7 +10,7 @@ shared_ptr<ModelBone> ModelBone::AddDummyBone(const wstring& dummyName, Matrix d
 	dummyBone->index = dummyIndex;
 	dummyBone->parentIndex = index; // 현재 본을 부모로 설정
 	dummyBone->parent = shared_from_this();
-	dummyBone->transform = shared_from_this()->transform;
+    dummyBone->transform = shared_from_this()->transform;
 
 	children.push_back(dummyBone);
 

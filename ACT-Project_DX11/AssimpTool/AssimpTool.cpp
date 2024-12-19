@@ -78,6 +78,16 @@ void AssimpTool::Init()
             converter->ReadAssetFile(L"Player/Crab_Dodge.fbx");
             converter->ExportAnimationData(L"Player/Crab_Dodge");
         }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"Player/Crab_BlockingIdle.fbx");
+            converter->ExportAnimationData(L"Player/Crab_BlockingIdle");
+        }
+        {
+            shared_ptr<Converter> converter = make_shared<Converter>();
+            converter->ReadAssetFile(L"Player/Crab_BlockingCrawl.fbx");
+            converter->ExportAnimationData(L"Player/Crab_BlockingCrawl");
+        }
 	}
 	// Enemy
 	{
@@ -351,8 +361,6 @@ void AssimpTool::Init()
 			converter->ExportMaterialData(L"MapObject/PencilHedgehog");
 			converter->ExportModelData(L"MapObject/PencilHedgehog");
 		}
-
-		//
 		{
 			shared_ptr<Converter> converter = make_shared<Converter>();
 			converter->ReadAssetFile(L"MapObject/Bottle.fbx");

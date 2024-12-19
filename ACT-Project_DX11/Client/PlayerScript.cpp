@@ -172,6 +172,8 @@ void PlayerScript::Update()
 	// 이동 방향의 크기를 기준으로 애니메이션 상태 결정
 	AnimationState targetAnimationState;
 
+    CheckInteraction();
+
     // Move
 	if (_moveDir.LengthSquared() > 0.0f)  // 이동 벡터가 0이 아니라면 이동 중으로 간주
 	{
@@ -198,21 +200,6 @@ void PlayerScript::Update()
         
         for (const auto& collider : nearbyColliders)
         {
-            if (collider->GetGameObject()->GetObjectType() == ObjectType::Shell)
-            {
-                float distance = 0.0f;
-                if (collider->Intersects(ray, distance))
-                {
-                    if (abs(distance) <= 3.0f)
-                    {
-                        if (INPUT->GetButtonDown(KEY_TYPE::E))
-                        {
-                            // TODO
-                        }
-                    }
-                }
-            }
-
             if (collider->GetGameObject()->GetRigidbody() != nullptr)
                 continue;
 
@@ -296,6 +283,27 @@ void PlayerScript::SetAnimationState(AnimationState state)
 
 void PlayerScript::CheckInteraction()
 {
+    auto playerCollider = GetGameObject()->GetCollider();
+    // 옥트리에서 충돌 가능한 객체 가져오기
+    vector<shared_ptr<BaseCollider>> nearbyColliders = OCTREE->QueryColliders(playerCollider);
+
+    for (const auto& collider : nearbyColliders)
+    {
+        if (collider->GetGameObject()->GetObjectType() != ObjectType::Shell)
+            return;
+
+        if (collider->Intersects(playerCollider) && INPUT->GetButtonDown(KEY_TYPE::E))
+        {
+            InteractWithShell(collider->GetGameObject());
+            break;
+        }
+        
+    }
+}
+void PlayerScript::InteractWithShell(shared_ptr<GameObject> gameObject)
+{
+    ModelMesh& shellModel = *gameObject->GetModelRenderer()->GetModel()->GetMeshes()[0];
+    _player->AddDummyBoneAndAttach(shellModel, L"Shell", L"ShellDummy");
 }
 
 void PlayerScript::StartAttack()

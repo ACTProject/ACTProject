@@ -57,7 +57,7 @@ void FinalBossMonster::Update()
 
 void FinalBossMonster::Phase_1()
 {
-    if (isFirstTime) // 조우 ( 편의상 안되게 해놨음 )
+    if (!isFirstTime) // 조우 ( 편의상 안되게 해놨음 )
     {
         if (currentTime > 8.f) // 실행되는데 걸리는 시간으로 인한 애니메이션이 짤리는 현상때문에 설정
         {
@@ -113,6 +113,7 @@ void FinalBossMonster::Phase_1()
                 lastTime = currentTime;
                 shootTime = 0.0f;
                 patternCnt = 1;
+                SetAnimationState(AnimationState::Combat);
             }
         }
     }
@@ -140,17 +141,17 @@ void FinalBossMonster::Appear()
 void FinalBossMonster::Walk(Vec3 objPos, Vec3 targetPos, float speed)
 {
     SetAnimationState(AnimationState::Walk);
-    //CREATURE->Move(objPos, targetPos, speed);
-    Vec3 direction = targetPos - objPos;
-    if (direction.LengthSquared() < 5.f) // EPSILON 사용
-    {
-        SetAnimationState(AnimationState::Combat);
-        return;
-    }
+    CREATURE->Move(objPos, targetPos, speed);
+    //Vec3 direction = targetPos - objPos;
+    //if (direction.LengthSquared() < 5.f) // EPSILON 사용
+    //{
+    //    SetAnimationState(AnimationState::Combat);
+    //    return;
+    //}
 
-    direction.Normalize();  // 방향 벡터를 단위 벡터로 정규화
+    //direction.Normalize();  // 방향 벡터를 단위 벡터로 정규화
 
-    _transform->SetPosition(_transform->GetPosition() + direction * speed * dt);  // 일정 거리만큼 이동
+    //_transform->SetPosition(_transform->GetPosition() + direction * speed * dt);  // 일정 거리만큼 이동
 }
 
 void FinalBossMonster::Rota(Vec3 objPos, Vec3 targetPos)

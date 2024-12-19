@@ -35,10 +35,11 @@ public:
     void Walk(Vec3 objPos, Vec3 targetPos, float speed);// 타겟 방향으로 이동
     void Rota(Vec3 objPos, Vec3 targetPos);             // 타겟 방향으로 회전
     void Die();                                         // 죽음
-    bool Punch(int atkType);                            // 펀치 공격
+    void Punch();                            // 펀치 공격
     void Fireball();
     void makeBubble(Vec3 pos, Vec3 dir);
 
+    int patternCnt;
     float shootTime = 0.0f;
     int comboCnt;
     int randType;                   //랜덤한 타입

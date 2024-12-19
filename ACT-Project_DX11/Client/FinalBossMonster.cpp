@@ -15,6 +15,7 @@ void FinalBossMonster::Start()
     _player = SCENE->GetCurrentScene()->GetPlayer();
     SetAnimationState(AnimationState::Idle);
     comboCnt = 1;
+    patternCnt = 1;
 }
 
 void FinalBossMonster::Update()
@@ -39,6 +40,10 @@ void FinalBossMonster::Update()
         if (distance < AttackRange)
         {
             punchState = true;
+        }
+        else
+        {
+            chaseState = true;
         }
         Phase_1();
     }
@@ -70,22 +75,33 @@ void FinalBossMonster::Phase_1()
         postpone = true;
     }
 
+    DEBUG->LogVec3ToConsole({ (float)patternCnt , 0, 0 }, "patternCnt");
     if (postpone)
     {
-        if (chaseState)
+        if (patternCnt < 4)
         {
-            Walk(bossPos, playerPos, 5.0f);
-            Rota(bossPos, playerPos);
-        }
-        else if (punchState)
-        {
-            if (!Punch(randType))
+            if (punchState)
             {
-                return; // 애니메이션 진행 중
+                if (PlayCheckAnimating(static_cast<AnimationState>((int)AnimationState::Attack1 + randType)))
+                {
+                    Punch();
+                    return;
+                }
+                else
+                {
+                    randType = rand() % 4;
+                    patternCnt++;
+                    punchState = false;
+                }
             }
-            randType = rand() % 4;
+            else if (chaseState)
+            {
+                Walk(bossPos, playerPos, 5.0f);
+                Rota(bossPos, playerPos);
+            }
         }
-        else if (shootState)
+
+        if (patternCnt == 4)
         {
             if (PlayCheckAnimating(AnimationState::Skill2))
             {
@@ -94,12 +110,15 @@ void FinalBossMonster::Phase_1()
             }
             else
             {
+                lastTime = currentTime;
                 shootTime = 0.0f;
+                patternCnt = 1;
             }
         }
     }
     else
     {
+        Rota(bossPos, playerPos);
         SetAnimationState(AnimationState::Combat);
     }
 }
@@ -120,17 +139,18 @@ void FinalBossMonster::Appear()
 
 void FinalBossMonster::Walk(Vec3 objPos, Vec3 targetPos, float speed)
 {
-    Vec3 direction = targetPos - objPos;
-    if (direction.LengthSquared() < 5.f) // EPSILON 사용
-    {
-        SetAnimationState(AnimationState::Combat);
-        return;
-    }
-
     SetAnimationState(AnimationState::Walk);
-    direction.Normalize();  // 방향 벡터를 단위 벡터로 정규화
+    //CREATURE->Move(objPos, targetPos, speed);
+    //Vec3 direction = targetPos - objPos;
+    //if (direction.LengthSquared() < 5.f) // EPSILON 사용
+    //{
+    //    SetAnimationState(AnimationState::Combat);
+    //    return;
+    //}
 
-    _transform->SetPosition(_transform->GetPosition() + direction * speed * dt);  // 일정 거리만큼 이동
+    //direction.Normalize();  // 방향 벡터를 단위 벡터로 정규화
+
+    //_transform->SetPosition(_transform->GetPosition() + direction * speed * dt);  // 일정 거리만큼 이동
 }
 
 void FinalBossMonster::Rota(Vec3 objPos, Vec3 targetPos)
@@ -176,38 +196,9 @@ void FinalBossMonster::Die()
     return;
 }
 
-bool FinalBossMonster::Punch(int atkType)
+void FinalBossMonster::Punch()
 {
-    switch (atkType)
-    {
-    case 0:
-        if (PlayCheckAnimating(AnimationState::Attack1))
-        {
-            return false; // 플레이 중
-        }
-        break;
-    case 1:
-        if (PlayCheckAnimating(AnimationState::Attack2))
-        {
-            return false; // 플레이 중
-        }
-        break;
-    case 2:
-        if (PlayCheckAnimating(AnimationState::Attack3))
-        {
-            return false; // 플레이 중
-        }
-        break;
-    case 3:
-        if (PlayCheckAnimating(AnimationState::Attack4))
-        {
-            return false; // 플레이 중
-        }
-        break;
-    default:
-        return true;
-        break;
-    }
+    
 }
 
 void FinalBossMonster::Fireball()
@@ -288,6 +279,11 @@ bool FinalBossMonster::PlayCheckAnimating(AnimationState state)
         SetAnimationState(AnimationState::Combat);
         return false;
     }
+
+    // 코루틴 실행
+    MyCoroutine attackCoroutine = EnemyCoroutine(this, duration);
+    currentEnemyCoroutine = attackCoroutine.GetHandler();
+    currentEnemyCoroutine.resume();
 
     return true; // 플레이 중
 }
